@@ -10,6 +10,10 @@ buildscript {
     }
 }
 
+if (!hasProperty('repo')) {
+    ext.repo = 'development'
+}
+
 mainClassName = 'edu.wpi.first.tableviewer.TableViewer'
 
 publishing {
@@ -23,6 +27,9 @@ publishing {
             version '1.0.0-SNAPSHOT'
         }
     }
+    repositories.maven {
+        url = "${System.getProperty('user.home')}/releases/maven/"
+    }
 }
 
 sourceSets {
@@ -33,7 +40,15 @@ sourceSets {
     }
 }
 
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = 'http://first.wpi.edu/FRC/roborio/maven'
+    }
+}
+
 dependencies {
-    compile project(":networktables:ntcore")
+    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop-$repo"
     compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
 }
