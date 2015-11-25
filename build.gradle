@@ -28,7 +28,7 @@ publishing {
         }
     }
     repositories.maven {
-        url = "${System.getProperty('user.home')}/releases/maven/"
+        url = "${System.getProperty('user.home')}/releases/maven/$repo"
     }
 }
 
@@ -42,16 +42,16 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    maven {
+        url = "${System.getProperty('user.home')}/releases/maven/$repo"
+    }
     mavenLocal()
     maven {
-        url = "${System.getProperty('user.home')}/releases/maven/"
-    }
-    maven {
-        url = 'http://first.wpi.edu/FRC/roborio/maven'
+        url = "http://first.wpi.edu/FRC/roborio/maven/$repo"
     }
 }
 
 dependencies {
-    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop-$repo"
+    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop"
     compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
 }
