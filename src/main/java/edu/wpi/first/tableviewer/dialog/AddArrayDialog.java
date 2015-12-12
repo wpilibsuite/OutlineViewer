@@ -110,7 +110,7 @@ public class AddArrayDialog extends AbstractAddDialog {
         typeLabel.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         typeLabel.setText("Array type");
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Boolean", "Number", "String"}));
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Boolean", "Number", "String", "Byte (raw)" }));
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
@@ -279,6 +279,29 @@ public class AddArrayDialog extends AbstractAddDialog {
                         if (data != null) {
                             arr[n] = data.toString();
                             n++;
+                        }
+                    }
+                    return arr;
+                }
+
+            case "Byte (raw)":
+                {
+                    byte[] arr = new byte[n];
+                    n = 0;
+                    for (int i = 0; i < valueTable.getRowCount(); i++) {
+                        Object data = valueTable.getValueAt(i, 0);
+                        try {
+                            if (data != null) {
+                                arr[n] = Byte.parseByte(data.toString());
+                                n++;
+                            }
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(
+                                    this,
+                                    "Invalid byte value \"" + data + "\" in row " + (i + 1),
+                                    "Invalid number",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return null;
                         }
                     }
                     return arr;

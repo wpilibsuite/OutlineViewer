@@ -3,7 +3,6 @@ package edu.wpi.first.tableviewer.dialog;
 
 import edu.wpi.first.tableviewer.OutlineFrame;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
@@ -110,11 +109,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     private void startButtonPressed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonPressed
         try {
-            NetworkTablesJNI.setLogger(new NetworkTablesJNI.LoggerFunction() {
-                public void apply(int level, String file, int line, String msg) {
-                  System.err.println(msg);
-                }
-            }, 0);
             if (evt.getSource() == clientButton) { // start client
                 String host = hostField.getText();
                 if (host.isEmpty()) {

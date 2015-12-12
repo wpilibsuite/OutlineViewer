@@ -19,7 +19,7 @@ public class NetworkTableRowModel implements RowModel {
             case 0:
                 return String.class;
             case 1:
-                return Object.class;
+                return String.class;
             default:
                 return null;
         }
@@ -52,9 +52,7 @@ public class NetworkTableRowModel implements RowModel {
     public boolean isCellEditable(Object node, int column) {
         try {
             LeafNode leaf = (LeafNode) node;
-            return column == 0
-                   && leaf.data.getType() != TableEntryData.EntryType.ARRAY
-                   && !leaf.data.isMetadata();
+            return column == 0 && !leaf.data.isMetadata();
         } catch (Exception e) {
             return false;
         }

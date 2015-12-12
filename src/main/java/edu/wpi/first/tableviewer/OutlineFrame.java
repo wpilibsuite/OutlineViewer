@@ -4,9 +4,9 @@
  */
 package edu.wpi.first.tableviewer;
 
-import edu.wpi.first.tableviewer.TableEntryData.EntryType;
 import edu.wpi.first.tableviewer.dialog.AbstractAddDialog;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
 import java.awt.BorderLayout;
@@ -17,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 import javax.swing.JFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
@@ -25,9 +26,10 @@ import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
 import org.netbeans.swing.outline.OutlineModel;
 
-public class OutlineFrame extends JFrame implements ITableListener {
+public class OutlineFrame extends JFrame {
 
     private final Outline outline;
+    private final DefaultTreeModel outlineTreeModel;
     private final BranchNode rootBranch;
     private final boolean showMetadata;
     private final Preferences prefs = Preferences.userNodeForPackage(getClass());
@@ -39,7 +41,7 @@ public class OutlineFrame extends JFrame implements ITableListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         rootBranch = new BranchNode("", "Root");
-        DefaultTreeModel outlineTreeModel = new DefaultTreeModel(rootBranch);
+        outlineTreeModel = new DefaultTreeModel(rootBranch);
 
         OutlineModel outlineModel = DefaultOutlineModel.createOutlineModel(
                 outlineTreeModel, new NetworkTableRowModel(), true, "Key");
@@ -66,9 +68,8 @@ public class OutlineFrame extends JFrame implements ITableListener {
 //                        }
 //                    }
                 } else if (SwingUtilities.isRightMouseButton(e)) { // create a menu
-                    if (node instanceof BranchNode) {
-                        ((BranchNode) node).getMenu(path).show(outline, e.getX(), e.getY());
-                    }
+                    JPopupMenu menu = node.getMenu(path);
+                    if (menu != null) menu.show(outline, e.getX(), e.getY());
                 }
             }
         });
@@ -97,67 +98,72 @@ public class OutlineFrame extends JFrame implements ITableListener {
         scrollPane.setViewportView(outline);
         add(scrollPane, BorderLayout.CENTER);
 
-        NetworkTable.getTable("").addTableListener(this, true);
-
-    }
-
-    @Override
-    public void valueChanged(ITable source, final String key, final Object value, boolean isNew) {
-        SwingUtilities.invokeLater(new Runnable() {
+        NetworkTablesJNI.addEntryListener("", new NetworkTablesJNI.EntryListenerFunction() {
             @Override
-            public void run() {
-                getBranchesToEntry(key, value);
-            }
-        });
+            public void apply(int uid, String key, Object value, int flags) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        getBranchesToEntry(key, value, flags);
+                    }
+                });
+            }},
+            ITable.NOTIFY_IMMEDIATE | ITable.NOTIFY_LOCAL | ITable.NOTIFY_NEW | ITable.NOTIFY_DELETE | ITable.NOTIFY_UPDATE /*| ITable.NOTIFY_FLAGS*/ );
+
     }
 
-    private void getBranchesToEntry(final String fullKey, Object value) {
+    private void getBranchesToEntry(final String fullKey, Object value, int flags) {
         // a list of all the subtable names leading up to the entry in the given key
         // this splits by / and removes empty // elements
-        CustomList<String> subTableNames = splitDiscardingEmpty(fullKey, "/");
+        ArrayList<String> subTableNames = splitDiscardingEmpty(fullKey, "/");
         String key = "";
         AbstractTreeNode currentNode = rootBranch, parentNode;
-        for (String name : subTableNames) {
+        for (int i = 0; i < subTableNames.size(); i++) {
+	    String name = subTableNames.get(i);
             parentNode = currentNode;
             currentNode = currentNode.get(name);
             key += "/" + name;
-            if (subTableNames.getLast() == name) { // leaf
+
+            if ((flags & ITable.NOTIFY_DELETE) != 0) { // delete
+                if (currentNode == null)
+                    break;
+                if (i == (subTableNames.size() - 1)) { // reached the leaf
+                    outlineTreeModel.removeNodeFromParent(currentNode);
+                    break;
+                }
+                continue;
+            }
+
+            // new or update
+            if (i == (subTableNames.size() - 1)) { // leaf
                 if (currentNode == null) {
                     currentNode = new LeafNode(key, new TableEntryData(name, value));
                     if (currentNode.data.isMetadata() && !showMetadata) {
                         // don't show metadata directly
                         // instead, show the value in the branch's "Type" field
-                        parentNode.data.setType(EntryType.getEntryType(currentNode.data.getValue().toString()));
+                        ((BranchNode) parentNode).updateType(currentNode.data.getValue().toString());
                     } else {
-                        parentNode.add(currentNode);
+                        outlineTreeModel.insertNodeInto(currentNode, parentNode, parentNode.getChildCount());
                         TreePath path = new TreePath(currentNode.getPath());
                         outline.expandPath(path);
                     }
                 } else {
                     ((LeafNode) currentNode).updateValue(value);
                 }
-
             } else if (currentNode == null) {
                 currentNode = new BranchNode(key, name);
-                parentNode.add(currentNode);
+                outlineTreeModel.insertNodeInto(currentNode, parentNode, parentNode.getChildCount());
             }
         }
     }
 
-    private CustomList<String> splitDiscardingEmpty(String str, String separator) {
-        CustomList<String> results = new CustomList<>();
+    private ArrayList<String> splitDiscardingEmpty(String str, String separator) {
+        ArrayList<String> results = new ArrayList<>();
         for (String string : str.split(separator)) {
             if (string.length() > 0) {
                 results.add(string);
             }
         }
         return results;
-    }
-
-    private class CustomList<E> extends ArrayList<E> {
-
-        public E getLast() {
-            return get(size() - 1);
-        }
     }
 }

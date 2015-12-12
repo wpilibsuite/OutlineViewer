@@ -5,10 +5,12 @@
 package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.wpilibj.tables.ITable;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import org.netbeans.swing.outline.Outline;
+import java.util.Arrays;
 
 /**
  *
@@ -29,13 +31,12 @@ public abstract class AbstractTreeNode extends DefaultMutableTreeNode {
         AbstractTreeNode.outline = outline;
     }
 
-    public AbstractTreeNode(String key, TableEntryData data) {
+    public AbstractTreeNode(TableEntryData data) {
         super(data);
         this.data = data;
         if (treeModel != null) {
             treeModel.reload(this);
         }
-        table = NetworkTable.getTable(key);
     }
 
     /**
@@ -49,7 +50,31 @@ public abstract class AbstractTreeNode extends DefaultMutableTreeNode {
     public final Object getValueFor(int index) {
         switch (index) {
             case 0:
-                return data.getValue();
+                {
+                Object value = data.getValue();
+                if (value instanceof Boolean) return ((Boolean)value).toString();
+                if (value instanceof Double) return ((Double)value).toString();
+                if (value instanceof String) return StringUtil.escapeString((String)value, false);
+                if (value instanceof byte[]) return Arrays.toString((byte[])value);
+                if (value instanceof boolean[]) return Arrays.toString((boolean[])value);
+                if (value instanceof double[]) return Arrays.toString((double[])value);
+                if (value instanceof String[]) {
+                    String[] a = (String[])value;
+                    int imax = a.length - 1;
+                    if (imax == -1)
+                        return "[]";
+
+                    StringBuilder b = new StringBuilder();
+                    b.append('[');
+                    for (int i = 0; ; i++) {
+                        StringUtil.escapeString(b, a[i], true);
+                        if (i == imax)
+                            return b.append(']').toString();
+                        b.append(", ");
+                    }
+                }
+                return null;
+                }
             case 1:
                 return data.getType();
             default:
@@ -96,4 +121,13 @@ public abstract class AbstractTreeNode extends DefaultMutableTreeNode {
      */
     @Override
     public abstract String toString();
+
+    /**
+     * Creates the {@code JPopupMenu} to display when this node is
+     * right-clicked.
+     *
+     * @param path The path from the root to this branch.
+     * @return The menu for this node.
+     */
+    public abstract JPopupMenu getMenu(final TreePath path);
 }

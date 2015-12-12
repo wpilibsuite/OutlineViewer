@@ -8,10 +8,12 @@ import edu.wpi.first.tableviewer.dialog.AddArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.event.TableModelEvent;
 import javax.swing.tree.TreePath;
 
 /**
@@ -25,8 +27,11 @@ public class BranchNode extends AbstractTreeNode {
     private final String name;
 
     public BranchNode(String key, String name) {
-        super(key, new TableEntryData(name, null));
+        super(new TableEntryData(name, null));
         this.name = name;
+        if (key.startsWith("/"))
+            key = key.substring(1);
+        table = NetworkTable.getTable(key);
     }
 
     @Override
@@ -37,6 +42,17 @@ public class BranchNode extends AbstractTreeNode {
     @Override
     public boolean isLeaf() {
         return false;
+    }
+
+    /**
+     * Changes the type of the data displayed within this branch. This is only
+     * a graphical update.
+     *
+     * @param newType The new type for this branch to show.
+     */
+    public void updateType(String newType) {
+        data.setType(newType);
+        outline.tableChanged(new TableModelEvent(outline.getModel()));
     }
 
     /**

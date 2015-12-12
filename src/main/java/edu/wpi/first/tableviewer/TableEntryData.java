@@ -4,9 +4,6 @@
  */
 package edu.wpi.first.tableviewer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 /**
  *
  * @author Sam
@@ -15,60 +12,15 @@ public class TableEntryData {
 
     private String key;
     private Object value;
-    private EntryType type;
+    private String type;
 
-    /**
-     * An enum-like structure to hold the type of data this entry contains.
-     * Several are pre-baked and can be used like enum constants:
-     * <pre>
-     *  ARRAY
-     *  BOOLEAN
-     *  METADATA
-     *  NUMBER
-     *  STRING
-     * </pre> Use {@link #getEntryType(String name) getEntryType} to grab one
-     * that isn't pre-baked. This is typically used to show custom metadata
-     * information from a {@code ~TYPE~} entry in a
-     * {@link BranchNode BranchNode's} {@code Type} cell.
-     */
-    public static final class EntryType {
-
-        private static final HashMap<String, EntryType> ENTRY_TYPES = new HashMap<>();
-        public static final EntryType ARRAY = new EntryType("Array");
-        public static final EntryType BOOLEAN = new EntryType("Boolean");
-        public static final EntryType METADATA = new EntryType("Metadata");
-        public static final EntryType NUMBER = new EntryType("Number");
-        public static final EntryType STRING = new EntryType("String");
-        public static final EntryType UNSUPPORTED = new EntryType("Unsupported");
-        private final String name;
-
-        private EntryType(final String name) {
-            this.name = name;
-            ENTRY_TYPES.put(name, this);
-        }
-
-        public static EntryType getEntryType(String name) {
-            EntryType type = ENTRY_TYPES.get(name);
-            if (type == null) {
-                type = new EntryType(name);
-            }
-            return type;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
+    private static final String[] typeNames = new String[] {"Boolean", "Number", "String", "Raw", "Boolean[]", "Number[]", "String[]"};
 
     public TableEntryData(String key, Object value) {
         this.key = key;
         if (value != null) {
             this.value = value;
             this.type = typeFromValue(value);
-            if (type.equals(EntryType.ARRAY)) {
-                this.value = Arrays.toString((Object[]) value);
-            }
         }
     }
 
@@ -80,18 +32,18 @@ public class TableEntryData {
         return value;
     }
 
-    public EntryType getType() {
+    public String getType() {
         return type;
     }
 
     /**
-     * Sets the value of this TableEntrydata. Does not change the type.
+     * Sets the value of this TableEntrydata.
      */
     public void setValue(Object newValue) {
         this.value = newValue;
-        if (newValue instanceof Object[]) {
-            this.value = Arrays.toString((Object[]) newValue);
-        }
+        String newtype = typeFromValue(value);
+        if (newtype != "ERROR")
+            this.type = newtype;
     }
 
     /**
@@ -99,30 +51,23 @@ public class TableEntryData {
      * metadata entry comes in and to show what kind of system it shows data
      * from (such as "Speed controller", "Subsystem", etc.).
      */
-    public void setType(EntryType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
     /**
-     * Generates an {@link EntryType} based on the value of the table entry.
+     * Generates a type string based on the value of the table entry.
      */
-    private EntryType typeFromValue(Object value) {
-        String valueClassName = value.getClass().toString().substring(value.getClass().toString().lastIndexOf(".") + 1);
-        if (isMetadata()) {
-            return EntryType.METADATA;
-        }
-        switch (valueClassName.toLowerCase()) {
-            case "boolean":
-                return EntryType.BOOLEAN;
-            case "double":
-                return EntryType.NUMBER;
-            case "string":
-                return EntryType.STRING;
-            case "object;": // the semicolon is neccessary to catch arrays
-                return EntryType.ARRAY;
-            default:
-                return EntryType.UNSUPPORTED;
-        }
+    private String typeFromValue(Object value) {
+        if (isMetadata()) return "Metadata";
+        if (value instanceof Boolean) return typeNames[0];
+        if (value instanceof Double) return typeNames[1];
+        if (value instanceof String) return typeNames[2];
+        if (value instanceof byte[]) return typeNames[3];
+        if (value instanceof boolean[]) return typeNames[4].substring(0, 8) + ((boolean[])value).length + "]";
+        if (value instanceof double[]) return typeNames[5].substring(0, 7) + ((double[])value).length + "]";
+        if (value instanceof String[]) return typeNames[6].substring(0, 7) + ((String[])value).length + "]";
+        return "ERROR";
     }
 
     /**
