@@ -15,11 +15,10 @@ public class TableViewer {
     
     public static void main(String[] args) {
         try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-            }
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
         }
+
         new PreferencesDialog().setVisible(true);
     }
     
