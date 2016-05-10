@@ -16,7 +16,7 @@ The WPILib Mission is to enable FIRST teams to focus on writing game-specific so
 
 # Building OutlineViewer
 
-Building Smart Dashboard is very straightforward. Smart Dashboard uses Gradle to compile.
+Building Outline Viewer is very straightforward. Outline Viewer uses Gradle to compile.
 
 ## Requirements
 - [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
