@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 buildscript {
     repositories { jcenter() }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
@@ -32,13 +32,7 @@ publishing {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src"]
-        }
-    }
-}
+
 
 repositories {
     mavenCentral()
@@ -54,4 +48,8 @@ repositories {
 dependencies {
     compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop"
     compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
 }
