@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/gradle
+# Created by https://www.gitignore.io/
 
 ### Gradle ###
 .gradle
@@ -10,3 +10,8 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+### Intellij ###
+.idea/
+*.iws
+*.iml
+*.ipr
