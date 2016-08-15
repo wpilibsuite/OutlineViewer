@@ -114,6 +114,19 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 if (host.isEmpty()) {
                     return;
                 }
+                int port = NetworkTable.DEFAULT_PORT;
+                // check and see if a seperate port has been requested
+                if (host.contains(":")) {
+                  String portString = host.substring(host.indexOf(':') + 1);
+                  try {
+                  // set port, and return our hostname to the proper value
+                  NetworkTable.setPort(Integer.parseInt(portString));
+                  host = host.substring(0, host.indexOf(':'));
+                  } catch (NumberFormatException e) {
+                    // return on a formatting error
+                    return;
+                  }
+                }
                 NetworkTable.setIPAddress(host);
                 NetworkTable.setClientMode();
                 NetworkTable.initialize();
