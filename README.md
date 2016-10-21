@@ -23,7 +23,11 @@ Building Outline Viewer is very straightforward. Outline Viewer uses Gradle to c
 
 ## Running
 
-To run Outline Viewer use the command `./gradlew run`.
+To run Outline Viewer use the command `./gradlew jfxRun`.
+
+## Building
+
+To create a Jar use the command `./gradlew jfxJar`.
 
 # Contributing to WPILib
 

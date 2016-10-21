@@ -1,7 +1,13 @@
 # NOTE: Don't use `sudo` anywhere or the build will run on Travis's slower, outdated build system
 language: java
-jdk:
-  - oraclejdk8
+
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      jdk: oraclejdk8
+    - os: osx
+      osx_image: xcode8
 
 addons:
   apt:
@@ -9,12 +15,14 @@ addons:
       - oracle-java8-installer
 
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+  - |
+    if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+    export DISPLAY=:99.0;
+    sh -e /etc/init.d/xvfb start;
+    fi
 
 script:
-  - ./gradlew check --stacktrace
-
+  - ./gradlew check --stacktrace -PlogTests
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
