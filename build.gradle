@@ -1,17 +1,9 @@
-buildscript {
-    repositories { jcenter() }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'maven-publish'
-
-if (!hasProperty('repo')) {
-    ext.repo = 'development'
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'maven-publish'
+    id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.1'
 }
 
 mainClassName = 'edu.wpi.first.tableviewer.TableViewer'
@@ -24,11 +16,8 @@ publishing {
             }
             groupId 'edu.wpi.first.wpilib.networktables'
             artifactId 'OutlineViewer'
-            version '1.0.0-SNAPSHOT'
+            version WPILibVersion.version
         }
-    }
-    repositories.maven {
-        url = "${System.getProperty('user.home')}/releases/maven/$repo"
     }
 }
 
@@ -42,17 +31,10 @@ sourceSets {
 
 repositories {
     mavenCentral()
-    maven {
-        url = "${System.getProperty('user.home')}/releases/maven/$repo"
-    }
-    mavenLocal()
-    maven {
-        url = "http://first.wpi.edu/FRC/roborio/maven/$repo"
-    }
 }
 
 dependencies {
-    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:3.0.0-SNAPSHOT:desktop"
+    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
     compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
 }
 
