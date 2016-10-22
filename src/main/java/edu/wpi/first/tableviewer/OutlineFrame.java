@@ -110,6 +110,17 @@ public class OutlineFrame extends JFrame {
             }},
             ITable.NOTIFY_IMMEDIATE | ITable.NOTIFY_LOCAL | ITable.NOTIFY_NEW | ITable.NOTIFY_DELETE | ITable.NOTIFY_UPDATE /*| ITable.NOTIFY_FLAGS*/ );
 
+        NetworkTablesJNI.ConnectionListenerFunction clf = (uid, connected, conn) -> {
+            if (NetworkTable.getTable("").isServer()) {
+                setTitle(title + " | " + "Number of Clients:" + NetworkTablesJNI.getConnections().length);
+            } else {
+                setTitle(title + " | " + (connected ? "Connected" : "Disconnected"));
+            }
+        };
+        clf.apply(0, false, null);
+
+        NetworkTablesJNI.addConnectionListener(clf, true);
+
     }
 
     private void getBranchesToEntry(final String fullKey, Object value, int flags) {
