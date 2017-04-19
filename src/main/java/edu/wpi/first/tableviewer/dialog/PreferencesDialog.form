@@ -71,7 +71,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="hostLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Host:"/>
+        <Property name="text" type="java.lang.String" value="Team number or host:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="metadataBox">

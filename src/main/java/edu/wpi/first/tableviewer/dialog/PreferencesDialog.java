@@ -41,7 +41,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        hostLabel.setText("Host:");
+        hostLabel.setText("Team number or host:");
 
         metadataBox.setText("Display metadata");
 
@@ -113,8 +113,11 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 String host = hostField.getText();
                 if (host.isEmpty()) {
                     return;
+                } else if (host.matches("\\d+")) {
+                    NetworkTable.setTeam(Integer.valueOf(host));
+                } else {
+                    NetworkTable.setIPAddress(host);
                 }
-                NetworkTable.setIPAddress(host);
                 NetworkTable.setClientMode();
                 NetworkTable.initialize();
                 prefs.put("host", host);
@@ -137,7 +140,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         System.exit(0);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton clientButton;
