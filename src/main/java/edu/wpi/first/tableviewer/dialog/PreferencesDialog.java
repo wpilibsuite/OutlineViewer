@@ -113,7 +113,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
                 String host = hostField.getText();
                 if (host.isEmpty()) {
                     return;
-                } else if (host.matches("\\d+")) {
+                } else if (host.matches("\\d+")
+                    && Integer.valueOf(host) > 0
+                    && Integer.valueOf(host) < 25600) {
                     NetworkTable.setTeam(Integer.valueOf(host));
                 } else {
                     NetworkTable.setIPAddress(host);
