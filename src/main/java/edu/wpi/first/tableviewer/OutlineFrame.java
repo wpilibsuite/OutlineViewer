@@ -112,9 +112,11 @@ public class OutlineFrame extends JFrame {
 
         NetworkTablesJNI.ConnectionListenerFunction clf = (uid, connected, conn) -> {
             if (NetworkTable.getTable("").isServer()) {
-                setTitle(title + " | " + "Number of Clients: " + NetworkTablesJNI.getConnections().length);
+                setTitle(title + " | Number of Clients: " + NetworkTablesJNI.getConnections().length);
+            } else if (connected && conn != null) {
+                setTitle(title + " | Connected: " + conn.remote_ip);
             } else {
-                setTitle(title + " | " + (connected ? "Connected" : "Disconnected"));
+                setTitle(title + " | Disconnected");
             }
         };
         clf.apply(0, false, null);
