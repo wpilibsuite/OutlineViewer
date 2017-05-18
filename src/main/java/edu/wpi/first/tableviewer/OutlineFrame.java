@@ -60,7 +60,7 @@ public class OutlineFrame extends JFrame {
                 if (e.getClickCount() == 2) { // toggle boolean value
                     // commented out because the deselection makes double clicking
                     // difficult and annoying to do accurately
-                    
+
 //                    if (node instanceof LeafNode) {
 //                        LeafNode l = (LeafNode) node;
 //                        if (l.getData().getType() == EntryType.BOOLEAN) {
@@ -86,7 +86,7 @@ public class OutlineFrame extends JFrame {
             @Override
             public void windowOpened(WindowEvent e) {
                 // default to top-left corner
-                setLocation(prefs.getInt("WindowX", 0), 
+                setLocation(prefs.getInt("WindowX", 0),
                             prefs.getInt("WindowY", 0));
                 // default to 600x400
                 setSize(prefs.getInt("Width", 600),
@@ -112,9 +112,11 @@ public class OutlineFrame extends JFrame {
 
         NetworkTablesJNI.ConnectionListenerFunction clf = (uid, connected, conn) -> {
             if (NetworkTable.getTable("").isServer()) {
-                setTitle(title + " | " + "Number of Clients:" + NetworkTablesJNI.getConnections().length);
+                setTitle(title + " | Number of Clients: " + NetworkTablesJNI.getConnections().length);
+            } else if (connected && conn != null) {
+                setTitle(title + " | Connected: " + conn.remote_ip);
             } else {
-                setTitle(title + " | " + (connected ? "Connected" : "Disconnected"));
+                setTitle(title + " | Disconnected");
             }
         };
         clf.apply(0, false, null);
