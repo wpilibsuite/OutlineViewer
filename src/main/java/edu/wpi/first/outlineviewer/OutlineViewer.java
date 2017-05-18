@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class OutlineViewer extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -17,7 +17,7 @@ public class Main extends Application {
     preferencesStage.setScene(new Scene(preferences));
     preferencesStage.showAndWait();
 
-    if (((PreferencesController) loader.getController()).getResult() != 0) {
+    if (true) {
       Parent root = FXMLLoader.load(getClass().getResource("TableViewer.fxml"));
       primaryStage.setTitle("Outline Viewer");
       primaryStage.setScene(new Scene(root));

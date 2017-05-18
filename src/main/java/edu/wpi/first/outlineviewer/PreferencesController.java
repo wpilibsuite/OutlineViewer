@@ -18,11 +18,8 @@ public class PreferencesController {
   @FXML
   private CheckBox displayMetadataCheckBox;
 
-  private int result = 0;
-
   @FXML
   void cancelButtonAction(ActionEvent event) {
-    result = 0;
     root.getScene().getWindow().hide();
   }
 
@@ -32,7 +29,6 @@ public class PreferencesController {
     NetworkTable.setIPAddress(hostTextField.getText());
     NetworkTable.initialize();
 
-    result = 1;
     root.getScene().getWindow().hide();
   }
 
@@ -42,12 +38,7 @@ public class PreferencesController {
     NetworkTable.setIPAddress("");
     NetworkTable.initialize();
 
-    result = 2;
     root.getScene().getWindow().hide();
-  }
-
-  public int getResult() {
-    return result;
   }
 
 }

@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.7.0'
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.0'
     }
     repositories {
         mavenCentral()
@@ -58,11 +58,11 @@ test {
 
 jfx {
     jfxMainAppJarName = 'OutlineViewer.jar'
-    mainClass = 'edu.wpi.first.outlineviewer.Main'
+    mainClass = 'edu.wpi.first.outlineviewer.OutlineViewer'
 }
 
 mainClassName = jfx.mainClass
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.0'
+    gradleVersion = '3.5'
 }
