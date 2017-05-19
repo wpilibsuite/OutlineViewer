@@ -4,6 +4,7 @@ buildscript {
     }
     repositories {
         mavenCentral()
+        jcenter()
     }
 }
 
@@ -35,9 +36,12 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '19.0'
+    compile group: 'com.google.guava', name: 'guava', version: '21.0'
     compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '19.0'
+
+    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '21.0'
+    testCompile "org.testfx:testfx-core:4.0.+"
+    testCompile "org.testfx:testfx-junit:4.0.+"
 }
 
 checkstyle {

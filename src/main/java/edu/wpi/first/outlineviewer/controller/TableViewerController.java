@@ -1,5 +1,8 @@
-package edu.wpi.first.outlineviewer;
+package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.outlineviewer.TableEntry;
+import edu.wpi.first.outlineviewer.TableEntryData;
+import edu.wpi.first.outlineviewer.TableEntryParent;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.tables.ITable;

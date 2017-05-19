@@ -54,7 +54,10 @@ public class TableEntryData extends TableEntry {
     return "Unknown";
   }
 
-  protected void setupListener() {
+  /**
+   * This is a method.
+   */
+  public void setupListener() {
     System.out.println("Setting up new data listener:\t" + this + "\t" + getNetworkTablePath());
     NetworkTablesJNI.addEntryListener(getNetworkTablePath(), (uid, key, value, flags) -> {
       if ((flags & ITable.NOTIFY_DELETE) != 0) {

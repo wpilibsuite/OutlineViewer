@@ -6,23 +6,23 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class OutlineViewer extends Application {
+
+  private Parent root;
+
+  @Override
+  public void init() throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewer.fxml"));
+    root = loader.load();
+  }
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("Preferences.fxml"));
-    Parent preferences = loader.load();
-    Stage preferencesStage = new Stage();
-    preferencesStage.setTitle("Preferences");
-    preferencesStage.setScene(new Scene(preferences));
-    preferencesStage.showAndWait();
-
-    if (true) {
-      Parent root = FXMLLoader.load(getClass().getResource("TableViewer.fxml"));
-      primaryStage.setTitle("Outline Viewer");
-      primaryStage.setScene(new Scene(root));
-      primaryStage.show();
-    }
+    primaryStage.setScene(new Scene(root));
+    primaryStage.setTitle("Outline Viewer");
+    primaryStage.show();
   }
 
   public static void main(String[] args) {
