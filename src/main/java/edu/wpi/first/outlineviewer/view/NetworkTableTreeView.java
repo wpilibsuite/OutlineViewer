@@ -9,14 +9,18 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
 
+  /**
+   * Create a new NetworkTableTreeView.  Will not show any data until
+   * {@link #setRootData(NetworkTableData)} is called.
+   */
   public NetworkTableTreeView() {
     setShowRoot(false);
 
-    TreeTableColumn<NetworkTableData, String> pathColumn = new TreeTableColumn<>("Path");
+    TreeTableColumn<NetworkTableData, String> pathColumn = new TreeTableColumn<>("Key");
     pathColumn.setPrefWidth(200);
-    pathColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("path"));
+    pathColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("key"));
 
-    TreeTableColumn<NetworkTableData, String> valueColumn = new TreeTableColumn<>("Value");
+    TreeTableColumn<NetworkTableData, ?> valueColumn = new TreeTableColumn<>("Value");
     valueColumn.setPrefWidth(200);
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
 
@@ -31,20 +35,22 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
 
   private static TreeItem<NetworkTableData> getTreeItem(final NetworkTableData data) {
     TreeItem<NetworkTableData> item = new TreeItem<>(data);
+    item.setExpanded(true);
 
     data.getChildren().stream()
         .map(NetworkTableTreeView::getTreeItem)
         .forEach(item.getChildren()::add);
 
-    data.getChildren().addListener((ListChangeListener.Change<? extends NetworkTableData> c) -> {
-      while (c.next()) {
-        if (c.wasAdded()) {
-          c.getAddedSubList().stream()
-              .map(NetworkTableTreeView::getTreeItem)
-              .forEach(item.getChildren()::add);
-        }
-      }
-    });
+    data.getChildren().addListener(
+        (ListChangeListener.Change<? extends NetworkTableData> change) -> {
+          while (change.next()) {
+            if (change.wasAdded()) {
+              change.getAddedSubList().stream()
+                .map(NetworkTableTreeView::getTreeItem)
+                .forEach(item.getChildren()::add);
+            }
+          }
+        });
 
     return item;
   }

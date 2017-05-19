@@ -1,6 +1,8 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.outlineviewer.model.NetworkTableBoolean;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
+import edu.wpi.first.outlineviewer.model.NetworkTableNumber;
 import edu.wpi.first.outlineviewer.model.NetworkTableString;
 import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -60,8 +62,13 @@ public class OutlineViewerController {
     NetworkTablesJNI.addConnectionListener(clf, true);
 
     rootData.getChildren().add(new NetworkTableString("path 1", "Value 1"));
-    rootData.getChildren().add(new NetworkTableString("path 2", "Value 2"));
-    rootData.getChildren().add(new NetworkTableString("path 3", "Value 3"));
+    rootData.getChildren().add(new NetworkTableBoolean("path 2", true));
+    rootData.getChildren().add(new NetworkTableNumber("path 3", 123.456));
+    NetworkTableData sub = new NetworkTableData("table");
+    rootData.getChildren().add(sub);
+    sub.getChildren().add(new NetworkTableString("path 4", "Value 4"));
+    sub.getChildren().add(new NetworkTableBoolean("path 5", false));
+    sub.getChildren().add(new NetworkTableNumber("path 6", 654.321));
 
     networkTableTreeView.setRootData(rootData);
   }

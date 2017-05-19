@@ -6,8 +6,14 @@ public class NetworkTableString extends NetworkTableData {
 
   private final SimpleStringProperty value;
 
-  public NetworkTableString(String path, String value) {
-    super(path);
+  /**
+   * Create a new NetworkTableString.
+   *
+   * @param key The key
+   * @param value The value
+   */
+  public NetworkTableString(String key, String value) {
+    super(key);
 
     this.value = new SimpleStringProperty(value);
   }

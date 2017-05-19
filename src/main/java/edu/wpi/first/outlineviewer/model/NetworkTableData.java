@@ -7,11 +7,11 @@ import javafx.collections.ObservableList;
 
 public class NetworkTableData {
 
-  private final SimpleStringProperty path;
+  private final SimpleStringProperty key;
   private final ObservableList<NetworkTableData> children;
 
   public NetworkTableData(String path) {
-    this.path = new SimpleStringProperty(path);
+    this.key = new SimpleStringProperty(path);
     children = FXCollections.observableArrayList();
   }
 
@@ -19,8 +19,8 @@ public class NetworkTableData {
     return new SimpleStringProperty("");
   }
 
-  public SimpleStringProperty pathProperty() {
-    return path;
+  public SimpleStringProperty keyProperty() {
+    return key;
   }
 
   public ObservableList<NetworkTableData> getChildren() {
