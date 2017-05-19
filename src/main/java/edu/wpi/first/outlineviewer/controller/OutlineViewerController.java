@@ -1,5 +1,8 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.outlineviewer.model.NetworkTableData;
+import edu.wpi.first.outlineviewer.model.NetworkTableString;
+import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import javafx.event.ActionEvent;
@@ -22,9 +25,13 @@ public class OutlineViewerController {
   @FXML
   private MenuBar menuBar;
   @FXML
+  private NetworkTableTreeView networkTableTreeView;
+  @FXML
   private Text connectionIndicator;
 
   private Stage settingsStage;
+
+  private final NetworkTableData rootData = new NetworkTableData("Root");
 
   @FXML
   void onSettingsMenuItemAction(ActionEvent event) {
@@ -51,6 +58,12 @@ public class OutlineViewerController {
     };
     clf.apply(0, false, null);
     NetworkTablesJNI.addConnectionListener(clf, true);
+
+    rootData.getChildren().add(new NetworkTableString("path 1", "Value 1"));
+    rootData.getChildren().add(new NetworkTableString("path 2", "Value 2"));
+    rootData.getChildren().add(new NetworkTableString("path 3", "Value 3"));
+
+    networkTableTreeView.setRootData(rootData);
   }
 
 }

@@ -2,14 +2,28 @@ package edu.wpi.first.outlineviewer.model;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-public interface NetworkTableData {
+public class NetworkTableData {
 
-  StringProperty pathProperty();
+  private final SimpleStringProperty path;
+  private final ObservableList<NetworkTableData> children;
 
-  default Property valueProperty() {
-    return new SimpleStringProperty("Default Value");
+  public NetworkTableData(String path) {
+    this.path = new SimpleStringProperty(path);
+    children = FXCollections.observableArrayList();
   }
 
+  public Property valueProperty() {
+    return new SimpleStringProperty("");
+  }
+
+  public SimpleStringProperty pathProperty() {
+    return path;
+  }
+
+  public ObservableList<NetworkTableData> getChildren() {
+    return children;
+  }
 }

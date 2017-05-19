@@ -1,28 +1,16 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
-import edu.wpi.first.outlineviewer.model.NetworkTableParent;
-import edu.wpi.first.outlineviewer.model.NetworkTableString;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
 
-  private List<NetworkTableData> data = Arrays.asList(new NetworkTableString("S1", "V1"),
-    new NetworkTableString("S2", "V2"),
-    new NetworkTableString("S3", "V3"));
-
   public NetworkTableTreeView() {
-    final TreeItem<NetworkTableData> root = new TreeItem<>(new NetworkTableParent(""));
-    setRoot(root);
     setShowRoot(false);
-
-    data.forEach(d -> root.getChildren().add(new TreeItem<>(d))); // DEBUG
 
     TreeTableColumn<NetworkTableData, String> pathColumn = new TreeTableColumn<>("Path");
     pathColumn.setPrefWidth(200);
@@ -36,4 +24,29 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
     getColumns().add(valueColumn);
     setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
   }
+
+  public void setRootData(final NetworkTableData root) {
+    setRoot(getTreeItem(root));
+  }
+
+  private static TreeItem<NetworkTableData> getTreeItem(final NetworkTableData data) {
+    TreeItem<NetworkTableData> item = new TreeItem<>(data);
+
+    data.getChildren().stream()
+        .map(NetworkTableTreeView::getTreeItem)
+        .forEach(item.getChildren()::add);
+
+    data.getChildren().addListener((ListChangeListener.Change<? extends NetworkTableData> c) -> {
+      while (c.next()) {
+        if (c.wasAdded()) {
+          c.getAddedSubList().stream()
+              .map(NetworkTableTreeView::getTreeItem)
+              .forEach(item.getChildren()::add);
+        }
+      }
+    });
+
+    return item;
+  }
+
 }

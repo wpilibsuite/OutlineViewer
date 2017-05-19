@@ -2,7 +2,7 @@ package edu.wpi.first.outlineviewer.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class NetworkTableString extends NetworkTableParent {
+public class NetworkTableString extends NetworkTableData {
 
   private final SimpleStringProperty value;
 
