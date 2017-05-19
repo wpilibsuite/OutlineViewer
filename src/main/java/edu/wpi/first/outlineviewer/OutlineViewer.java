@@ -14,14 +14,14 @@ public class OutlineViewer extends Application {
 
   @Override
   public void init() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewer.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("OutlineViewer.fxml"));
     root = loader.load();
   }
 
   @Override
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setScene(new Scene(root));
-    primaryStage.setTitle("Outline Viewer");
+    primaryStage.setTitle("OutlineViewer");
     primaryStage.show();
   }
 

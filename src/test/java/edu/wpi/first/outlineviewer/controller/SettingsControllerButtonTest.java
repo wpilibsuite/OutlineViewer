@@ -1,9 +1,9 @@
-package edu.wpi.first.outlineviewer;
+package edu.wpi.first.outlineviewer.controller;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PreferencesControllerButtonTest extends PreferencesControllerTest {
+public class SettingsControllerButtonTest extends PreferencesControllerTest {
 
   @Test
   public void cancelButtonClosesStage() {

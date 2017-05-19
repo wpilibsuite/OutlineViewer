@@ -2,7 +2,7 @@ package edu.wpi.first.outlineviewer;
 
 import com.google.common.testing.AbstractPackageSanityTests;
 
-import edu.wpi.first.outlineviewer.controller.PreferencesController;
+import edu.wpi.first.outlineviewer.controller.SettingsController;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import org.junit.Before;
@@ -16,7 +16,7 @@ public class SanityTest extends AbstractPackageSanityTests {
     super();
     ignoreClasses(c -> Arrays.asList(
         OutlineViewer.class,
-        PreferencesController.class
+        SettingsController.class
     ).contains(c));
   }
 

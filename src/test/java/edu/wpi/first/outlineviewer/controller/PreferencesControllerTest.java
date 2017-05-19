@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer;
+package edu.wpi.first.outlineviewer.controller;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +14,7 @@ public abstract class PreferencesControllerTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("Preferences.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("Settings.fxml"));
     Parent preferences = loader.load();
     Scene scene = new Scene(preferences);
     stage.setScene(scene);

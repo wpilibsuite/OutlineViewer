@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer;
+package edu.wpi.first.outlineviewer.controller;
 
 import javafx.scene.control.Button;
 import org.junit.Assert;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class PreferencesControllerClientTest extends PreferencesControllerTest {
+public class SettingsControllerClientTest extends PreferencesControllerTest {
 
   @Parameters
   public static Collection<Object[]> data() {
@@ -35,7 +35,7 @@ public class PreferencesControllerClientTest extends PreferencesControllerTest {
   private final String testText;
   private final boolean expectedResult;
 
-  public PreferencesControllerClientTest(String testText, boolean expectedResult) {
+  public SettingsControllerClientTest(String testText, boolean expectedResult) {
     this.testText = testText;
     this.expectedResult = expectedResult;
   }
