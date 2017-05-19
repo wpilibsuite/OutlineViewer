@@ -14,7 +14,7 @@ public class OutlineViewer extends Application {
 
   @Override
   public void init() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("OutlineViewer.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("controller/OutlineViewer.fxml"));
     root = loader.load();
   }
 
