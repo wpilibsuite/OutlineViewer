@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 

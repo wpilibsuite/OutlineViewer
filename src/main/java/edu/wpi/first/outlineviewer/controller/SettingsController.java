@@ -60,10 +60,10 @@ public class SettingsController {
 
   @FXML
   void initialize() {
-    hostTextField.textProperty().addListener(((observable, oldValue, newValue) ->
+    hostTextField.textProperty().addListener((observable, oldValue, newValue) ->
         startClientButton.setDisable(!(InetAddresses.isInetAddress(newValue)
           || InternetDomainName.isValid(newValue)
-          || isTeamNumber(newValue)))));
+          || isTeamNumber(newValue))));
   }
 
   private boolean isTeamNumber(final String text) {

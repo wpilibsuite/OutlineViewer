@@ -2,11 +2,9 @@ package edu.wpi.first.outlineviewer;
 
 import com.google.common.testing.AbstractPackageSanityTests;
 
-import edu.wpi.first.outlineviewer.controller.SettingsController;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.util.Arrays;
 

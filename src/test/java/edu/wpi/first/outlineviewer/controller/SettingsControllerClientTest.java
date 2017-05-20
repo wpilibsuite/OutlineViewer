@@ -13,7 +13,11 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class SettingsControllerClientTest extends SettingsControllerTest {
 
+  private final String testText;
+  private final boolean expectedResult;
+
   @Parameters
+  @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
         {"0", false},
@@ -31,9 +35,6 @@ public class SettingsControllerClientTest extends SettingsControllerTest {
         {"", false}
     });
   }
-
-  private final String testText;
-  private final boolean expectedResult;
 
   public SettingsControllerClientTest(String testText, boolean expectedResult) {
     this.testText = testText;
