@@ -15,7 +15,7 @@ public class NetworkTableNumber extends NetworkTableData {
    * @param value The value
    */
   public NetworkTableNumber(String key, double value) {
-    super(key);
+    super(key, "Number");
     checkNotNull(value);
 
     this.value = new SimpleDoubleProperty(value);

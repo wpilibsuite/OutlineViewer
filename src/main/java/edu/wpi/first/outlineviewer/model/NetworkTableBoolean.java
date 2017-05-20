@@ -15,7 +15,7 @@ public class NetworkTableBoolean extends NetworkTableData {
    * @param value The value
    */
   public NetworkTableBoolean(String key, boolean value) {
-    super(key);
+    super(key, "Boolean");
     checkNotNull(value);
 
     this.value = new SimpleBooleanProperty(value);

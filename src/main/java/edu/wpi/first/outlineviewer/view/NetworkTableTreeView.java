@@ -17,15 +17,17 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
     setShowRoot(false);
 
     TreeTableColumn<NetworkTableData, String> pathColumn = new TreeTableColumn<>("Key");
-    pathColumn.setPrefWidth(200);
     pathColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("key"));
 
     TreeTableColumn<NetworkTableData, ?> valueColumn = new TreeTableColumn<>("Value");
-    valueColumn.setPrefWidth(200);
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
+
+    TreeTableColumn<NetworkTableData, ?> typeColumn = new TreeTableColumn<>("Type");
+    typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
     getColumns().add(pathColumn);
     getColumns().add(valueColumn);
+    getColumns().add(typeColumn);
     setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
   }
 

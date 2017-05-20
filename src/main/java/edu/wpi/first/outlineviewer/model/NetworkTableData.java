@@ -2,6 +2,8 @@ package edu.wpi.first.outlineviewer.model;
 
 import com.google.common.collect.Lists;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
@@ -14,7 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class NetworkTableData {
 
   private NetworkTableData parent;
-  private final SimpleStringProperty key;
+  private final ReadOnlyStringWrapper key;
+  private final ReadOnlyStringWrapper type;
   private final ObservableMap<String, NetworkTableData> children;
 
   /**
@@ -23,9 +26,21 @@ public class NetworkTableData {
    * @param key The key
    */
   public NetworkTableData(String key) {
-    checkNotNull(key);
+    this(key, "");
+  }
 
-    this.key = new SimpleStringProperty(key);
+  /**
+   * Create a new NetworkTableData.
+   *
+   * @param key The key
+   * @param type The type
+   */
+  protected NetworkTableData(String key, String type) {
+    checkNotNull(key);
+    checkNotNull(type);
+
+    this.key = new ReadOnlyStringWrapper(key);
+    this.type = new ReadOnlyStringWrapper(type);
     children = FXCollections.observableHashMap();
   }
 
@@ -33,8 +48,12 @@ public class NetworkTableData {
     return new SimpleStringProperty("");
   }
 
-  public SimpleStringProperty keyProperty() {
-    return key;
+  public ReadOnlyStringProperty typeProperty() {
+    return type.getReadOnlyProperty();
+  }
+
+  public ReadOnlyStringProperty keyProperty() {
+    return key.getReadOnlyProperty();
   }
 
   /**
@@ -91,5 +110,46 @@ public class NetworkTableData {
       return children.get(keys.poll()).getChild(keys);
     }
     return Optional.ofNullable(children.get(keys.poll()));
+  }
+
+  /**
+   * Sees if the data within this structure is metadata (i.e. has a key
+   * bookended by tildes ("~") and is in all caps). Used to show/hide metadata
+   * leaves in branches.
+   */
+  public boolean isMetadata() {
+    return isMetadata(key.get());
+  }
+
+  /**
+   * Sees if the provided key is metadata (i.e. has a key
+   * bookended by tildes ("~") and is in all caps). Used to show/hide metadata
+   * leaves in branches.
+   */
+  public static boolean isMetadata(String key) {
+    return key.matches("~[A-Z]*~");
+  }
+
+  /**
+   * Create a new piece of NetworkTableData.
+   *
+   * @param key The key
+   * @param value The value
+   * @return The created data
+   */
+  public static NetworkTableData createNetworkTableData(String key, Object value) {
+    checkNotNull(key);
+    checkNotNull(value);
+
+    if (isMetadata(key)) {
+      return new NetworkTableData(key, "~METADATA~");
+    } else if (value instanceof Boolean) {
+      return new NetworkTableBoolean(key, (boolean) value);
+    } else if (value instanceof Double) {
+      return new NetworkTableNumber(key, (double) value);
+    } else if (value instanceof String) {
+      return new NetworkTableString(key, (String) value);
+    }
+    return new NetworkTableData(key, "ERROR");
   }
 }

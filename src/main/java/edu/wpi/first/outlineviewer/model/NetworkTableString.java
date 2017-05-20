@@ -15,7 +15,7 @@ public class NetworkTableString extends NetworkTableData {
    * @param value The value
    */
   public NetworkTableString(String key, String value) {
-    super(key);
+    super(key, "String");
     checkNotNull(value);
 
     this.value = new SimpleStringProperty(value);

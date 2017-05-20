@@ -1,11 +1,7 @@
 package edu.wpi.first.outlineviewer.controller;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import edu.wpi.first.outlineviewer.model.NetworkTableBoolean;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
-import edu.wpi.first.outlineviewer.model.NetworkTableNumber;
-import edu.wpi.first.outlineviewer.model.NetworkTableString;
 import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
@@ -22,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Queue;
 
 public class OutlineViewerController {
@@ -78,17 +73,17 @@ public class OutlineViewerController {
         } else if (next.getChildren().containsKey(keys.peek())) {
           next = next.getChildren().get(keys.poll());
         } else {
-          NetworkTableData newData = new NetworkTableData(keys.poll());
+          NetworkTableData newData = NetworkTableData.createNetworkTableData(keys.poll(), value);
           next.addChild(newData);
           next = newData;
         }
       }
 
       if (next.getChildren().containsKey(keys.peek())) {
-        // TODO: Make this support other types
+        // TODO: Make this type safe
         next.getChildren().get(keys.poll()).valueProperty().setValue(value);
       } else {
-        next.addChild(new NetworkTableString(keys.poll(), (String) value));
+        next.addChild(NetworkTableData.createNetworkTableData(keys.poll(), value));
       }
     }), ITable.NOTIFY_IMMEDIATE
         | ITable.NOTIFY_LOCAL
