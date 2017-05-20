@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class OutlineViewer extends Application {
 
   private Parent root;

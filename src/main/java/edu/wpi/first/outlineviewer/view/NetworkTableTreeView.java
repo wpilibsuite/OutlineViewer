@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
-import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -37,18 +37,17 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
     TreeItem<NetworkTableData> item = new TreeItem<>(data);
     item.setExpanded(true);
 
-    data.getChildren().stream()
+    data.getChildren().values().stream()
         .map(NetworkTableTreeView::getTreeItem)
         .forEach(item.getChildren()::add);
 
     data.getChildren().addListener(
-        (ListChangeListener.Change<? extends NetworkTableData> change) -> {
-          while (change.next()) {
-            if (change.wasAdded()) {
-              change.getAddedSubList().stream()
-                .map(NetworkTableTreeView::getTreeItem)
-                .forEach(item.getChildren()::add);
-            }
+        (MapChangeListener.Change<? extends String, ? extends NetworkTableData> change) -> {
+          if (change.wasAdded()) {
+            item.getChildren().add(getTreeItem(change.getValueAdded()));
+          } else if (change.wasRemoved()) {
+            item.getChildren().removeIf(t -> t.getValue().keyProperty().get()
+                .equals(change.getValueRemoved().keyProperty().get()));
           }
         });
 

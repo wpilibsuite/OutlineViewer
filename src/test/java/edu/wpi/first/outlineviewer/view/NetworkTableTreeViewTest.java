@@ -35,9 +35,22 @@ public class NetworkTableTreeViewTest extends ApplicationTest {
     WaitForAsyncUtils.waitForFxEvents();
 
     NetworkTableData otherData = new NetworkTableData("Other");
-    rootData.getChildren().add(otherData);
+    rootData.addChild(otherData);
 
     Assert.assertEquals(otherData, view.getRoot().getChildren().get(0).getValue());
+  }
+
+  @Test
+  public void testListenerRemoveFromTree() {
+    NetworkTableData rootData = new NetworkTableData("");
+    NetworkTableData otherData = new NetworkTableData("Other");
+    rootData.addChild(otherData);
+
+    Platform.runLater(() -> view.setRootData(rootData));
+    WaitForAsyncUtils.waitForFxEvents();
+
+    otherData.remove();
+    Assert.assertTrue(view.getRoot().getChildren().isEmpty());
   }
 
 }

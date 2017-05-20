@@ -1,6 +1,7 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import edu.wpi.first.outlineviewer.model.NetworkTableBoolean;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
 import edu.wpi.first.outlineviewer.model.NetworkTableNumber;
@@ -8,6 +9,7 @@ import edu.wpi.first.outlineviewer.model.NetworkTableString;
 import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
+import edu.wpi.first.wpilibj.tables.ITable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -18,6 +20,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
 
 public class OutlineViewerController {
 
@@ -62,16 +68,47 @@ public class OutlineViewerController {
     clf.apply(0, false, null);
     NetworkTablesJNI.addConnectionListener(clf, true);
 
-    rootData.getChildren().add(new NetworkTableString("path 1", "Value 1"));
-    rootData.getChildren().add(new NetworkTableBoolean("path 2", true));
-    rootData.getChildren().add(new NetworkTableNumber("path 3", 123.456));
-    NetworkTableData sub = new NetworkTableData("table");
-    rootData.getChildren().add(sub);
-    sub.getChildren().add(new NetworkTableString("path 4", "Value 4"));
-    sub.getChildren().add(new NetworkTableBoolean("path 5", false));
-    sub.getChildren().add(new NetworkTableNumber("path 6", 654.321));
+    NetworkTablesJNI.addEntryListener("", ((uid, key, value, flags) -> {
+      Queue<String> keys = Lists.newLinkedList(Arrays.asList(key.split("\\/")));
+
+      NetworkTableData next = rootData;
+      while (keys.size() > 1) {
+        if (keys.peek().isEmpty()) {
+          keys.remove();
+        } else if (next.getChildren().containsKey(keys.peek())) {
+          next = next.getChildren().get(keys.poll());
+        } else {
+          NetworkTableData newData = new NetworkTableData(keys.poll());
+          next.addChild(newData);
+          next = newData;
+        }
+      }
+
+      if (next.getChildren().containsKey(keys.peek())) {
+        // TODO: Make this support other types
+        next.getChildren().get(keys.poll()).valueProperty().setValue(value);
+      } else {
+        next.addChild(new NetworkTableString(keys.poll(), (String) value));
+      }
+    }), ITable.NOTIFY_IMMEDIATE
+        | ITable.NOTIFY_LOCAL
+        | ITable.NOTIFY_NEW
+        | ITable.NOTIFY_UPDATE);
+
+    NetworkTablesJNI.addEntryListener("", ((uid, key, value, flags) -> {
+      Queue<String> keys = Lists.newLinkedList(Arrays.asList(key.split("\\/")));
+      if (keys.peek().isEmpty()) {
+        keys.remove();
+      }
+      rootData.getChild(keys).ifPresent(NetworkTableData::remove);
+    }), ITable.NOTIFY_LOCAL
+        | ITable.NOTIFY_DELETE);
+
 
     networkTableTreeView.setRootData(rootData);
   }
 
+  public NetworkTableData getRootData() {
+    return rootData;
+  }
 }
