@@ -38,7 +38,7 @@ public class SettingsController {
 
     NetworkTable.setClientMode();
     if (isTeamNumber(hostTextField.getText())) {
-      NetworkTable.setTeam(Integer.valueOf(hostTextField.getText()));
+      NetworkTable.setTeam(Integer.parseInt(hostTextField.getText()));
     } else {
       NetworkTable.setIPAddress(hostTextField.getText());
     }
