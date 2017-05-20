@@ -24,7 +24,7 @@ before_install:
     fi
 
 script:
-  - ./gradlew check --stacktrace -PlogTests -Pheadless=true
+  - ./gradlew check --stacktrace -PlogTests -Pheadless
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
