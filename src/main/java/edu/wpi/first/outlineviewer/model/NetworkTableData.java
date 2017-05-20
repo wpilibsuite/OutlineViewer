@@ -5,13 +5,22 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class NetworkTableData {
 
   private final SimpleStringProperty key;
   private final ObservableList<NetworkTableData> children;
 
-  public NetworkTableData(String path) {
-    this.key = new SimpleStringProperty(path);
+  /**
+   * Create a new NetworkTableData.
+   *
+   * @param key The key
+   */
+  public NetworkTableData(String key) {
+    checkNotNull(key);
+
+    this.key = new SimpleStringProperty(key);
     children = FXCollections.observableArrayList();
   }
 

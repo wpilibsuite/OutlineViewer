@@ -2,6 +2,8 @@ package edu.wpi.first.outlineviewer.model;
 
 import javafx.beans.property.SimpleBooleanProperty;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class NetworkTableBoolean extends NetworkTableData {
 
   private final SimpleBooleanProperty value;
@@ -14,6 +16,7 @@ public class NetworkTableBoolean extends NetworkTableData {
    */
   public NetworkTableBoolean(String key, boolean value) {
     super(key);
+    checkNotNull(value);
 
     this.value = new SimpleBooleanProperty(value);
   }

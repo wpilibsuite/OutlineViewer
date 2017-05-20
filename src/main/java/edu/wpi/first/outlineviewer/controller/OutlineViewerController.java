@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import edu.wpi.first.outlineviewer.model.NetworkTableBoolean;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
 import edu.wpi.first.outlineviewer.model.NetworkTableNumber;
@@ -32,13 +33,13 @@ public class OutlineViewerController {
   private Text connectionIndicator;
 
   private Stage settingsStage;
-
   private final NetworkTableData rootData = new NetworkTableData("Root");
 
   @FXML
   void onSettingsMenuItemAction(ActionEvent event) {
     if (settingsStage == null) {
       settingsStage = new Stage();
+      settingsStage.setTitle("Settings");
       settingsStage.setScene(new Scene(settingsPane));
       settingsStage.initStyle(StageStyle.UTILITY);
       settingsStage.initModality(Modality.APPLICATION_MODAL);

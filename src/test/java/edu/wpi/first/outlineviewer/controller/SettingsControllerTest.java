@@ -1,14 +1,16 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.junit.Before;
 import org.testfx.framework.junit.ApplicationTest;
 
 import java.io.IOException;
 
-public abstract class PreferencesControllerTest extends ApplicationTest {
+public abstract class SettingsControllerTest extends ApplicationTest {
 
   protected Stage stage;
 
@@ -21,6 +23,11 @@ public abstract class PreferencesControllerTest extends ApplicationTest {
     stage.show();
 
     this.stage = stage;
+  }
+
+  @Before
+  public void before() {
+    NetworkTable.shutdown();
   }
 
 }

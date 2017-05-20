@@ -16,6 +16,7 @@ plugins {
     id 'idea'
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.1'
 }
+apply plugin: "jacoco"
 apply plugin: 'javafx-gradle-plugin'
 
 //publishing {
@@ -42,11 +43,20 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: '21.0'
     testCompile "org.testfx:testfx-core:4.0.+"
     testCompile "org.testfx:testfx-junit:4.0.+"
+    testRuntime group: 'org.testfx', name: 'openjfx-monocle', version: '1.8.0_20'
 }
 
 checkstyle {
     configFile = new File(rootDir, "checkstyle.xml")
     toolVersion = '6.19'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.enabled true
+    }
 }
 
 test {
@@ -63,6 +73,16 @@ test {
 jfx {
     jfxMainAppJarName = 'OutlineViewer.jar'
     mainClass = 'edu.wpi.first.outlineviewer.OutlineViewer'
+}
+
+/*
+ * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless=true argument
+ */
+if (project.hasProperty('headless') && project.headless) {
+    println "Running UI Tests Headless"
+    test {
+        jvmArgs = ['-Djava.awt.headless=true', '-Dtestfx.robot=glass', '-Dtestfx.headless=true', '-Dprism.order=sw', '-Dprism.text=t2k']
+    }
 }
 
 mainClassName = jfx.mainClass

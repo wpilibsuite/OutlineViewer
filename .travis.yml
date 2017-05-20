@@ -11,8 +11,11 @@ matrix:
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
       - oracle-java8-installer
+      - libstdc++-4.9-dev
 
 before_install:
   - if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
@@ -21,7 +24,7 @@ before_install:
     fi
 
 script:
-  - ./gradlew check --stacktrace -PlogTests
+  - ./gradlew check --stacktrace -PlogTests -Pheadless=true
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock

@@ -6,13 +6,14 @@ import edu.wpi.first.outlineviewer.controller.SettingsController;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.util.Arrays;
 
-public class SanityTest extends AbstractPackageSanityTests {
+public class PackageSanityTests extends AbstractPackageSanityTests {
 
   @SuppressWarnings("JavadocMethod")
-  public SanityTest() {
+  public PackageSanityTests() {
     super();
     ignoreClasses(c -> Arrays.asList(
         OutlineViewer.class,
@@ -21,7 +22,8 @@ public class SanityTest extends AbstractPackageSanityTests {
   }
 
   @Before
-  public void initialize() {
+  public void before() {
     NetworkTable.shutdown();
   }
+
 }

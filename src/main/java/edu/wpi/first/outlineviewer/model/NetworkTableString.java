@@ -2,6 +2,8 @@ package edu.wpi.first.outlineviewer.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class NetworkTableString extends NetworkTableData {
 
   private final SimpleStringProperty value;
@@ -14,6 +16,7 @@ public class NetworkTableString extends NetworkTableData {
    */
   public NetworkTableString(String key, String value) {
     super(key);
+    checkNotNull(value);
 
     this.value = new SimpleStringProperty(value);
   }

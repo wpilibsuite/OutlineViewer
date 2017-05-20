@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class SettingsControllerClientTest extends PreferencesControllerTest {
+public class SettingsControllerClientTest extends SettingsControllerTest {
 
   @Parameters
   public static Collection<Object[]> data() {
@@ -37,7 +37,7 @@ public class SettingsControllerClientTest extends PreferencesControllerTest {
 
   public SettingsControllerClientTest(String testText, boolean expectedResult) {
     this.testText = testText;
-    this.expectedResult = expectedResult;
+    this.expectedResult = !expectedResult;
   }
 
   @Test
@@ -46,7 +46,10 @@ public class SettingsControllerClientTest extends PreferencesControllerTest {
 
     Button clientButton = lookup("#startClientButton").query();
     Assert.assertTrue("Host validation failed for test case: " + testText,
-        clientButton.isDisabled() != expectedResult);
+        clientButton.isDisabled() == expectedResult);
+
+    clickOn("Start Client");
+    Assert.assertEquals("Stage did not close", expectedResult, stage.isShowing());
   }
 
 }
