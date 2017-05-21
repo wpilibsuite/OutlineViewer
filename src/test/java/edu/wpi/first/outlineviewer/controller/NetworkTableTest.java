@@ -31,6 +31,18 @@ public class NetworkTableTest extends OutlineViewerControllerTest {
   }
 
   @Test
+  public void testNetworkTableUpdate() throws InterruptedException {
+    final String expected = "value 2";
+    NetworkTable.getTable("").putString("/path/key", "value");
+    Thread.sleep(150);
+    NetworkTable.getTable("").putString("/path/key", expected);
+    Thread.sleep(150);
+
+    Assert.assertEquals(expected, outlineViewerController.getRootData()
+        .getChild("path", "key").get().valueProperty().getValue());
+  }
+
+  @Test
   public void testRemoveNetworkTableData() throws InterruptedException {
     NetworkTable.getTable("").putString("key", "value");
     Thread.sleep(150);

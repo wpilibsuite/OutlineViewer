@@ -22,7 +22,7 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
     TreeTableColumn<NetworkTableData, ?> valueColumn = new TreeTableColumn<>("Value");
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
 
-    TreeTableColumn<NetworkTableData, ?> typeColumn = new TreeTableColumn<>("Type");
+    TreeTableColumn<NetworkTableData, String> typeColumn = new TreeTableColumn<>("Type");
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
     getColumns().add(pathColumn);
