@@ -24,7 +24,10 @@ before_install:
     fi
 
 script:
-  - ./gradlew check --stacktrace -PlogTests -Pheadless
+  - ./gradlew check jacocoTestReport --stacktrace -PlogTests -Pheadless
+
+after_success:
+  - if [[ $TRAVIS_OS_NAME != 'osx' ]]; then bash <(curl -s https://codecov.io/bash); fi
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock

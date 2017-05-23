@@ -93,8 +93,7 @@ findbugsTest.finalizedBy findbugsTestReport
 
 jacocoTestReport {
     reports {
-        xml.enabled false
-        csv.enabled false
+        xml.enabled true
         html.enabled true
     }
 }
