@@ -1,7 +1,9 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
 import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
+import edu.wpi.first.wpilibj.networktables.ConnectionInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.tables.ITable;
@@ -15,6 +17,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class OutlineViewerController {
 
@@ -32,6 +36,19 @@ public class OutlineViewerController {
   private Stage settingsStage;
   private final NetworkTableData rootData = new NetworkTableData("Root");
 
+  @VisibleForTesting NetworkTablesJNI.ConnectionListenerFunction clf = (uid, connected, conn) -> {
+    if (NetworkTable.getTable("").isServer()) {
+      connectionIndicator.setText("Number of Clients: "
+          + NetworkTablesJNI.getConnections().length);
+    } else if (connected) {
+      checkNotNull(conn);
+
+      connectionIndicator.setText("Connected: " + conn.remote_ip);
+    } else {
+      connectionIndicator.setText("Disconnected");
+    }
+  };
+
   @FXML
   void onSettingsMenuItemAction(ActionEvent event) {
     if (settingsStage == null) {
@@ -46,17 +63,7 @@ public class OutlineViewerController {
 
   @FXML
   void initialize() {
-    NetworkTablesJNI.ConnectionListenerFunction clf = (uid, connected, conn) -> {
-      if (NetworkTable.getTable("").isServer()) {
-        connectionIndicator.setText("Number of Clients: "
-            + NetworkTablesJNI.getConnections().length);
-      } else if (connected && conn != null) {
-        connectionIndicator.setText("Connected: " + conn.remote_ip);
-      } else {
-        connectionIndicator.setText("Disconnected");
-      }
-    };
-    clf.apply(0, false, null);
+    clf.apply(0, false, new ConnectionInfo("", "", 0, 0, 0));
     NetworkTablesJNI.addConnectionListener(clf, true);
 
     NetworkTablesJNI.addEntryListener("", (uid, key, value, flags) ->

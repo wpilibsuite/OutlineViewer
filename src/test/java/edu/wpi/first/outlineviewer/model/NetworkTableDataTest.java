@@ -45,7 +45,7 @@ public class NetworkTableDataTest {
     final boolean value = false;
     NetworkTableData data = NetworkTableData.createNetworkTableData("", value);
 
-    assertTrue(data instanceof NetworkTableBoolean);
+    assertEquals(value, ((NetworkTableBoolean) data).valueProperty().getValue());
   }
 
   @Test
@@ -53,7 +53,7 @@ public class NetworkTableDataTest {
     final double value = 123.456;
     NetworkTableData data = NetworkTableData.createNetworkTableData("", value);
 
-    assertTrue(data instanceof NetworkTableNumber);
+    assertEquals(value, ((NetworkTableNumber) data).valueProperty().getValue(), 0.001);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class NetworkTableDataTest {
     final String value = "Some string";
     NetworkTableData data = NetworkTableData.createNetworkTableData("String Key", value);
 
-    assertTrue(data instanceof NetworkTableString);
+    assertEquals(value, ((NetworkTableString) data).valueProperty().getValue());
   }
 
   @Test

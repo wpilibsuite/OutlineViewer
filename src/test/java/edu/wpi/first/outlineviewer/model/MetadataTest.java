@@ -15,7 +15,6 @@ public class MetadataTest {
   private final boolean expectedResult;
 
   @Parameterized.Parameters
-  @SuppressWarnings("JavadocMethod")
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
         {"key", false},

@@ -8,8 +8,8 @@ coverage:
   range: "70...100"
 
   status:
-    project: no
-    patch: yes
+    project: no # Enable me later!
+    patch: no # Enable me later!
     changes: no
 
 comment:

@@ -163,10 +163,9 @@ public class NetworkTableData {
       return new NetworkTableBoolean(key, (boolean) value);
     } else if (value instanceof Double) {
       return new NetworkTableNumber(key, (double) value);
-    } else if (value instanceof String) {
+    } else {
       return new NetworkTableString(key, (String) value);
     }
-    return new NetworkTableData(key, "ERROR");
   }
 
   /**
