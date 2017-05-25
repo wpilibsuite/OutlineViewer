@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.outlineviewer.model.NetworkTableData;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -27,7 +28,7 @@ public class NetworkTableTest extends OutlineViewerControllerTest {
     Thread.sleep(150);
 
     Assert.assertTrue(outlineViewerController
-        .getRootData().getChild("A", "path", "key").isPresent());
+        .getRootData().getChild(NetworkTableData.getKeyPath("A/path/key")).isPresent());
   }
 
   @Test
@@ -39,7 +40,7 @@ public class NetworkTableTest extends OutlineViewerControllerTest {
     Thread.sleep(150);
 
     Assert.assertEquals(expected, outlineViewerController.getRootData()
-        .getChild("path", "key").get().valueProperty().getValue());
+        .getChild(NetworkTableData.getKeyPath("path/key")).get().valueProperty().getValue());
   }
 
   @Test
@@ -50,6 +51,6 @@ public class NetworkTableTest extends OutlineViewerControllerTest {
     Thread.sleep(150);
 
     Assert.assertFalse(outlineViewerController
-        .getRootData().getChild( "key").isPresent());
+        .getRootData().getChild(NetworkTableData.getKeyPath("key")).isPresent());
   }
 }

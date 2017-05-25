@@ -15,7 +15,7 @@ public abstract class OutlineViewerControllerTest extends ApplicationTest {
   @Override
   public void start(Stage stage) throws IOException {
     FXMLLoader loader
-        = new FXMLLoader(getClass().getResource("OutlineViewer.fxml"));
+        = new FXMLLoader(OutlineViewerController.class.getResource("OutlineViewer.fxml"));
     Parent outlineViewer = loader.load();
     Scene scene = new Scene(outlineViewer);
     stage.setScene(scene);

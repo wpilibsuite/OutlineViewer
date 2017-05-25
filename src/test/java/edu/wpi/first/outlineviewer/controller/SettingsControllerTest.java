@@ -16,7 +16,7 @@ public abstract class SettingsControllerTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("Settings.fxml"));
+    FXMLLoader loader = new FXMLLoader(SettingsController.class.getResource("Settings.fxml"));
     Parent preferences = loader.load();
     Scene scene = new Scene(preferences);
     stage.setScene(scene);

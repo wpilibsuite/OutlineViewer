@@ -106,11 +106,13 @@ if (project.hasProperty('jenkinsBuild') || project.hasProperty('headless')) {
     }
 }
 
-mainClassName = 'edu.wpi.first.outlineviewer.OutlineViewer'
+mainClassName = 'edu.wpi.first.OutlineViewer'
 
 shadowJar {
     classifier = null
-    version = WPILibVersion.version
+    if (WPILibVersion.version != '') {
+        version = WPILibVersion.version
+    }
 }
 
 publishing {
@@ -118,9 +120,11 @@ publishing {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
 
-            groupId 'edu.wpi.first.wpilib.networktables'
+            groupId 'edu.wpi.first.outlineviewer'
             artifactId 'OutlineViewer'
-            version WPILibVersion.version
+            if (WPILibVersion.version != '') {
+                version WPILibVersion.version
+            }
         }
     }
 }

@@ -1,5 +1,1 @@
-<FindBugsFilter>
-    <Match>
-        <Bug pattern="UI_INHERITANCE_UNSAFE_GETRESOURCE" />
-    </Match>
-</FindBugsFilter>
+<FindBugsFilter />

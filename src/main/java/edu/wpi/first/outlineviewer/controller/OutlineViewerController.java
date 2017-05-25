@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer.controller;
 
-import com.google.common.collect.Lists;
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
 import edu.wpi.first.outlineviewer.view.NetworkTableTreeView;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -16,9 +15,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.util.Arrays;
-import java.util.Queue;
 
 public class OutlineViewerController {
 
@@ -63,42 +59,17 @@ public class OutlineViewerController {
     clf.apply(0, false, null);
     NetworkTablesJNI.addConnectionListener(clf, true);
 
-    NetworkTablesJNI.addEntryListener("", ((uid, key, value, flags) -> {
-      Queue<String> keys = Lists.newLinkedList(Arrays.asList(key.split("\\/")));
+    NetworkTablesJNI.addEntryListener("", (uid, key, value, flags) ->
+        rootData.setOrCreateChild(NetworkTableData.getKeyPath(key), value),
+          ITable.NOTIFY_IMMEDIATE
+          | ITable.NOTIFY_LOCAL
+          | ITable.NOTIFY_NEW
+          | ITable.NOTIFY_UPDATE);
 
-      NetworkTableData next = rootData;
-      while (keys.size() > 1) {
-        if (keys.peek().isEmpty()) {
-          keys.remove();
-        } else if (next.getChildren().containsKey(keys.peek())) {
-          next = next.getChildren().get(keys.poll());
-        } else {
-          NetworkTableData newData = NetworkTableData.createNetworkTableData(keys.poll(), value);
-          next.addChild(newData);
-          next = newData;
-        }
-      }
-
-      if (next.getChildren().containsKey(keys.peek())) {
-        // TODO: Make this type safe
-        next.getChildren().get(keys.poll()).valueProperty().setValue(value);
-      } else {
-        next.addChild(NetworkTableData.createNetworkTableData(keys.poll(), value));
-      }
-    }), ITable.NOTIFY_IMMEDIATE
-        | ITable.NOTIFY_LOCAL
-        | ITable.NOTIFY_NEW
-        | ITable.NOTIFY_UPDATE);
-
-    NetworkTablesJNI.addEntryListener("", ((uid, key, value, flags) -> {
-      Queue<String> keys = Lists.newLinkedList(Arrays.asList(key.split("\\/")));
-      if (keys.peek().isEmpty()) {
-        keys.remove();
-      }
-      rootData.getChild(keys).ifPresent(NetworkTableData::remove);
-    }), ITable.NOTIFY_LOCAL
-        | ITable.NOTIFY_DELETE);
-
+    NetworkTablesJNI.addEntryListener("", (uid, key, value, flags) ->
+        rootData.getChild(NetworkTableData.getKeyPath(key)).ifPresent(NetworkTableData::remove),
+          ITable.NOTIFY_LOCAL
+          | ITable.NOTIFY_DELETE);
 
     networkTableTreeView.setRootData(rootData);
   }

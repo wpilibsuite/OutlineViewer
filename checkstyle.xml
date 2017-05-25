@@ -21,6 +21,11 @@
     <property name="severity" value="error"/>
 
     <property name="fileExtensions" value="java, properties, xml"/>
+
+    <module name="SuppressionFilter">
+        <property name="file" value="checkstyleSuppressions.xml"/>
+    </module>
+
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
@@ -54,10 +59,7 @@
             <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
         </module>
         <module name="NeedBraces"/>
-        <module name="LeftCurly">
-            <property name="maxLineLength" value="100"/>
-        </module>
-        <module name="RightCurly"/>
+        <module name="LeftCurly" />
         <module name="RightCurly">
             <property name="option" value="alone"/>
             <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, STATIC_INIT, INSTANCE_INIT"/>
@@ -105,12 +107,12 @@
                      value="Member name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="ParameterName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <property name="format" value="^([a-z][a-z0-9][a-zA-Z0-9]*)|(x|y)$"/>
             <message key="name.invalidPattern"
                      value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="CatchParameterName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <property name="format" value="^([a-z][a-z0-9][a-zA-Z0-9]*)|(e)$"/>
             <message key="name.invalidPattern"
                      value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
