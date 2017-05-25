@@ -45,14 +45,13 @@ public class NetworkTableTreeView extends TreeTableView<NetworkTableData> {
 
     data.getChildren().addListener(
         (MapChangeListener.Change<? extends String, ? extends NetworkTableData> change) -> {
-          if (change.wasAdded()) {
-            item.getChildren().add(getTreeItem(change.getValueAdded()));
-          } else if (change.wasRemoved()) {
+          if (change.getValueAdded() == null) {
             item.getChildren().removeIf(t -> t.getValue().keyProperty().get()
                 .equals(change.getValueRemoved().keyProperty().get()));
+          } else {
+            item.getChildren().add(getTreeItem(change.getValueAdded()));
           }
         });
-
     return item;
   }
 

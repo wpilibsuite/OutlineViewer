@@ -15,4 +15,4 @@ coverage:
 comment:
   layout: "diff"
   behavior: new
-  require_changes: yes
+  require_changes: no
