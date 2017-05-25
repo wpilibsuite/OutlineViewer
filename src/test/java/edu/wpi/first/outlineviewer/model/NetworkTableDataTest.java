@@ -41,30 +41,6 @@ public class NetworkTableDataTest {
   }
 
   @Test
-  public void testNetworkTableBoolean() {
-    final boolean value = false;
-    NetworkTableData data = NetworkTableData.createNetworkTableData("", value);
-
-    assertEquals(value, ((NetworkTableBoolean) data).valueProperty().getValue());
-  }
-
-  @Test
-  public void testNetworkTableNumber() {
-    final double value = 123.456;
-    NetworkTableData data = NetworkTableData.createNetworkTableData("", value);
-
-    assertEquals(value, ((NetworkTableNumber) data).valueProperty().getValue(), 0.001);
-  }
-
-  @Test
-  public void testNetworkTableString() {
-    final String value = "Some string";
-    NetworkTableData data = NetworkTableData.createNetworkTableData("String Key", value);
-
-    assertEquals(value, ((NetworkTableString) data).valueProperty().getValue());
-  }
-
-  @Test
   public void testAddChild() {
     NetworkTableData data = new NetworkTableData("");
     data.addChild(new NetworkTableData("Other"));
@@ -96,7 +72,6 @@ public class NetworkTableDataTest {
 
     assertFalse(data.getChildren().containsKey("Parent"));
   }
-
 
   @Test
   public void testGetChildPresent() {

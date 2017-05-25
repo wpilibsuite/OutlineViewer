@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/wpilibsuite/OutlineViewer.svg?branch=master)](https://travis-ci.org/wpilibsuite/OutlineViewer) [![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/master/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
+[![Build Status](https://travis-ci.org/wpilibsuite/OutlineViewer.svg?branch=JavaFX)](https://travis-ci.org/wpilibsuite/OutlineViewer)
+[![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/JavaFX/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
 
 # OutlineViewer
 
