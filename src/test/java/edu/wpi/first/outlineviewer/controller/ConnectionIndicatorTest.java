@@ -41,12 +41,13 @@ public class ConnectionIndicatorTest extends OutlineViewerControllerTest {
   }
 
   public ConnectionIndicatorTest(Runnable networkTableSetup, boolean connected, ConnectionInfo conn,
-                                 String expected) {
+                                 String expected) throws InterruptedException {
     this.connected = connected;
     this.conn = conn;
     this.expected = expected;
 
     networkTableSetup.run();
+    Thread.sleep(150);
   }
 
   @Test

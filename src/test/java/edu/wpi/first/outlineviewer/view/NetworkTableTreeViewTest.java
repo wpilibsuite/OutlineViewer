@@ -1,15 +1,20 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.model.NetworkTableData;
+import edu.wpi.first.outlineviewer.model.NetworkTableString;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NetworkTableTreeViewTest extends ApplicationTest {
 
@@ -37,7 +42,7 @@ public class NetworkTableTreeViewTest extends ApplicationTest {
     NetworkTableData otherData = new NetworkTableData("Other");
     rootData.addChild(otherData);
 
-    Assert.assertEquals(otherData, view.getRoot().getChildren().get(0).getValue());
+    assertEquals(otherData, view.getRoot().getChildren().get(0).getValue());
   }
 
   @Test
@@ -50,7 +55,21 @@ public class NetworkTableTreeViewTest extends ApplicationTest {
     WaitForAsyncUtils.waitForFxEvents();
 
     otherData.remove();
-    Assert.assertTrue(view.getRoot().getChildren().isEmpty());
+    assertTrue(view.getRoot().getChildren().isEmpty());
+  }
+
+  @Test
+  public void testUpdateValue() {
+    NetworkTableData rootData = new NetworkTableData("");
+    NetworkTableString otherData = new NetworkTableString("key", "1");
+    rootData.addChild(otherData);
+    Platform.runLater(() -> view.setRootData(rootData));
+    WaitForAsyncUtils.waitForFxEvents();
+
+    rootData.setOrCreateChild(NetworkTableData.getKeyPath("key"), "2");
+
+    assertEquals(Arrays.toString(view.getRoot().getChildren().toArray()),1,
+        view.getRoot().getChildren().size());
   }
 
 }

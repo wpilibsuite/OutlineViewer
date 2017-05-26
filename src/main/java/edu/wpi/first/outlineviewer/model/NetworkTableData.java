@@ -45,6 +45,11 @@ public class NetworkTableData {
     children = FXCollections.observableHashMap();
   }
 
+  @Override
+  public String toString() {
+    return String.format("(%s, %s, %s)", key.get(), valueProperty().getValue(), type.get());
+  }
+
   public Property valueProperty() {
     return new SimpleStringProperty("");
   }
@@ -110,7 +115,15 @@ public class NetworkTableData {
       keys.remove();
       return newData.setOrCreateChild(keys, value);
     }
-    return addChild(createNetworkTableData(keys.poll(), value));
+
+    NetworkTableData newData;
+    if (children.containsKey(keys.peek())) {
+      newData = children.get(keys.peek());
+      newData.valueProperty().setValue(value);
+    } else {
+      newData = addChild(createNetworkTableData(keys.peek(), value));
+    }
+    return newData;
   }
 
   /**
@@ -163,9 +176,19 @@ public class NetworkTableData {
       return new NetworkTableBoolean(key, (boolean) value);
     } else if (value instanceof Double) {
       return new NetworkTableNumber(key, (double) value);
-    } else {
+    } else if (value instanceof String) {
       return new NetworkTableString(key, (String) value);
+    } else if (value instanceof boolean[]) {
+      return new NetworkTableBooleanArray(key, (boolean[]) value);
+    } else if (value instanceof double[]) {
+      return new NetworkTableNumberArray(key, (double[]) value);
+    } else if (value instanceof String[]) {
+      return new NetworkTableStringArray(key, (String[]) value);
+    } else if (value instanceof byte[]) {
+      return new NetworkTableRaw(key, (byte[]) value);
     }
+
+    return new NetworkTableString(key, "Value Error: " + value.toString());
   }
 
   /**
