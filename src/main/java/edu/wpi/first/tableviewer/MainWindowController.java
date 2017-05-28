@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
@@ -142,7 +143,9 @@ public class MainWindowController {
       return true;
     });
 
-    tableView.setOnKeyTyped(event -> {
+    tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+    tableView.setOnKeyPressed(event -> {
       if (event.getCode() == KeyCode.DELETE) {
         ObservableList<TreeItem<TableEntryData>> selectedItems = tableView.getSelectionModel().getSelectedItems();
         selectedItems.stream()
@@ -258,7 +261,11 @@ public class MainWindowController {
         }
 
         MenuItem delete = new MenuItem("Delete");
-        delete.setOnAction(a -> remove(key));
+        delete.setOnAction(__ -> {
+          tableView.getSelectionModel()
+                   .getSelectedItems()
+                   .forEach(i -> remove(i.getValue().getKey()));
+        });
 
         cm.getItems().addAll(setPersistent, delete);
       } else {
