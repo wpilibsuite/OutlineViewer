@@ -6,7 +6,7 @@ plugins {
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
 }
 
-mainClassName = 'edu.wpi.first.tableviewer.TableViewer'
+mainClassName = 'edu.wpi.first.tableviewer.Main'
 
 publishing {
     publications {
@@ -35,7 +35,7 @@ repositories {
 
 dependencies {
     compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
-    compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
+    compile "org.controlsfx:controlsfx:+"
 }
 
 task wrapper(type: Wrapper) {
