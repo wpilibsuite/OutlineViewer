@@ -278,6 +278,13 @@ public class MainWindowController {
     });
 
     filter.addListener((obs, o, n) -> filterChanged(n));
+    Prefs.showMetaDataProperty().addListener((__, hide, show) -> {
+      if (show) {
+        showMetadata();
+      } else {
+        hideMetadata();
+      }
+    });
   }
 
   private void remove(String key) {

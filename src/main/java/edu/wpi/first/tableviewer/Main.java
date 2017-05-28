@@ -1,5 +1,6 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -16,36 +18,22 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    FXMLLoader prefsLoader = new FXMLLoader(getClass().getResource("StartupPreferences.fxml"));
+    Optional<PreferencesDialog.PrefsResult> prefsResult = new PreferencesDialog().showAndWait();
+    if (!prefsResult.isPresent()) {
+      System.out.println("Cancelled");
+      System.exit(0);
+    }
     FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-    Pane prefsRoot = prefsLoader.load();
     Pane mainWindow = mainLoader.load();
-    StartupPreferencesController prefsController = prefsLoader.getController();
     MainWindowController mainWindowController = mainLoader.getController();
+    mainWindowController.updateConnectionLabel(false, null);
 
-    primaryStage.setScene(new Scene(prefsRoot));
-    primaryStage.centerOnScreen();
 
-    prefsController.startedProperty().addListener((obs, old, start) -> {
-      if (start) {
-        primaryStage.sizeToScene();
-        primaryStage.setMinHeight(mainWindow.getMinHeight() + 32);
-        primaryStage.setMinWidth(mainWindow.getMinWidth() + 32);
-        mainWindowController.updateConnectionLabel(false, null);
-        if (Prefs.isShowMetaData()) {
-          mainWindowController.showMetadata();
-        } else {
-          mainWindowController.hideMetadata();
-        }
-        primaryStage.setResizable(true);
-        primaryStage.setScene(new Scene(mainWindow));
-        primaryStage.centerOnScreen();
-      }
-    });
     primaryStage.setTitle("Network Table Viewer");
     primaryStage.setOnCloseRequest(e -> System.exit(0));
-    primaryStage.setResizable(false);
+    primaryStage.setScene(new Scene(mainWindow));
     primaryStage.show();
+    primaryStage.centerOnScreen();
   }
 
 }
