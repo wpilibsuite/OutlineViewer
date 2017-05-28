@@ -1,6 +1,7 @@
 package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.tables.ITable;
 
 /**
@@ -30,8 +31,21 @@ public class NetworkTableUtils {
     return key.substring(key.lastIndexOf('/') + 1);
   }
 
-  public static ITable getRootTable() {
-    return NetworkTable.getTable("");
+  public static boolean isPersistent(String key) {
+    key = normalize(key);
+    return (NetworkTablesJNI.getEntryFlags(key) & NetworkTable.PERSISTENT) != 0;
+  }
+
+  public static void setPersistent(String key) {
+    key = normalize(key);
+    int flags = NetworkTablesJNI.getEntryFlags(key);
+    NetworkTablesJNI.setEntryFlags(key, flags | NetworkTable.PERSISTENT);
+  }
+
+  public static void clearPersistent(String key) {
+    key = normalize(key);
+    int flags = NetworkTablesJNI.getEntryFlags(key);
+    NetworkTablesJNI.setEntryFlags(key, flags & ~NetworkTable.PERSISTENT);
   }
 
 }
