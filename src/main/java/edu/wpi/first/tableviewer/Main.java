@@ -40,12 +40,14 @@ public class Main extends Application {
         } else {
           mainWindowController.hideMetadata();
         }
+        primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(mainWindow));
         primaryStage.centerOnScreen();
       }
     });
     primaryStage.setTitle("Network Table Viewer");
     primaryStage.setOnCloseRequest(e -> System.exit(0));
+    primaryStage.setResizable(false);
     primaryStage.show();
   }
 
