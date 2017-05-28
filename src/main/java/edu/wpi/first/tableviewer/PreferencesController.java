@@ -2,8 +2,8 @@ package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -13,13 +13,14 @@ import java.util.Arrays;
 /**
  *
  */
-public class StartupPreferencesController {
+public class PreferencesController {
 
   @FXML
   private TextField addressField;
   @FXML
   private CheckBox showMetaData;
 
+  private final BooleanProperty cancelled = new SimpleBooleanProperty(this, "cancelled", false);
   private final BooleanProperty started = new SimpleBooleanProperty(this, "started", false);
 
   @FXML
@@ -33,7 +34,7 @@ public class StartupPreferencesController {
   }
 
   @FXML
-  private void startClient() {
+  public void startClient() {
     System.out.println("Starting client");
     String url = addressField.getText();
     if (url.isEmpty()) {
@@ -63,7 +64,7 @@ public class StartupPreferencesController {
   }
 
   @FXML
-  private void startServer() {
+  public void startServer() {
     System.out.println("Starting server");
     NetworkTable.setServerMode();
     if (addressField.getText().matches("[0-9]+")) {
@@ -77,16 +78,23 @@ public class StartupPreferencesController {
   }
 
   @FXML
-  private void cancel() {
-    System.out.println("Exiting");
-    System.exit(0);
+  public void cancel() {
+    cancelled.setValue(true);
+  }
+
+  public boolean isCancelled() {
+    return cancelled.get();
+  }
+
+  public ReadOnlyBooleanProperty cancelledProperty() {
+    return cancelled;
   }
 
   public Boolean getStarted() {
     return started.get();
   }
 
-  public ObservableBooleanValue startedProperty() {
+  public ReadOnlyBooleanProperty startedProperty() {
     return started;
   }
 
