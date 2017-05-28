@@ -21,6 +21,7 @@ public class PreferencesDialog extends Dialog<PreferencesDialog.PrefsResult> {
   private static final ButtonType client = new ButtonType("Start Client");
 
   public PreferencesDialog() throws IOException {
+    setTitle("Network Table Viewer");
     FXMLLoader loader = new FXMLLoader(PreferencesController.class.getResource("Preferences.fxml"));
     Pane prefsPane = loader.load();
     PreferencesController controller = loader.getController();
