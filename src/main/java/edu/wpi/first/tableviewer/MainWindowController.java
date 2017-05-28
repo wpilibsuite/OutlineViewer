@@ -3,6 +3,7 @@ package edu.wpi.first.tableviewer;
 import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
+import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.wpilibj.networktables.ConnectionInfo;
 import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -30,8 +33,12 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Window;
+import org.controlsfx.control.ToggleSwitch;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -284,6 +291,11 @@ public class MainWindowController {
       } else {
         hideMetadata();
       }
+      // dirty hack to refresh the view, otherwise the tree won't render correctly
+      Window window = root.getScene().getWindow();
+      window.requestFocus();
+      window.setY(window.getY() + 1);
+      window.setY(window.getY() - 1);
     });
   }
 
@@ -435,6 +447,27 @@ public class MainWindowController {
   private void clearSearch() {
     searchField.setText("");
     searchField.requestFocus();
+  }
+
+  @FXML
+  private void showPrefs() throws IOException {
+    GridPane pane = new GridPane();
+    pane.setHgap(8);
+    pane.setVgap(8);
+
+    Label metaLabel = new Label("Show Metadata");
+    ToggleSwitch showMeta = new ToggleSwitch();
+    showMeta.selectedProperty().bindBidirectional(Prefs.showMetaDataProperty());
+    pane.add(metaLabel, 0, 0, 1, 1);
+    pane.add(showMeta, 1, 0, 1, 1);
+
+    Dialog<Object> d = new Dialog<>();
+    d.setTitle("Preferences");
+    d.getDialogPane().setContent(pane);
+    d.getDialogPane().getButtonTypes().addAll(ButtonType.FINISH);
+    d.setResult(new Object());
+    d.show();
+    Dialogs.center(d.getDialogPane().getScene().getWindow());
   }
 
 }

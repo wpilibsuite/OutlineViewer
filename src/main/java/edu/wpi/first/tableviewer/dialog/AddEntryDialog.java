@@ -62,7 +62,7 @@ public abstract class AddEntryDialog<T> extends Dialog<TableEntryData> {
 
     showingProperty().addListener(__ -> {
       if (isShowing()) {
-        center(getDialogPane().getScene().getWindow());
+        Dialogs.center(getDialogPane().getScene().getWindow());
       }
     });
   }
@@ -70,18 +70,5 @@ public abstract class AddEntryDialog<T> extends Dialog<TableEntryData> {
   protected abstract Node createCustomControl();
 
   protected abstract T getData();
-
-  /**
-   * Centers a window relative to the primary stage.
-   *
-   * @param window the window to center
-   */
-  public static void center(Window window) {
-    Window stage = StageHelper.getStages().get(0);
-    double x = stage.getX() + stage.getWidth() / 2;
-    double y = stage.getY() + stage.getHeight() / 2;
-    window.setX(x - window.getWidth() / 2);
-    window.setY(y - window.getHeight() / 2);
-  }
 
 }

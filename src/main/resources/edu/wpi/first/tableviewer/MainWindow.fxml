@@ -27,6 +27,7 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#close" text="Close"/>
+                        <MenuItem onAction="#showPrefs" text="Preferences" accelerator="SHORTCUT+,"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
