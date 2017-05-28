@@ -2,7 +2,6 @@ package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
-import edu.wpi.first.wpilibj.tables.ITable;
 
 /**
  *
@@ -46,6 +45,12 @@ public class NetworkTableUtils {
     key = normalize(key);
     int flags = NetworkTablesJNI.getEntryFlags(key);
     NetworkTablesJNI.setEntryFlags(key, flags & ~NetworkTable.PERSISTENT);
+  }
+
+  public static void shutdown() {
+    NetworkTablesJNI.stopClient();
+    NetworkTablesJNI.stopServer();
+    NetworkTablesJNI.deleteAllEntries(); // delete AFTER shutting down the server/client
   }
 
 }
