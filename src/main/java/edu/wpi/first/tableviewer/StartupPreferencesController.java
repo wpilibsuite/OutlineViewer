@@ -24,12 +24,12 @@ public class StartupPreferencesController {
 
   @FXML
   private void initialize() {
-    addressField.setText(Main.preferences.get("address", "localhost"));
+    addressField.setText(Prefs.getIp());
 
-    showMetaData.selectedProperty().setValue(Main.preferences.getBoolean("show_metadata", false));
+    showMetaData.selectedProperty().setValue(Prefs.isShowMetaData());
 
     showMetaData.selectedProperty()
-                .addListener((observable, oldValue, newValue) -> Main.preferences.putBoolean("show_metadata", newValue));
+                .addListener((__, hide, show) -> Prefs.setShowMetaData(show));
   }
 
   @FXML
@@ -56,10 +56,9 @@ public class StartupPreferencesController {
     NetworkTable.setIPAddress(address);
     NetworkTable.setPort(port);
     NetworkTable.initialize();
-    Main.preferences.put("resolved-address", address);
-    Main.preferences.putBoolean("client", true);
-    Main.preferences.put("address", addressField.getText());
-    Main.preferences.putBoolean("server", false);
+    Prefs.setResolvedAddress(address);
+    Prefs.setServer(false);
+    Prefs.setIp(addressField.getText());
     started.setValue(true);
   }
 
@@ -72,8 +71,8 @@ public class StartupPreferencesController {
       NetworkTable.setPort(port);
     }
     NetworkTable.initialize();
-    Main.preferences.put("address", addressField.getText());
-    Main.preferences.putBoolean("server", true);
+    Prefs.setIp(addressField.getText());
+    Prefs.setServer(true);
     started.setValue(true);
   }
 

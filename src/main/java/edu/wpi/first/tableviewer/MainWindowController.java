@@ -81,7 +81,7 @@ public class MainWindowController {
   private final Property<Predicate<TableEntryData>> filter = new SimpleObjectProperty<>(this, "filter", Predicates.always());
 
   public void updateConnectionLabel(boolean isConnected, ConnectionInfo connectionInfo) {
-    if (Main.preferences.getBoolean("server", false)) {
+    if (Prefs.isServer()) {
       // running server
       String text = "Running server";
       int numClients = NetworkTablesJNI.getConnections().length;
@@ -101,13 +101,13 @@ public class MainWindowController {
       connectionBackground.setStyle("-fx-background-color: linear-gradient(to bottom, #555, #222)");
     } else if (isConnected) {
       // client with connection
-      connectionLabel.setText("Connected to server at " + Main.preferences.get("resolved-address", connectionInfo.remote_ip));
+      connectionLabel.setText("Connected to server at " + Prefs.getResolvedAddress());
       connectionLabel.setStyle("-fx-text-fill: white");
       connectionBackground.setStyle("-fx-background-color: linear-gradient(to bottom, blue, darkblue)");
     } else {
       // client, no connection
       String text = "No connection";
-      String addr = Main.preferences.get("resolved-address", null);
+      String addr = Prefs.getResolvedAddress();
       if (addr != null) {
         text += " to " + addr;
       }
