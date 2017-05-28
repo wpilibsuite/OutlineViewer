@@ -81,7 +81,7 @@ public class TableEntryData {
    * leaves in branches.
    */
   public boolean isMetadata() {
-    return key.matches("^.*/(\\..+|~.+~).*$");
+    return key.matches("^.*/(\\..+|~.+~)/.*$");
   }
 
   @Override
