@@ -62,7 +62,6 @@ public class TableEntryData {
    * Generates a type string based on the value of the table entry.
    */
   private String typeFromValue(Object value) {
-    if (isMetadata()) return "Metadata";
     if (value instanceof Boolean) return typeNames[0];
     if (value instanceof Double) return typeNames[1];
     if (value instanceof String) return typeNames[2];
