@@ -1,0 +1,15 @@
+
+.tree-table-row-cell {
+}
+
+.tree-table-row-cell:selected, .tree-table-row-cell:odd:selected {
+    -fx-background-color: #2196F3;
+}
+
+.tree-table-row-cell {
+    -fx-background-color: white;
+}
+
+.tree-table-row-cell:odd {
+    -fx-background-color: derive(white, -2%);
+}

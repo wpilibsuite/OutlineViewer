@@ -1,0 +1,51 @@
+
+.tree-table-row-cell {
+}
+
+.tree-table-row-cell:selected, .tree-table-row-cell:odd:selected {
+    -fx-background-color: #2196F3;
+}
+
+.tree-table-row-cell {
+    -fx-background-color: white;
+}
+
+.tree-table-row-cell:odd {
+    -fx-background-color: derive(white, -2%);
+}
+
+.connection-background {
+    -fx-background-color: black;
+}
+
+.connection-background:client {
+    -fx-background-color: linear-gradient(to bottom, blue, darkblue);
+}
+
+.connection-background:server {
+    -fx-background-color: linear-gradient(to bottom, #444, #222);
+}
+
+.connection-background:server:failed, .connection-background:client:failed {
+    -fx-background-color: linear-gradient(to bottom, red, darkred);
+}
+
+.connection-label {
+    -fx-text-fill: white;
+}
+
+.list-cell:even {
+    -fx-background-color: derive(white, -5%);
+}
+
+.list-cell:odd {
+    -fx-background-color: derive(white, -10%);
+}
+
+.list-cell:odd:empty, .list-cell:even:empty {
+    -fx-background-color: transparent;
+}
+
+.list-cell:even:selected, .list-cell:odd:selected {
+    -fx-background-color: #2196F3;
+}
