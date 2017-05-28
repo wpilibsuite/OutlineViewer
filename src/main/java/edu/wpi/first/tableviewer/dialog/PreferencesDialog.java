@@ -14,7 +14,7 @@ import java.io.IOException;
 public class PreferencesDialog extends Dialog<PreferencesDialog.PrefsResult> {
 
   public enum PrefsResult {
-    CLIENT, SERVER, NONE
+    CLIENT, SERVER
   }
 
   private static final ButtonType server = new ButtonType("Start Server");
