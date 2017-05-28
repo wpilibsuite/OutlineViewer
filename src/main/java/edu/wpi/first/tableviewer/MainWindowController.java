@@ -285,6 +285,11 @@ public class MainWindowController {
     });
 
     filter.addListener((obs, o, n) -> filterChanged(n));
+    if (Prefs.isShowMetaData()) {
+      showMetadata();
+    } else {
+      hideMetadata();
+    }
     Prefs.showMetaDataProperty().addListener((__, hide, show) -> {
       if (show) {
         showMetadata();
