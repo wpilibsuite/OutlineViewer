@@ -247,14 +247,14 @@ public class MainWindowController {
         String flagKey = normalize(key).substring(1);
         MenuItem setPersistent;
 
-        if (NetworkTableUtils.getRootTable().isPersistent(flagKey)) {
+        if (NetworkTableUtils.isPersistent(flagKey)) {
           // Make the key persistent
           setPersistent = new MenuItem("Set transient");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.getRootTable().clearPersistent(flagKey));
+          setPersistent.setOnAction(__ -> NetworkTableUtils.clearPersistent(flagKey));
         } else {
           // Make the entry persistent
           setPersistent = new MenuItem("Set persistent");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.getRootTable().setPersistent(flagKey));
+          setPersistent.setOnAction(__ -> NetworkTableUtils.setPersistent(flagKey));
         }
 
         MenuItem delete = new MenuItem("Delete");
