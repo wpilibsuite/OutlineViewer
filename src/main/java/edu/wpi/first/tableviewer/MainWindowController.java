@@ -38,6 +38,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
+import static edu.wpi.first.tableviewer.NetworkTableUtils.normalize;
+import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
+
 /**
  *
  */
@@ -207,7 +211,7 @@ public class MainWindowController {
         return;
       }
       TableEntryData entry = selected.getValue();
-      String key = normalizeKey(entry.getKey()).substring(1); // remove leading slash
+      String key = entry.getKey();
       ContextMenu cm = new ContextMenu();
 
       if (entry.getValue() == null) {
@@ -215,21 +219,24 @@ public class MainWindowController {
         MenuItem string = new MenuItem("Add string");
         string.setOnAction(a -> {
           new AddStringDialog().showAndWait().ifPresent(data -> {
-            NetworkTable.getTable(key).putString(data.getKey(), (String) data.getValue());
+            String k = concat(key, data.getKey());
+            NetworkTablesJNI.putString(k, (String) data.getValue());
           });
         });
 
         MenuItem number = new MenuItem("Add number");
         number.setOnAction(a -> {
           new AddNumberDialog().showAndWait().ifPresent(data -> {
-            NetworkTable.getTable(key).putNumber(data.getKey(), (Double) data.getValue());
+            String k = concat(key, data.getKey());
+            NetworkTablesJNI.putDouble(k, (Double) data.getValue());
           });
         });
 
         MenuItem bool = new MenuItem("Add boolean");
         bool.setOnAction(a -> {
           new AddBooleanDialog().showAndWait().ifPresent(data -> {
-            NetworkTable.getTable(key).putBoolean(data.getKey(), (Boolean) data.getValue());
+            String k = concat(key, data.getKey());
+            NetworkTablesJNI.putBoolean(k, (Boolean) data.getValue());
           });
         });
 
@@ -237,21 +244,21 @@ public class MainWindowController {
       }
 
       if (!key.isEmpty() && entry.getValue() != null) {
-        String full = normalizeKey(key);
+        String flagKey = normalize(key).substring(1);
         MenuItem setPersistent;
 
-        if (NetworkTableUtils.rootTable.isPersistent(full)) {
+        if (NetworkTableUtils.getRootTable().isPersistent(flagKey)) {
           // Make the key persistent
           setPersistent = new MenuItem("Set transient");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.rootTable.clearPersistent(full));
+          setPersistent.setOnAction(__ -> NetworkTableUtils.getRootTable().clearPersistent(flagKey));
         } else {
           // Make the entry persistent
           setPersistent = new MenuItem("Set persistent");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.rootTable.setPersistent(full));
+          setPersistent.setOnAction(__ -> NetworkTableUtils.getRootTable().setPersistent(flagKey));
         }
 
         MenuItem delete = new MenuItem("Delete");
-        delete.setOnAction(a -> remove(entry.getKey()));
+        delete.setOnAction(a -> remove(key));
 
         cm.getItems().addAll(setPersistent, delete);
       } else {
@@ -343,32 +350,8 @@ public class MainWindowController {
     }
   }
 
-  /**
-   * Normalizes a network table key to start with exactly one leading slash ("/").
-   */
-  private static String normalizeKey(String key) {
-    while (key.startsWith("//")) {
-      // lazy
-      key = key.substring(1);
-    }
-    if (!key.startsWith("/")) {
-      key = "/" + key;
-    }
-    return key;
-  }
-
-  private static String simpleKey(String key) {
-    if (key.isEmpty() || key.equals("/")) {
-      return "Root";
-    }
-    if (!key.contains("/")) {
-      return key;
-    }
-    return key.substring(key.lastIndexOf('/') + 1);
-  }
-
   private void makeBranches(String key, Object value, int flags) {
-    key = normalizeKey(key);
+    key = NetworkTableUtils.normalize(key);
     boolean deleted = (flags & ITable.NOTIFY_DELETE) != 0;
     List<String> pathElements = Stream.of(key.split("/"))
                                       .filter(s -> !s.isEmpty())

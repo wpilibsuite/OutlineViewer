@@ -16,7 +16,7 @@ public class TableEntryData {
   private static final String[] typeNames = new String[]{"Boolean", "Number", "String", "Raw", "Boolean[]", "Number[]", "String[]"};
 
   public TableEntryData(String key, Object value) {
-    this.key = key;
+    this.key = NetworkTableUtils.normalize(key);
     if (value != null) {
       this.value = value;
       this.type = typeFromValue(value);
