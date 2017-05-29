@@ -36,23 +36,20 @@ public class PreferencesController {
     System.out.println("Starting client");
     NetworkTableUtils.shutdown();
     String url = idField.getText();
+    int port = 1735;
+    if (portField.getText().matches("[0-9]+")) {
+      port = Integer.parseInt(portField.getText());
+    }
     if (url.isEmpty()) {
-      url = "localhost:1735";
+      url = "localhost";
     }
     url = url.replaceAll("^.*://", ""); // remove leading protocol
-    String[] addrPort = url.split(":");
-    System.out.println(Arrays.toString(addrPort));
-    String address = addrPort[0];
-    if (address.matches("[0-9]+")) {
+    if (url.matches("[0-9]+")) {
       // treat as a team number
-      address = "roborio-" + address + "-frc.local";
+      url = "roborio-" + url + "-frc.local";
     }
-    int port = Prefs.getPort();
-    if (addrPort.length == 2) {
-      port = Integer.parseInt(addrPort[1]);
-    }
-    System.out.println("Connecting to " + address + ":" + port);
-    Prefs.setResolvedAddress(address);
+    System.out.println("Connecting to " + url + ":" + port);
+    Prefs.setResolvedAddress(url);
     Prefs.setServer(false);
     Prefs.setPort(port);
     Prefs.setIp(idField.getText());
