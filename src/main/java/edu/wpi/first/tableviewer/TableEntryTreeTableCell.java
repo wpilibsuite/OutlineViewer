@@ -1,5 +1,6 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.tableviewer.entry.Entry;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
@@ -9,14 +10,14 @@ import javafx.scene.control.TreeTableCell;
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
  */
-class TableEntryDataTreeTableCell extends TreeTableCell<TableEntryData, Object> {
+class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
 
   private Class<?> type = null;
   private Control editor = null;
   private Node graphic = null;
   private String text = null;
 
-  public TableEntryDataTreeTableCell() {
+  public TableEntryTreeTableCell() {
     setEditable(true);
   }
 

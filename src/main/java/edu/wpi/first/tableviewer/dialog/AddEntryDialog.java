@@ -1,7 +1,6 @@
 package edu.wpi.first.tableviewer.dialog;
 
-import edu.wpi.first.tableviewer.NetworkTableUtils;
-import edu.wpi.first.tableviewer.TableEntryData;
+import edu.wpi.first.tableviewer.entry.Entry;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
@@ -17,7 +16,7 @@ import javafx.scene.layout.GridPane;
 /**
  *
  */
-public abstract class AddEntryDialog<T> extends Dialog<TableEntryData> {
+public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
   private static final ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
 
@@ -52,7 +51,7 @@ public abstract class AddEntryDialog<T> extends Dialog<TableEntryData> {
 
     setResultConverter(buttonType -> {
       if (buttonType == add) {
-        return new TableEntryData(NetworkTableUtils.normalize(keyField.getText()), getData());
+        return Entry.entryFor(keyField.getText(), getData());
       } else {
         return null;
       }
