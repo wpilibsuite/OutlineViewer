@@ -1,21 +1,16 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.tableviewer.component.NetworkTableTree;
 import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
 import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import edu.wpi.first.tableviewer.entry.Entry;
-import edu.wpi.first.tableviewer.entry.TableEntry;
-import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
-import edu.wpi.first.wpilibj.tables.ITable;
 import javafx.application.Platform;
-import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
@@ -38,14 +33,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.normalize;
@@ -60,7 +51,7 @@ public class MainWindowController {
   private Pane root;
 
   @FXML
-  private TreeTableView<Entry> tableView;
+  private NetworkTableTree tableView;
   @FXML
   private TreeItem<Entry> ntRoot;
 
@@ -86,7 +77,6 @@ public class MainWindowController {
   private boolean showMetadata = false;
 
   private final Predicate<Entry> metadataFilter = x -> showMetadata || !x.isMetadata();
-  private final Property<Predicate<Entry>> filter = new SimpleObjectProperty<>(this, "filter", Predicates.always());
 
   private static final PseudoClass CLIENT = PseudoClass.getPseudoClass("client");
   private static final PseudoClass SERVER = PseudoClass.getPseudoClass("server");
@@ -193,9 +183,6 @@ public class MainWindowController {
 
   @FXML
   private void initialize() {
-    NetworkTablesJNI.addEntryListener("",
-                                      (uid, key, value, flags) -> Platform.runLater(() -> makeBranches(key, value, flags)),
-                                      0xFF);
     NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> {
       Platform.runLater(this::updateConnectionLabel);
     }, true);
@@ -218,11 +205,6 @@ public class MainWindowController {
       }
     });
 
-    tableView.setSortPolicy(view -> {
-      sort(tableView.getRoot());
-      return true;
-    });
-
     tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     tableView.setOnKeyPressed(event -> {
@@ -232,7 +214,7 @@ public class MainWindowController {
                      .filter(Objects::nonNull)
                      .map(TreeItem::getValue)
                      .map(Entry::getKey)
-                     .forEach(this::remove);
+                     .forEach(NetworkTableUtils::delete);
       }
     });
 
@@ -264,14 +246,17 @@ public class MainWindowController {
       return row;
     });
 
+    tableView.setFilter(metadataFilter);
+
     searchField.textProperty().addListener((__, oldText, newText) -> {
       if (newText.isEmpty()) {
-        setFilter(null);
+        tableView.setFilter(metadataFilter);
       } else {
         String lower = newText.toLowerCase();
-        setFilter(data -> data.getKey().toLowerCase().contains(lower)
-            || data.getValue().toString().toLowerCase().contains(lower)
+        Predicate<Entry> filter = metadataFilter.and(data -> data.getKey().toLowerCase().contains(lower)
+            || data.getDisplayString().toLowerCase().contains(lower)
             || data.getType().toLowerCase().contains(lower));
+        tableView.setFilter(filter);
       }
     });
 
@@ -345,7 +330,7 @@ public class MainWindowController {
         delete.setOnAction(__ -> {
           tableView.getSelectionModel()
                    .getSelectedItems()
-                   .forEach(i -> remove(i.getValue().getKey()));
+                   .forEach(i -> NetworkTableUtils.delete(i.getValue().getKey()));
         });
 
         cm.getItems().addAll(setPersistent, delete);
@@ -358,160 +343,17 @@ public class MainWindowController {
       cm.show(tableView, e.getScreenX(), e.getScreenY());
     });
 
-    filter.addListener((obs, o, n) -> filterChanged(n));
-    if (Prefs.isShowMetaData()) {
-      showMetadata();
-    } else {
-      hideMetadata();
-    }
+    showMetadata(Prefs.isShowMetaData());
     Prefs.showMetaDataProperty().addListener((__, hide, show) -> {
-      if (show) {
-        showMetadata();
-      } else {
-        hideMetadata();
-      }
+      showMetadata(show);
       // dirty hack to refresh the view, otherwise the tree won't render correctly
       refreshWindow();
     });
   }
 
-  private void remove(String key) {
-    if (NetworkTablesJNI.containsKey(key)) {
-      NetworkTablesJNI.deleteEntry(key);
-    } else {
-      // subtable
-      EntryInfo[] entries = NetworkTablesJNI.getEntries(key, 0xFF);
-      Stream.of(entries)
-            .map(entryInfo -> entryInfo.name)
-            .forEach(this::remove);
-      makeBranches(key, null, ITable.NOTIFY_DELETE);
-    }
-  }
-
-  public void showMetadata() {
-    showMetadata = true;
-    setFilter(null);
-  }
-
-  public void hideMetadata() {
-    showMetadata = false;
-    setFilter(metadataFilter);
-  }
-
-  /**
-   * Sorts tree nodes recursively in order of branches before leaves, then alphabetically.
-   *
-   * @param node the root node to sort
-   */
-  private void sort(TreeItem<Entry> node) {
-    if (!node.isLeaf()) {
-      boolean wasExpanded = node.isExpanded();
-      FXCollections.sort(node.getChildren(),
-                         ((Comparator<TreeItem<Entry>>) (a, b) -> a.isLeaf() ? b.isLeaf() ? 0 : 1 : -1)
-                             .thenComparing(Comparator.comparing(item -> item.getValue().getKey())));
-      node.getChildren().forEach(this::sort);
-      node.setExpanded(wasExpanded);
-    }
-  }
-
-  private void filterChanged(Predicate<Entry> filter) {
-    if (filter == null || filter.equals(Predicates.always())) {
-      tableView.setRoot(ntRoot);
-    } else {
-      TreeItem<Entry> filteredRoot = new TreeItem<>();
-      filteredRoot.setValue(ntRoot.getValue());
-      filteredRoot.setExpanded(ntRoot.isExpanded());
-      filter(ntRoot, filter, filteredRoot);
-      tableView.setRoot(filteredRoot);
-      tableView.sort();
-    }
-  }
-
-
-  private <T> void filter(TreeItem<T> allRoot,
-                          Predicate<? super T> filter,
-                          TreeItem<T> filteredRoot) {
-    for (TreeItem<T> child : allRoot.getChildren()) {
-      // Copy the child to avoid mucking with the real tree
-      TreeItem<T> filteredChild = new TreeItem<>();
-      filteredChild.setValue(child.getValue());
-      filteredChild.setExpanded(child.isExpanded());
-      // Recurse; filter children
-      filter(child, filter, filteredChild);
-      if (matches(child, filter)) {
-        filteredRoot.getChildren().add(filteredChild);
-      }
-    }
-  }
-
-  private <T> boolean matches(TreeItem<T> treeItem, Predicate<? super T> predicate) {
-    if (treeItem.isLeaf()) {
-      return predicate.test(treeItem.getValue());
-    } else {
-      return treeItem.getChildren().stream().anyMatch(c -> matches(c, predicate));
-    }
-  }
-
-  private void makeBranches(String key, Object value, int flags) {
-    key = NetworkTableUtils.normalize(key);
-    boolean deleted = (flags & ITable.NOTIFY_DELETE) != 0;
-    List<String> pathElements = Stream.of(key.split("/"))
-                                      .filter(s -> !s.isEmpty())
-                                      .collect(Collectors.toList());
-    TreeItem<Entry> current = ntRoot;
-    TreeItem<Entry> parent;
-    StringBuilder k = new StringBuilder();
-    for (int i = 0; i < pathElements.size(); i++) {
-      String pathElement = pathElements.get(i);
-      k.append("/").append(pathElement);
-      parent = current;
-      current = current.getChildren().stream().filter(item -> item.getValue().getKey().equals(k.toString())).findFirst().orElse(null);
-      if (deleted) {
-        if (current == null) {
-          break;
-        } else if (i == pathElements.size() - 1) {
-          // last
-          parent.getChildren().remove(current);
-        }
-      } else if (i == pathElements.size() - 1) {
-        if (current == null) {
-          current = new TreeItem<>(Entry.entryFor(key, value));
-          parent.getChildren().add(current);
-        } else {
-          current.getValue().setValue(value);
-        }
-      } else if (current == null) {
-        current = new TreeItem<>(new TableEntry(k.toString()));
-        current.setExpanded(true);
-        parent.getChildren().add(current);
-      }
-    }
-    tableView.sort();
-    filterChanged(getFilter()); // prompts a refresh of filtered values
-  }
-
-  /**
-   * Sets a predicate to use to filter entries matching certain criteria.
-   *
-   * @param filter a filter for table tables.
-   */
-  public void setFilter(Predicate<Entry> filter) {
-    if (filter == null || filter.equals(Predicates.always())) {
-      this.filter.setValue(metadataFilter);
-    } else {
-      this.filter.setValue(metadataFilter.and(filter));
-    }
-  }
-
-  /**
-   * Gets the predicate used to filter the table entries to display.
-   */
-  public Predicate<Entry> getFilter() {
-    return filter.getValue();
-  }
-
-  public Property<Predicate<Entry>> filterProperty() {
-    return filter;
+  public void showMetadata(boolean doShow) {
+    showMetadata = doShow;
+    tableView.updateItemsFromFilter();
   }
 
   @FXML
