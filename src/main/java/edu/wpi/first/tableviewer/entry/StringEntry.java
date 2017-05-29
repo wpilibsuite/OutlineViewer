@@ -1,7 +1,7 @@
 package edu.wpi.first.tableviewer.entry;
 
 /**
- *
+ * An entry containing a single string.
  */
 public class StringEntry extends Entry<String> {
 
