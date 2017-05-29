@@ -16,6 +16,7 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
   private Control editor = null;
   private Node graphic = null;
   private String text = null;
+  private boolean canEdit = false;
 
   public TableEntryTreeTableCell() {
     setEditable(true);
@@ -24,14 +25,19 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
   @Override
   protected void updateItem(Object item, boolean empty) {
     super.updateItem(item, empty);
-    if (item == null || empty) {
+    if (item == null || empty || getTreeTableRow().getTreeItem() == null) {
       setText("");
       setGraphic(null);
       return;
     }
+    Entry entry = getTreeTableRow()
+        .getTreeItem()
+        .getValue();
     type = item.getClass();
     setGraphic(null);
     setText(null);
+
+    canEdit = true; // assume it's editable; if it's not, we'll set it later
     if (item instanceof Boolean) {
       CheckBox checkBox = new CheckBox();
       checkBox.setSelected((Boolean) item);
@@ -58,13 +64,18 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       });
       editor = field;
     } else {
-      throw new AssertionError("Can't handle " + item.getClass());
+      // not editable
+      System.out.println("Not editable: " + item);
+      canEdit = false;
     }
-    setText(item.toString());
+    setText(entry.getDisplayString());
   }
 
   @Override
   public void startEdit() {
+    if (!canEdit) {
+      return;
+    }
     super.startEdit();
     graphic = getGraphic();
     text = getText();

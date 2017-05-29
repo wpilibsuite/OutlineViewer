@@ -36,6 +36,18 @@ public abstract class Entry<T> {
     if (value instanceof String) {
       return (Entry<T>) new StringEntry(key, (String) value);
     }
+    if (value instanceof byte[]) {
+      return (Entry<T>) new RawBytesEntry(key, (byte[]) value);
+    }
+    if (value instanceof boolean[]) {
+      return (Entry<T>) new BooleanArrayEntry(key, (boolean[]) value);
+    }
+    if (value instanceof double[]) {
+      return (Entry<T>) new NumberArrayEntry(key, (double[]) value);
+    }
+    if (value instanceof String[]) {
+      return (Entry<T>) new StringArrayEntry(key, (String[]) value);
+    }
     throw new IllegalArgumentException("Unsupported type: " + value);
   }
 
@@ -45,7 +57,13 @@ public abstract class Entry<T> {
 
     this.value.addListener((__, oldValue, newValue) -> Objects.requireNonNull(newValue, "value"));
     this.type.addListener((__, oldType, newType) -> Objects.requireNonNull(newType, "type"));
-    type.bind(Bindings.createStringBinding(() -> getTypeString(getValue()), value));
+    type.bind(Bindings.createStringBinding(() -> {
+      if (getValue() == null) {
+        return "";
+      } else {
+        return getTypeString(getValue());
+      }
+    }, value));
   }
 
   protected Entry(String key, T value) {
