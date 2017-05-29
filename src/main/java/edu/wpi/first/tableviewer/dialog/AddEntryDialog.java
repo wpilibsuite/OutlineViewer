@@ -1,6 +1,5 @@
 package edu.wpi.first.tableviewer.dialog;
 
-import com.sun.javafx.stage.StageHelper;
 import edu.wpi.first.tableviewer.NetworkTableUtils;
 import edu.wpi.first.tableviewer.TableEntryData;
 import javafx.application.Platform;
@@ -14,7 +13,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Window;
 
 /**
  *

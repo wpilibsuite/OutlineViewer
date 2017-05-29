@@ -51,14 +51,14 @@
     </center>
     <bottom>
         <VBox>
-            <ToolBar fx:id="searchBar" managed="false">
+            <ToolBar fx:id="searchBar" managed="false" cache="true" cacheShape="true" cacheHint="SPEED" >
                 <Label text="Search"/>
-                <TextField fx:id="searchField" styleClass="search-field" promptText="Search..."/>
-                <Button fx:id="closeSearchButton" styleClass="close-search-button" text="Clear"
+                <TextField fx:id="searchField" promptText="Search..."/>
+                <Button fx:id="closeSearchButton" text="Clear"
                         onAction="#clearSearch"/>
             </ToolBar>
-            <StackPane BorderPane.alignment="CENTER" minHeight="50" fx:id="connectionBackground">
-                <Label fx:id="connectionLabel" text="No connection" minHeight="50"/>
+            <StackPane BorderPane.alignment="CENTER" styleClass="connection-background" minHeight="40" cache="true" cacheShape="true" cacheHint="SPEED" fx:id="connectionBackground">
+                <Label fx:id="connectionLabel" styleClass="connection-label" text="No connection" cache="true" cacheShape="true" cacheHint="SPEED"/>
             </StackPane>
         </VBox>
     </bottom>

@@ -1,12 +1,8 @@
 package edu.wpi.first.tableviewer;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import org.controlsfx.control.ToggleSwitch;
 
 import java.util.Arrays;
 
@@ -16,27 +12,27 @@ import java.util.Arrays;
 public class PreferencesController {
 
   @FXML
-  private TextField addressField;
+  private TextField idField;
   @FXML
-  private CheckBox showMetaData;
-
-  private final BooleanProperty cancelled = new SimpleBooleanProperty(this, "cancelled", false);
-  private final BooleanProperty started = new SimpleBooleanProperty(this, "started", false);
+  private TextField portField;
+  @FXML
+  private ToggleSwitch serverModeSwitch;
+  @FXML
+  private ToggleSwitch metadataSwitch;
 
   @FXML
   private void initialize() {
-    addressField.setText(Prefs.getIp());
-
-    showMetaData.selectedProperty().setValue(Prefs.isShowMetaData());
-
-    showMetaData.selectedProperty()
-                .addListener((__, hide, show) -> Prefs.setShowMetaData(show));
+    idField.setText(Prefs.getIp());
+    portField.setText(String.valueOf(Prefs.getPort()));
+    serverModeSwitch.selectedProperty().bindBidirectional(Prefs.serverProperty());
+    metadataSwitch.selectedProperty().bindBidirectional(Prefs.showMetaDataProperty());
+    idField.disableProperty().bind(serverModeSwitch.selectedProperty());
   }
 
-  @FXML
-  public void startClient() {
+  private void startClient() {
     System.out.println("Starting client");
-    String url = addressField.getText();
+    NetworkTableUtils.shutdown();
+    String url = idField.getText();
     if (url.isEmpty()) {
       url = "localhost:1735";
     }
@@ -48,54 +44,35 @@ public class PreferencesController {
       // treat as a team number
       address = "roborio-" + address + "-frc.local";
     }
-    int port = 1735;
+    int port = Prefs.getPort();
     if (addrPort.length == 2) {
       port = Integer.parseInt(addrPort[1]);
     }
     System.out.println("Connecting to " + address + ":" + port);
-    NetworkTable.setClientMode();
-    NetworkTable.setIPAddress(address);
-    NetworkTable.setPort(port);
-    NetworkTable.initialize();
     Prefs.setResolvedAddress(address);
     Prefs.setServer(false);
-    Prefs.setIp(addressField.getText());
-    started.setValue(true);
+    Prefs.setPort(port);
+    Prefs.setIp(idField.getText());
   }
 
-  @FXML
-  public void startServer() {
+  private void startServer() {
     System.out.println("Starting server");
-    NetworkTable.setServerMode();
-    if (addressField.getText().matches("[0-9]+")) {
-      int port = Integer.parseInt(addressField.getText());
-      NetworkTable.setPort(port);
+    NetworkTableUtils.shutdown();
+    if (portField.getText().matches("[0-9]+")) {
+      int port = Integer.parseInt(portField.getText());
+      Prefs.setPort(port);
     }
-    NetworkTable.initialize();
-    Prefs.setIp(addressField.getText());
+    Prefs.setIp(idField.getText());
     Prefs.setServer(true);
-    started.setValue(true);
   }
 
-  @FXML
-  public void cancel() {
-    cancelled.setValue(true);
-  }
-
-  public boolean isCancelled() {
-    return cancelled.get();
-  }
-
-  public ReadOnlyBooleanProperty cancelledProperty() {
-    return cancelled;
-  }
-
-  public Boolean getStarted() {
-    return started.get();
-  }
-
-  public ReadOnlyBooleanProperty startedProperty() {
-    return started;
+  public void start() {
+    System.out.println("Starting");
+    if (Prefs.isServer()) {
+      startServer();
+    } else {
+      startClient();
+    }
   }
 
 }
