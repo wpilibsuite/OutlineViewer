@@ -11,18 +11,18 @@
           hgap="12.0" vgap="12"
           xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="edu.wpi.first.tableviewer.PreferencesController">
-    <Label text="Server ID" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <Label text="Server ID" id="idLabel" GridPane.columnIndex="0" GridPane.rowIndex="0">
         <tooltip>
             <Tooltip text="URL, IP address, or team number"/>
         </tooltip>
     </Label>
-    <TextField fx:id="idField" promptText="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-    <Label text="Server Port" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <TextField fx:id="portField" promptText="1735" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <Label text="Server Mode" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-    <ToggleSwitch fx:id="serverModeSwitch" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Label text="Show Metadata" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <ToggleSwitch fx:id="metadataSwitch" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <TextField fx:id="idField" id="idField" promptText="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    <Label text="Server Port" id="portLabel" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <TextField fx:id="portField" id="portField" promptText="1735" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <Label text="Server Mode" id="modeLabel" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+    <ToggleSwitch fx:id="serverModeSwitch" id="modeSwitch" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <Label text="Show Metadata" id="metadataLabel" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <ToggleSwitch fx:id="metadataSwitch" id="metadataSwitch" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>

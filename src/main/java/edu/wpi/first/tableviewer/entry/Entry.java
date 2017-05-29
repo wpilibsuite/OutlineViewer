@@ -158,4 +158,11 @@ public abstract class Entry<T> {
     return type;
   }
 
+  @Override
+  public String toString() {
+    return String.format("%s(key=%s, value=%s, type=%s)",
+                         getClass().getSimpleName(),
+                         getKey(), getDisplayString(), getType());
+  }
+
 }
