@@ -1,7 +1,7 @@
 package edu.wpi.first.tableviewer.entry;
 
 /**
- *
+ * An entry containing a single boolean.
  */
 public class BooleanEntry extends Entry<Boolean> {
 

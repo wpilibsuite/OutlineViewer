@@ -1,7 +1,7 @@
 package edu.wpi.first.tableviewer.entry;
 
 /**
- *
+ * An entry containing a single number.
  */
 public class NumberEntry extends Entry<Number> {
 
