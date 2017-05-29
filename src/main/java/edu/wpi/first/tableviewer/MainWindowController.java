@@ -74,9 +74,7 @@ public class MainWindowController {
   @FXML
   private Label connectionLabel;
 
-  private boolean showMetadata = false;
-
-  private final Predicate<Entry> metadataFilter = x -> showMetadata || !x.isMetadata();
+  private final Predicate<Entry> metadataFilter = x -> Prefs.isShowMetaData() || !x.isMetadata();
 
   private static final PseudoClass CLIENT = PseudoClass.getPseudoClass("client");
   private static final PseudoClass SERVER = PseudoClass.getPseudoClass("server");
@@ -342,18 +340,7 @@ public class MainWindowController {
       tableView.setContextMenu(cm);
       cm.show(tableView, e.getScreenX(), e.getScreenY());
     });
-
-    showMetadata(Prefs.isShowMetaData());
-    Prefs.showMetaDataProperty().addListener((__, hide, show) -> {
-      showMetadata(show);
-      // dirty hack to refresh the view, otherwise the tree won't render correctly
-      refreshWindow();
-    });
-  }
-
-  public void showMetadata(boolean doShow) {
-    showMetadata = doShow;
-    tableView.updateItemsFromFilter();
+    Prefs.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
   }
 
   @FXML
