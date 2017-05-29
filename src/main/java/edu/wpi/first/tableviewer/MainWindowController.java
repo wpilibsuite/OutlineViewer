@@ -7,11 +7,11 @@ import edu.wpi.first.tableviewer.dialog.AddStringDialog;
 import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import edu.wpi.first.tableviewer.entry.Entry;
+import edu.wpi.first.tableviewer.entry.TableEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -31,11 +31,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
-import static edu.wpi.first.tableviewer.NetworkTableUtils.normalize;
+import static edu.wpi.first.tableviewer.NetworkTableUtils.isPersistent;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
 
 /**
@@ -85,12 +86,7 @@ public class MainWindowController {
 
     tableView.setOnKeyPressed(event -> {
       if (event.getCode() == KeyCode.DELETE) {
-        ObservableList<TreeItem<Entry>> selectedItems = tableView.getSelectionModel().getSelectedItems();
-        selectedItems.stream()
-                     .filter(Objects::nonNull)
-                     .map(TreeItem::getValue)
-                     .map(Entry::getKey)
-                     .forEach(NetworkTableUtils::delete);
+        deleteSelectedEntries();
       }
     });
 
@@ -149,7 +145,13 @@ public class MainWindowController {
 
     tableView.setOnContextMenuRequested(e -> {
       if (tableView.getContextMenu() != null) {
+        // Close previous context menu
         tableView.getContextMenu().hide();
+      }
+      // The actions in the menu only affect one entry,
+      // so we only select the entry that was clicked on.
+      if (tableView.getSelectionModel().getSelectedItems().size() > 1) {
+        tableView.getSelectionModel().clearAndSelect(tableView.getSelectionModel().getSelectedIndex());
       }
       TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
       if (selected == null) {
@@ -159,55 +161,18 @@ public class MainWindowController {
       String key = entry.getKey();
       ContextMenu cm = new ContextMenu();
 
-      if (entry.getValue() == null) {
-        // Add the 'add x' items
-        MenuItem string = new MenuItem("Add string");
-        string.setOnAction(a -> {
-          new AddStringDialog().showAndWait().ifPresent(data -> {
-            String k = concat(key, data.getKey());
-            NetworkTablesJNI.putString(k, data.getValue());
-          });
-        });
-
-        MenuItem number = new MenuItem("Add number");
-        number.setOnAction(a -> {
-          new AddNumberDialog().showAndWait().ifPresent(data -> {
-            String k = concat(key, data.getKey());
-            NetworkTablesJNI.putDouble(k, data.getValue().doubleValue());
-          });
-        });
-
-        MenuItem bool = new MenuItem("Add boolean");
-        bool.setOnAction(a -> {
-          new AddBooleanDialog().showAndWait().ifPresent(data -> {
-            String k = concat(key, data.getKey());
-            NetworkTablesJNI.putBoolean(k, data.getValue());
-          });
-        });
-
-        cm.getItems().addAll(string, number, bool, new SeparatorMenuItem());
+      if (entry instanceof TableEntry) {
+        // It's a table, add the 'add x' items
+        cm.getItems().addAll(createTableMenuItems(entry));
+        cm.getItems().add(new SeparatorMenuItem());
       }
 
       if (!key.isEmpty() && entry.getValue() != null) {
-        String flagKey = normalize(key).substring(1);
-        MenuItem setPersistent;
-
-        if (NetworkTableUtils.isPersistent(flagKey)) {
-          // Make the key persistent
-          setPersistent = new MenuItem("Set transient");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.clearPersistent(flagKey));
-        } else {
-          // Make the entry persistent
-          setPersistent = new MenuItem("Set persistent");
-          setPersistent.setOnAction(__ -> NetworkTableUtils.setPersistent(flagKey));
-        }
+        MenuItem setPersistent = new MenuItem(String.format("Set %s", isPersistent(key) ? "transient" : "persistent"));
+        setPersistent.setOnAction(__ -> NetworkTableUtils.togglePersistent(key));
 
         MenuItem delete = new MenuItem("Delete");
-        delete.setOnAction(__ -> {
-          tableView.getSelectionModel()
-                   .getSelectedItems()
-                   .forEach(i -> NetworkTableUtils.delete(i.getValue().getKey()));
-        });
+        delete.setOnAction(__ -> deleteSelectedEntries());
 
         cm.getItems().addAll(setPersistent, delete);
       } else {
@@ -219,6 +184,48 @@ public class MainWindowController {
       cm.show(tableView, e.getScreenX(), e.getScreenY());
     });
     Prefs.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
+  }
+
+  private List<MenuItem> createTableMenuItems(Entry<?> tableEntry) {
+    final String key = tableEntry.getKey();
+
+    MenuItem string = new MenuItem("Add string");
+    string.setOnAction(a -> {
+      new AddStringDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putString(k, data.getValue());
+      });
+    });
+
+    MenuItem number = new MenuItem("Add number");
+    number.setOnAction(a -> {
+      new AddNumberDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putDouble(k, data.getValue().doubleValue());
+      });
+    });
+
+    MenuItem bool = new MenuItem("Add boolean");
+    bool.setOnAction(a -> {
+      new AddBooleanDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putBoolean(k, data.getValue());
+      });
+    });
+
+    return Arrays.asList(string, number, bool);
+  }
+
+  /**
+   * Deletes all selected entries.
+   */
+  private void deleteSelectedEntries() {
+    tableView.getSelectionModel()
+             .getSelectedItems()
+             .stream()
+             .map(item -> item.getValue())
+             .map(entry -> entry.getKey())
+             .forEach(key -> NetworkTableUtils.delete(key));
   }
 
   @FXML
