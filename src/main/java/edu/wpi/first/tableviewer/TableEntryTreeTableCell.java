@@ -53,7 +53,7 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       field.setOnAction(e -> commitEdit(field.getText()));
       editor = field;
     } else if (item instanceof Number) {
-      TextField field = new TextField(item.toString());
+      TextField field = new TextField(entry.getDisplayString());
       field.setOnAction(e -> {
         try {
           commitEdit(Double.parseDouble(field.getText()));
