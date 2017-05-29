@@ -12,7 +12,6 @@
 <?import javafx.scene.control.TreeItem?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
 <BorderPane maxHeight="16000" maxWidth="16000"
@@ -57,9 +56,7 @@
                 <Button fx:id="closeSearchButton" text="Clear"
                         onAction="#clearSearch"/>
             </ToolBar>
-            <StackPane BorderPane.alignment="CENTER" styleClass="connection-background" minHeight="40" cache="true" cacheShape="true" cacheHint="SPEED" fx:id="connectionBackground">
-                <Label fx:id="connectionLabel" styleClass="connection-label" text="No connection" cache="true" cacheShape="true" cacheHint="SPEED"/>
-            </StackPane>
+            <fx:include source="ConnectionIndicator.fxml"/>
         </VBox>
     </bottom>
     <stylesheets>
