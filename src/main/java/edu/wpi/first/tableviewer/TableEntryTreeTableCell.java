@@ -1,6 +1,7 @@
 package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.tableviewer.dialog.AddBooleanArrayDialog;
+import edu.wpi.first.tableviewer.dialog.AddBytesDialog;
 import edu.wpi.first.tableviewer.dialog.AddEntryDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringArrayDialog;
@@ -87,6 +88,12 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       } else if (item instanceof boolean[]) {
         AddBooleanArrayDialog d = new AddBooleanArrayDialog();
         d.setInitial((boolean[]) item);
+        arrayEditor = d;
+        arrayEditor.setKey(entry.getKey());
+        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+      } else if (item instanceof byte[]) {
+        AddBytesDialog d = new AddBytesDialog();
+        d.setInitial((byte[]) item);
         arrayEditor = d;
         arrayEditor.setKey(entry.getKey());
         arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
