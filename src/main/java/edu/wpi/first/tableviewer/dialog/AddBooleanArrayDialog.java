@@ -40,6 +40,13 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
     return new VBox(8, list, add);
   }
 
+  public void setInitial(boolean[] initialValues) {
+    list.getItems().clear();
+    for (boolean value : initialValues) {
+      list.getItems().add(value);
+    }
+  }
+
   private void removeSelected() {
     list.getItems().removeAll(list.getSelectionModel().getSelectedItems());
   }

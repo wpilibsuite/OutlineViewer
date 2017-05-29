@@ -41,6 +41,13 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
     return new VBox(8, list, add);
   }
 
+  public void setInitial(double[] initialValues) {
+    list.getItems().clear();
+    for (double value : initialValues) {
+      list.getItems().add(value);
+    }
+  }
+
   private void removeSelected() {
     list.getItems().removeAll(list.getSelectionModel().getSelectedItems());
   }

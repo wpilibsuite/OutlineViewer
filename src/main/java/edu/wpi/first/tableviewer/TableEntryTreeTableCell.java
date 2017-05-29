@@ -1,5 +1,10 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.tableviewer.dialog.AddBooleanArrayDialog;
+import edu.wpi.first.tableviewer.dialog.AddEntryDialog;
+import edu.wpi.first.tableviewer.dialog.AddNumberArrayDialog;
+import edu.wpi.first.tableviewer.dialog.AddStringArrayDialog;
+import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.entry.Entry;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -17,6 +22,7 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
   private Node graphic = null;
   private String text = null;
   private boolean canEdit = false;
+  private AddEntryDialog<?> arrayEditor;
 
   public TableEntryTreeTableCell() {
     setEditable(true);
@@ -38,6 +44,7 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
     setText(null);
 
     canEdit = true; // assume it's editable; if it's not, we'll set it later
+    arrayEditor = null; // will get set later if item is an array
     if (item instanceof Boolean) {
       CheckBox checkBox = new CheckBox();
       checkBox.setSelected((Boolean) item);
@@ -64,9 +71,30 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       });
       editor = field;
     } else {
-      // not editable
-      System.out.println("Not editable: " + item);
-      canEdit = false;
+      // check for arrays
+      if (item instanceof String[]) {
+        AddStringArrayDialog d = new AddStringArrayDialog();
+        d.setInitial((String[]) item);
+        arrayEditor = d;
+        arrayEditor.setKey(entry.getKey());
+        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+      } else if (item instanceof double[]) {
+        AddNumberArrayDialog d = new AddNumberArrayDialog();
+        d.setInitial((double[]) item);
+        arrayEditor = d;
+        arrayEditor.setKey(entry.getKey());
+        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+      } else if (item instanceof boolean[]) {
+        AddBooleanArrayDialog d = new AddBooleanArrayDialog();
+        d.setInitial((boolean[]) item);
+        arrayEditor = d;
+        arrayEditor.setKey(entry.getKey());
+        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+      } else {
+        // not editable
+        System.out.println("Not editable: " + item);
+        canEdit = false;
+      }
     }
     setText(entry.getDisplayString());
   }
@@ -77,19 +105,39 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       return;
     }
     super.startEdit();
-    graphic = getGraphic();
-    text = getText();
-    setGraphic(editor);
-    if (!(editor instanceof CheckBox)) {
-      setText(null);
+    if (arrayEditor != null) {
+      arrayEditor.setDisableKey(true);
+      arrayEditor.setOnCloseRequest(e -> {
+        Entry<?> result = arrayEditor.getResult();
+        if (result == null) {
+          cancelEdit();
+        } else {
+          commitEdit(result.getValue());
+        }
+      });
+      arrayEditor.show();
+      arrayEditor.getDialogPane().getScene().getWindow().requestFocus();
+      Dialogs.center(arrayEditor.getDialogPane().getScene().getWindow());
+    } else {
+      graphic = getGraphic();
+      text = getText();
+      setGraphic(editor);
+      if (!(editor instanceof CheckBox)) {
+        setText(null);
+      }
     }
   }
 
   @Override
   public void cancelEdit() {
     super.cancelEdit();
-    setGraphic(graphic);
-    setText(text);
+    if (arrayEditor != null) {
+      arrayEditor.setResult(null);
+      arrayEditor.close();
+    } else {
+      setGraphic(graphic);
+      setText(text);
+    }
   }
 
   @Override
