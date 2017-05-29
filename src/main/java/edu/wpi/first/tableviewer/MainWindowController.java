@@ -1,8 +1,11 @@
 package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.tableviewer.component.NetworkTableTree;
+import edu.wpi.first.tableviewer.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
+import edu.wpi.first.tableviewer.dialog.AddNumberArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
+import edu.wpi.first.tableviewer.dialog.AddStringArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
 import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
@@ -213,7 +216,31 @@ public class MainWindowController {
       });
     });
 
-    return Arrays.asList(string, number, bool);
+    MenuItem boolArray = new MenuItem("Add boolean array");
+    boolArray.setOnAction(__ -> {
+      new AddBooleanArrayDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putBooleanArray(k, data.getValue());
+      });
+    });
+
+    MenuItem numberArray = new MenuItem("Add number array");
+    numberArray.setOnAction(__ -> {
+      new AddNumberArrayDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putDoubleArray(k, data.getValue());
+      });
+    });
+
+    MenuItem stringArray = new MenuItem("Add string array");
+    stringArray.setOnAction(__ -> {
+      new AddStringArrayDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putStringArray(k, data.getValue());
+      });
+    });
+
+    return Arrays.asList(string, number, bool, new SeparatorMenuItem(), stringArray, numberArray, boolArray);
   }
 
   /**
