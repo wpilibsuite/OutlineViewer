@@ -12,12 +12,10 @@ import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
@@ -34,8 +32,6 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
@@ -69,128 +65,10 @@ public class MainWindowController {
   @FXML
   private TextField searchField;
 
-  @FXML
-  private Pane connectionBackground;
-  @FXML
-  private Label connectionLabel;
-
   private final Predicate<Entry> metadataFilter = x -> Prefs.isShowMetaData() || !x.isMetadata();
-
-  private static final PseudoClass CLIENT = PseudoClass.getPseudoClass("client");
-  private static final PseudoClass SERVER = PseudoClass.getPseudoClass("server");
-  private static final PseudoClass FAILED = PseudoClass.getPseudoClass("failed");
-
-  public void updateConnectionLabel() {
-    if (NetworkTableUtils.isRunning()) {
-      if (NetworkTableUtils.isServer()) {
-        if (NetworkTableUtils.failed()) {
-          serverFail();
-        } else if (NetworkTableUtils.starting()) {
-          serverStarting();
-        } else { // success
-          serverSuccess();
-        }
-      } else if (NetworkTableUtils.isClient()) {
-        if (NetworkTableUtils.failed()) {
-          clientFail();
-        } else if (NetworkTableUtils.starting()) {
-          clientStarting();
-        } else { // success
-          clientSuccess();
-        }
-      } else {
-        System.out.println("Running, but not in server or client mode");
-        generalFailure();
-      }
-    } else {
-      System.out.println("Not running anything");
-      generalFailure();
-    }
-    refreshWindow();
-  }
-
-  private void refreshWindow() {
-  }
-
-  private void clientStarting() {
-    connectionLabel.setText("Connecting to " + Prefs.getResolvedAddress() + "...");
-    connectionBackground.pseudoClassStateChanged(CLIENT, true);
-    connectionBackground.pseudoClassStateChanged(SERVER, false);
-    connectionBackground.pseudoClassStateChanged(FAILED, false);
-  }
-
-  private void clientFail() {
-    String text = "No connection";
-    String addr = Prefs.getResolvedAddress();
-    if (addr != null) {
-      text += " to " + addr;
-    }
-    connectionLabel.setText(text);
-    connectionBackground.pseudoClassStateChanged(CLIENT, true);
-    connectionBackground.pseudoClassStateChanged(SERVER, false);
-    connectionBackground.pseudoClassStateChanged(FAILED, true);
-  }
-
-  private void clientSuccess() {
-    connectionLabel.setText("Connected to server at " + Prefs.getResolvedAddress());
-    connectionBackground.pseudoClassStateChanged(CLIENT, true);
-    connectionBackground.pseudoClassStateChanged(SERVER, false);
-    connectionBackground.pseudoClassStateChanged(FAILED, false);
-  }
-
-  private void serverStarting() {
-    connectionLabel.setText("Starting server...");
-    connectionBackground.pseudoClassStateChanged(CLIENT, false);
-    connectionBackground.pseudoClassStateChanged(SERVER, true);
-    connectionBackground.pseudoClassStateChanged(FAILED, false);
-  }
-
-  private void serverFail() {
-    connectionLabel.setText("Could not run server");
-    connectionBackground.pseudoClassStateChanged(CLIENT, false);
-    connectionBackground.pseudoClassStateChanged(SERVER, true);
-    connectionBackground.pseudoClassStateChanged(FAILED, true);
-  }
-
-  private void serverSuccess() {
-    String text = "Running server";
-    int numClients = NetworkTablesJNI.getConnections().length;
-    switch (numClients) {
-      case 0:
-        text += " (No clients)";
-        break;
-      case 1:
-        text += " (1 client)";
-        break;
-      default:
-        text += " (" + numClients + " clients)";
-        break;
-    }
-    connectionLabel.setText(text);
-    connectionBackground.pseudoClassStateChanged(CLIENT, false);
-    connectionBackground.pseudoClassStateChanged(SERVER, true);
-    connectionBackground.pseudoClassStateChanged(FAILED, false);
-  }
-
-  private void generalFailure() {
-    connectionLabel.setText("Something went terribly wrong");
-    connectionBackground.pseudoClassStateChanged(CLIENT, false);
-    connectionBackground.pseudoClassStateChanged(SERVER, false);
-    connectionBackground.pseudoClassStateChanged(FAILED, true);
-  }
 
   @FXML
   private void initialize() {
-    NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> {
-      Platform.runLater(this::updateConnectionLabel);
-    }, true);
-    Prefs.serverProperty().addListener(__ -> Platform.runLater(this::updateConnectionLabel));
-    Executors.newSingleThreadScheduledExecutor(r -> {
-      Thread t = new Thread(r);
-      t.setDaemon(true);
-      return t;
-    }).scheduleAtFixedRate(() -> Platform.runLater(this::updateConnectionLabel), 0L, 1000, TimeUnit.MILLISECONDS);
-
     root.setOnKeyPressed(event -> {
       if (event.isControlDown() && event.getCode() == KeyCode.F) {
         searchBar.setManaged(true);
