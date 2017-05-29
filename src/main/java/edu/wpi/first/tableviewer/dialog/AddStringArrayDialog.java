@@ -41,6 +41,13 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
     return new VBox(8, list, add);
   }
 
+  public void setInitial(String[] initialValues) {
+    list.getItems().clear();
+    for (String value : initialValues) {
+      list.getItems().add(value);
+    }
+  }
+
   private void removeSelected() {
     list.getItems().removeAll(list.getSelectionModel().getSelectedItems());
   }
