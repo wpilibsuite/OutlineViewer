@@ -7,7 +7,7 @@ import org.controlsfx.control.ToggleSwitch;
 import java.util.Arrays;
 
 /**
- *
+ * Controller for the app preferences pane.
  */
 public class PreferencesController {
 
@@ -29,6 +29,9 @@ public class PreferencesController {
     idField.disableProperty().bind(serverModeSwitch.selectedProperty());
   }
 
+  /**
+   * Starts running in client mode, using the address and port set in the preferences pane.
+   */
   private void startClient() {
     System.out.println("Starting client");
     NetworkTableUtils.shutdown();
@@ -55,6 +58,9 @@ public class PreferencesController {
     Prefs.setIp(idField.getText());
   }
 
+  /**
+   * Starts running in server mode, using the port set in the preferences pane.
+   */
   private void startServer() {
     System.out.println("Starting server");
     NetworkTableUtils.shutdown();
@@ -66,6 +72,9 @@ public class PreferencesController {
     Prefs.setServer(true);
   }
 
+  /**
+   * Starts running ntcore in the selected mode.
+   */
   public void start() {
     System.out.println("Starting");
     if (Prefs.isServer()) {

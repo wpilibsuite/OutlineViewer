@@ -23,6 +23,15 @@ public abstract class Entry<T> {
   private ObjectProperty<T> value = new SimpleObjectProperty<>(this, "value", null);
   private final StringProperty type = new SimpleStringProperty(this, "type", "");
 
+  /**
+   * Creates an entry for the given key-value pair.
+   *
+   * @param key   the absolute key of the entry
+   * @param value the initial value of the entry
+   * @param <T>   the type of values in the entry
+   * @return an entry for the given key-value pair
+   * @throws IllegalArgumentException if the value is an unsupported type
+   */
   @SuppressWarnings("unchecked")
   public static <T> Entry<T> entryFor(String key, T value) {
     Objects.requireNonNull(key);
@@ -48,9 +57,14 @@ public abstract class Entry<T> {
     if (value instanceof String[]) {
       return (Entry<T>) new StringArrayEntry(key, (String[]) value);
     }
-    throw new IllegalArgumentException("Unsupported type: " + value + " (type: " + value.getClass().getSimpleName() + ")");
+    throw new IllegalArgumentException("Unsupported type: " + value.getClass().getSimpleName());
   }
 
+  /**
+   * Creates an entry with the given key and no value.
+   *
+   * @param key the key of the entry
+   */
   protected Entry(String key) {
     Objects.requireNonNull(key, "key");
     this.key.setValue(NetworkTableUtils.normalize(key));
@@ -66,6 +80,12 @@ public abstract class Entry<T> {
     }, value));
   }
 
+  /**
+   * Creates an entry with the given key and value.
+   *
+   * @param key   the key of the entry
+   * @param value the value of the entry
+   */
   protected Entry(String key, T value) {
     this(key);
     Objects.requireNonNull(value, "value");

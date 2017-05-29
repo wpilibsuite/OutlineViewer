@@ -16,11 +16,11 @@ public class NumberEntry extends Entry<Number> {
 
   @Override
   public String getDisplayString() {
-    double d = getValue().doubleValue();
-    if (d == (int) d) {
-      return Integer.toString((int) d);
+    double value = getValue().doubleValue();
+    if (value == (int) value) {
+      return Integer.toString((int) value);
     } else {
-      return Double.toString(d);
+      return Double.toString(value);
     }
   }
 

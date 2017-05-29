@@ -25,17 +25,20 @@ public class ConnectionIndicatorController {
   private Label connectionLabel;
 
   @FXML
-  public void initialize() {
+  private void initialize() {
     NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> updateConnectionLabel(), true);
     Prefs.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
-      Thread t = new Thread(r);
-      t.setDaemon(true);
-      return t;
+      Thread thread = new Thread(r);
+      thread.setDaemon(true);
+      return thread;
     }).scheduleAtFixedRate(this::updateConnectionLabel, 0L, 1000, TimeUnit.MILLISECONDS);
   }
 
-  public void updateConnectionLabel() {
+  /**
+   * Updates the connection label based on the current network mode of ntcore.
+   */
+  private void updateConnectionLabel() {
     if (!Platform.isFxApplicationThread()) {
       Platform.runLater(this::updateConnectionLabel);
       return;

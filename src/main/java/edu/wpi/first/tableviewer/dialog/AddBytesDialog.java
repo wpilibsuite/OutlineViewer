@@ -42,6 +42,9 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
     return new VBox(8, list, add);
   }
 
+  /**
+   * Sets the initial values in the raw bytes array.
+   */
   public void setInitial(byte[] initialValues) {
     list.getItems().clear();
     for (byte value : initialValues) {
@@ -66,21 +69,13 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
     return arr;
   }
 
-  public static byte[] fromUnsigned(byte[] unsigned) {
-    byte[] array = new byte[unsigned.length];
-    for (byte i = 0; i < unsigned.length; i++) {
-      array[i] = (byte) (unsigned[i] & 0xFF);
-    }
-    return array;
-  }
-
   private static final class ByteToStringConverter extends StringConverter<Byte> {
 
     public static final StringConverter<Byte> INSTANCE = new ByteToStringConverter();
 
     @Override
-    public String toString(Byte b) {
-      return String.format("0x%02X", b);
+    public String toString(Byte object) {
+      return String.format("0x%02X", object);
     }
 
     @Override

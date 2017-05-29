@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'maven-publish'
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
@@ -21,12 +22,9 @@ publishing {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src"]
-        }
-    }
+checkstyle {
+    configFile = new File(rootDir, "checkstyle.xml")
+    toolVersion = '6.19'
 }
 
 repositories {
