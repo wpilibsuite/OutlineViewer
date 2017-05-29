@@ -14,4 +14,14 @@ public class NumberEntry extends Entry<Number> {
     return "Number";
   }
 
+  @Override
+  public String getDisplayString() {
+    double d = getValue().doubleValue();
+    if (d == (int) d) {
+      return Integer.toString((int) d);
+    } else {
+      return Double.toString(d);
+    }
+  }
+
 }
