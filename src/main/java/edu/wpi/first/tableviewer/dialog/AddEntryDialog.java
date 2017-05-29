@@ -3,6 +3,8 @@ package edu.wpi.first.tableviewer.dialog;
 import edu.wpi.first.tableviewer.entry.Entry;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -18,14 +20,19 @@ import javafx.scene.layout.GridPane;
  */
 public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
+
   private static final ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
+
+  private final TextField keyField;
+  private final BooleanProperty disableKey = new SimpleBooleanProperty(this, "disableKey", false);
 
   protected AddEntryDialog(String typeName) {
     super();
     setTitle("Add " + typeName);
 
     Label keyLabel = new Label("Key");
-    TextField keyField = new TextField();
+    keyField = new TextField();
+    keyField.disableProperty().bind(disableKey);
     Platform.runLater(keyField::requestFocus);
     keyField.setPromptText("key");
 
@@ -45,7 +52,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     // disable the "Add" button if the key is empty
     Button addButton = (Button) getDialogPane().lookupButton(add);
     addButton.disableProperty().bind(
-        Bindings.createBooleanBinding(() -> keyField.getText().isEmpty(), keyField.textProperty()));
+        Bindings.createBooleanBinding(() -> keyField.getText().isEmpty() && !isDisableKey(), keyField.textProperty(), disableKey));
 
     addButton.setDefaultButton(true);
 
@@ -67,5 +74,21 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
   protected abstract Node createCustomControl();
 
   protected abstract T getData();
+
+  public void setKey(String key) {
+    keyField.setText(key);
+  }
+
+  public boolean isDisableKey() {
+    return disableKey.get();
+  }
+
+  public BooleanProperty disableKeyProperty() {
+    return disableKey;
+  }
+
+  public void setDisableKey(boolean disableKey) {
+    this.disableKey.set(disableKey);
+  }
 
 }
