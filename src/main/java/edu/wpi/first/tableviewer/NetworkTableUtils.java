@@ -1,7 +1,10 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
+
+import java.util.stream.Stream;
 
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_CLIENT;
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_FAILURE;
@@ -54,6 +57,23 @@ public class NetworkTableUtils {
       return key;
     }
     return key.substring(key.lastIndexOf('/') + 1);
+  }
+
+  /**
+   * Deletes a key from network tables. If the key represents a subtable, everything under that
+   * subtable will be deleted.
+   */
+  public static void delete(String key) {
+    key = normalize(key);
+    if (NetworkTablesJNI.containsKey(key)) {
+      NetworkTablesJNI.deleteEntry(key);
+    } else {
+      // subtable
+      EntryInfo[] entries = NetworkTablesJNI.getEntries(key, 0xFF);
+      Stream.of(entries)
+            .map(entryInfo -> entryInfo.name)
+            .forEach(NetworkTableUtils::delete);
+    }
   }
 
   /**

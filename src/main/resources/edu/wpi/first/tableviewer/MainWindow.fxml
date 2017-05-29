@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import edu.wpi.first.tableviewer.component.NetworkTableTree?>
 <?import edu.wpi.first.tableviewer.entry.RootTableEntry?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,7 +11,6 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeItem?>
 <?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -34,7 +34,7 @@
         </MenuBar>
     </top>
     <center>
-        <TreeTableView fx:id="tableView" editable="true" BorderPane.alignment="CENTER">
+        <NetworkTableTree fx:id="tableView" editable="true" BorderPane.alignment="CENTER">
             <root>
                 <TreeItem fx:id="ntRoot" expanded="true">
                     <value>
@@ -47,7 +47,7 @@
                 <TreeTableColumn fx:id="valueColumn" editable="true" minWidth="200" prefWidth="200" sortable="false" text="Value"/>
                 <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type"/>
             </columns>
-        </TreeTableView>
+        </NetworkTableTree>
     </center>
     <bottom>
         <VBox>
