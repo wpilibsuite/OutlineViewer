@@ -11,7 +11,7 @@ import javafx.util.StringConverter;
 import java.util.List;
 
 /**
- *
+ * A dialog for adding or editing arrays of numbers in a network table entry.
  */
 public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
 
@@ -27,8 +27,8 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
     list = new ListView<>();
     list.setEditable(true);
     list.setCellFactory(__ -> new TextFieldListCell<>(DoubleToStringConverter.INSTANCE));
-    list.setOnKeyPressed(e -> {
-      KeyCode code = e.getCode();
+    list.setOnKeyPressed(event -> {
+      KeyCode code = event.getCode();
       if (code == KeyCode.DELETE) {
         removeSelected();
       }
@@ -41,6 +41,9 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
     return new VBox(8, list, add);
   }
 
+  /**
+   * Sets the initial values in the array.
+   */
   public void setInitial(double[] initialValues) {
     list.getItems().clear();
     for (double value : initialValues) {
@@ -70,11 +73,11 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
     public static final StringConverter<Double> INSTANCE = new DoubleToStringConverter();
 
     @Override
-    public String toString(Double d) {
-      if (d.doubleValue() == d.intValue()) {
-        return String.valueOf(d.intValue());
+    public String toString(Double object) {
+      if (object.doubleValue() == object.intValue()) {
+        return String.valueOf(object.intValue());
       } else {
-        return String.valueOf(d.doubleValue());
+        return String.valueOf(object.doubleValue());
       }
     }
 

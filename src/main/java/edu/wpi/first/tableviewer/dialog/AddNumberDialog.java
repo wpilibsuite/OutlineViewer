@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
 /**
- *
+ * A dialog for adding or editing number entries in network tables.
  */
 public class AddNumberDialog extends AddEntryDialog<Number> {
 

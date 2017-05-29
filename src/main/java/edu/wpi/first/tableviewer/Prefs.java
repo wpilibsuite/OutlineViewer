@@ -64,11 +64,16 @@ public class Prefs {
     setResolvedAddress(preferences.get(RESOLVED_ADDRESS, "localhost"));
     setPort(preferences.getInt(PORT, 1735));
 
-    showMetaDataProperty().addListener((__, o, n) -> preferences.putBoolean(SHOW_METADATA, n));
-    serverProperty().addListener((__, o, n) -> preferences.putBoolean(SERVER, n));
-    ipProperty().addListener((__, o, n) -> preferences.put(IP, n));
-    resolvedAddressProperty().addListener((__, o, n) -> preferences.put(RESOLVED_ADDRESS, n));
-    portProperty().addListener((__, o, n) -> preferences.putInt(PORT, n.intValue()));
+    showMetaDataProperty().addListener(
+        (__, oldValue, newValue) -> preferences.putBoolean(SHOW_METADATA, newValue));
+    serverProperty().addListener(
+        (__, oldValue, newValue) -> preferences.putBoolean(SERVER, newValue));
+    ipProperty().addListener(
+        (__, oldValue, newValue) -> preferences.put(IP, newValue));
+    resolvedAddressProperty().addListener(
+        (__, oldValue, newValue) -> preferences.put(RESOLVED_ADDRESS, newValue));
+    portProperty().addListener(
+        (__, oldValue, newValue) -> preferences.putInt(PORT, newValue.intValue()));
   }
 
   private Prefs() {

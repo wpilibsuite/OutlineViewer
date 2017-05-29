@@ -22,7 +22,6 @@ public class NetworkTableUtils {
    * forward slash.
    *
    * @param key the key to normalize
-   * @return
    */
   public static String normalize(String key) {
     return ("/" + key).replaceAll("/{2,}", "/");
@@ -36,11 +35,11 @@ public class NetworkTableUtils {
    * @param more optional extra keys to concatenate
    */
   public static String concat(String key1, String key2, String... more) {
-    StringBuilder b = new StringBuilder(key1).append('/').append(key2);
+    StringBuilder builder = new StringBuilder(key1).append('/').append(key2);
     for (String s : more) {
-      b.append('/').append(s);
+      builder.append('/').append(s);
     }
-    return normalize(b.toString());
+    return normalize(builder.toString());
   }
 
   /**
@@ -140,6 +139,11 @@ public class NetworkTableUtils {
     NetworkTable.shutdown();
   }
 
+  /**
+   * Sets ntcore to server mode.
+   *
+   * @param port the port on the local machine to run the ntcore server on
+   */
   public static void setServer(int port) {
     shutdown();
     System.out.printf("Setting server mode (port %d)%n", port);
@@ -148,6 +152,12 @@ public class NetworkTableUtils {
     NetworkTable.initialize();
   }
 
+  /**
+   * Sets ntcore to client mode.
+   *
+   * @param serverIp   the ip of the server to connect to, eg "127.0.0.1" or "localhost"
+   * @param serverPort the port of the server to connect to. This is normally 1735.
+   */
   public static void setClient(String serverIp, int serverPort) {
     shutdown();
     System.out.printf("Setting client mode (remote %s:%d)%n", serverIp, serverPort);
@@ -157,26 +167,49 @@ public class NetworkTableUtils {
     NetworkTable.initialize();
   }
 
+  /**
+   * Checks if the given bit flags contains the given flag.
+   *
+   * @param flags       the bit flags to check
+   * @param flagToCheck the specific flag to check
+   */
   public static boolean hasFlag(int flags, int flagToCheck) {
     return (flags & flagToCheck) != 0;
   }
 
+  /**
+   * Checks if ntcore is currently running.
+   */
   public static boolean isRunning() {
     return getNetworkMode() != 0;
   }
 
+  /**
+   * Checks if ntcore is in a failed server or client state. This normally happens if the
+   * requested server port is already in use (server mode) or if the app can't find a server
+   * at the requested address (client mode).
+   */
   public static boolean failed() {
     return hasFlag(getNetworkMode(), NT_NET_MODE_FAILURE);
   }
 
+  /**
+   * Checks if ntcore is currently starting up the client or server.
+   */
   public static boolean starting() {
     return hasFlag(getNetworkMode(), NT_NET_MODE_STARTING);
   }
 
+  /**
+   * Checks if ntcore is currently running in server mode.
+   */
   public static boolean isServer() {
     return hasFlag(getNetworkMode(), NT_NET_MODE_SERVER);
   }
 
+  /**
+   * Checks if ntcore is currently running in client mode.
+   */
   public static boolean isClient() {
     return hasFlag(getNetworkMode(), NT_NET_MODE_CLIENT);
   }

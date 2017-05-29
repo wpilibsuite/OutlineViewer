@@ -17,6 +17,9 @@ public class AutoUpdater {
     update();
   }
 
+  /**
+   * Performs a single update.
+   */
   public void update() {
     if (Prefs.isServer()) {
       NetworkTableUtils.setServer(Prefs.getPort());

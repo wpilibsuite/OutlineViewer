@@ -20,9 +20,8 @@ public class RawBytesEntry extends Entry<byte[]> {
     StringBuilder sb = new StringBuilder("[");
     byte[] value = getValue();
     for (int i = 0; i < value.length; i++) {
-      byte b = value[i];
-      int unsigned = (b & 0xFF);
-      sb.append(String.format("0x%02X", unsigned));
+      // convert byte to unsigned int, then show as hex value
+      sb.append(String.format("0x%02X", value[i] & 0xFF));
       if (i != value.length - 1) {
         sb.append(", ");
       }

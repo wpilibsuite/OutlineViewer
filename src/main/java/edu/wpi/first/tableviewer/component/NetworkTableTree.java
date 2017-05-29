@@ -1,7 +1,6 @@
 package edu.wpi.first.tableviewer.component;
 
 import edu.wpi.first.tableviewer.Filterable;
-import edu.wpi.first.tableviewer.NetworkTableUtils;
 import edu.wpi.first.tableviewer.entry.Entry;
 import edu.wpi.first.tableviewer.entry.TableEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
@@ -25,11 +24,21 @@ import java.util.stream.Stream;
  */
 public class NetworkTableTree extends TreeTableView<Entry> implements Filterable<Entry> {
 
-  private final ObjectProperty<Predicate<Entry>> filter = new SimpleObjectProperty<>(this, "filter", null);
-  private static final Comparator<TreeItem<Entry>> branchesFirst = (a, b) -> a.isLeaf() ? (b.isLeaf() ? 0 : 1) : -1;
-  private static final Comparator<TreeItem<Entry>> alphabetical = Comparator.comparing(i -> i.getValue().getKey());
+  private final ObjectProperty<Predicate<Entry>> filter
+      = new SimpleObjectProperty<>(this, "filter", null);
+
+  // node comparators
+  private static final Comparator<TreeItem<Entry>> branchesFirst
+      = (o1, o2) -> o1.isLeaf() ? (o2.isLeaf() ? 0 : 1) : -1;
+  private static final Comparator<TreeItem<Entry>> alphabetical
+      = Comparator.comparing(i -> i.getValue().getKey());
+
   private TreeItem<Entry> realRoot = null;
 
+  /**
+   * Creates a new network table tree. The tree is set up to show changes to network tables
+   * in real time.
+   */
   public NetworkTableTree() {
     super();
     rootProperty().addListener(__ -> {
@@ -45,9 +54,8 @@ public class NetworkTableTree extends TreeTableView<Entry> implements Filterable
       }
       return false;
     });
-    NetworkTablesJNI.addEntryListener("",
-                                      (uid, key, value, flags) -> Platform.runLater(() -> makeBranches(key, value, flags)),
-                                      0xFF);
+    NetworkTablesJNI
+        .addEntryListener("", (uid, key, value, flags) -> makeBranches(key, value, flags), 0xFF);
   }
 
   /**
@@ -105,19 +113,26 @@ public class NetworkTableTree extends TreeTableView<Entry> implements Filterable
 
   @SuppressWarnings("unchecked")
   private void makeBranches(String key, Object value, int flags) {
-    key = NetworkTableUtils.normalize(key);
+    if (!Platform.isFxApplicationThread()) {
+      Platform.runLater(() -> makeBranches(key, value, flags));
+      return;
+    }
     boolean deleted = (flags & ITable.NOTIFY_DELETE) != 0;
     List<String> pathElements = Stream.of(key.split("/"))
                                       .filter(s -> !s.isEmpty())
                                       .collect(Collectors.toList());
     TreeItem<Entry> current = realRoot;
     TreeItem<Entry> parent;
-    StringBuilder k = new StringBuilder();
+    StringBuilder path = new StringBuilder();
     for (int i = 0; i < pathElements.size(); i++) {
       String pathElement = pathElements.get(i);
-      k.append("/").append(pathElement);
+      path.append("/").append(pathElement);
       parent = current;
-      current = current.getChildren().stream().filter(item -> item.getValue().getKey().equals(k.toString())).findFirst().orElse(null);
+      current = current.getChildren()
+                       .stream()
+                       .filter(item -> item.getValue().getKey().equals(path.toString()))
+                       .findFirst()
+                       .orElse(null);
       if (deleted) {
         if (current == null) {
           break;
@@ -133,7 +148,7 @@ public class NetworkTableTree extends TreeTableView<Entry> implements Filterable
           current.getValue().setValue(value);
         }
       } else if (current == null) {
-        current = new TreeItem<>(new TableEntry(k.toString()));
+        current = new TreeItem<>(new TableEntry(path.toString()));
         current.setExpanded(true);
         parent.getChildren().add(current);
       }
