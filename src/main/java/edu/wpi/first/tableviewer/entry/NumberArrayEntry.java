@@ -3,7 +3,7 @@ package edu.wpi.first.tableviewer.entry;
 import java.util.Arrays;
 
 /**
- *
+ * An entry containing an array of numbers.
  */
 public class NumberArrayEntry extends Entry<double[]> {
 

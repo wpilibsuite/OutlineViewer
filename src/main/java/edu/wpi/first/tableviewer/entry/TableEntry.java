@@ -1,7 +1,7 @@
 package edu.wpi.first.tableviewer.entry;
 
 /**
- *
+ * An entry representing a network table. This has no value and no type.
  */
 public class TableEntry extends Entry<Object> {
 

@@ -3,7 +3,7 @@ package edu.wpi.first.tableviewer.entry;
 import java.util.Arrays;
 
 /**
- *
+ * An entry containing an array of boolean values.
  */
 public class BooleanArrayEntry extends Entry<boolean[]> {
 
