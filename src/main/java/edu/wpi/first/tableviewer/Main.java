@@ -4,13 +4,15 @@ import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class Main extends Application {
+
+  private static final ButtonType start = new ButtonType("Start");
 
   public static void main(String[] args) {
     launch(args);
@@ -18,16 +20,19 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    Optional<PreferencesDialog.PrefsResult> prefsResult = new PreferencesDialog().showAndWait();
-    if (!prefsResult.isPresent()) {
-      System.out.println("Cancelled");
-      System.exit(0);
-    }
+    AutoUpdater updater = new AutoUpdater();
+    updater.init();
+    new PreferencesDialog("Preferences", start, ButtonType.CANCEL)
+        .showAndWait()
+        .filter(bt -> start != bt)
+        .ifPresent(__ -> {
+          System.out.println("Cancelled");
+          System.exit(0);
+        });
+    updater.update();
+
     FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
     Pane mainWindow = mainLoader.load();
-    MainWindowController mainWindowController = mainLoader.getController();
-    mainWindowController.updateConnectionLabel(false, null);
-
 
     primaryStage.setTitle("Network Table Viewer");
     primaryStage.setOnCloseRequest(e -> System.exit(0));

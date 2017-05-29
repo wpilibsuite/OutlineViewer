@@ -4,7 +4,7 @@ import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
 import edu.wpi.first.tableviewer.dialog.Dialogs;
-import edu.wpi.first.wpilibj.networktables.ConnectionInfo;
+import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
@@ -15,11 +15,11 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -33,15 +33,14 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Window;
-import org.controlsfx.control.ToggleSwitch;
 
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,41 +86,107 @@ public class MainWindowController {
   private final Predicate<TableEntryData> metadataFilter = x -> showMetadata || !x.isMetadata();
   private final Property<Predicate<TableEntryData>> filter = new SimpleObjectProperty<>(this, "filter", Predicates.always());
 
-  public void updateConnectionLabel(boolean isConnected, ConnectionInfo connectionInfo) {
-    if (Prefs.isServer()) {
-      // running server
-      String text = "Running server";
-      int numClients = NetworkTablesJNI.getConnections().length;
-      switch (numClients) {
-        case 0:
-          text += " (No clients)";
-          break;
-        case 1:
-          text += " (1 client)";
-          break;
-        default:
-          text += " (" + numClients + " clients)";
-          break;
+  private static final PseudoClass CLIENT = PseudoClass.getPseudoClass("client");
+  private static final PseudoClass SERVER = PseudoClass.getPseudoClass("server");
+  private static final PseudoClass FAILED = PseudoClass.getPseudoClass("failed");
+
+  public void updateConnectionLabel() {
+    if (NetworkTableUtils.isRunning()) {
+      if (NetworkTableUtils.isServer()) {
+        if (NetworkTableUtils.failed()) {
+          serverFail();
+        } else if (NetworkTableUtils.starting()) {
+          serverStarting();
+        } else { // success
+          serverSuccess();
+        }
+      } else if (NetworkTableUtils.isClient()) {
+        if (NetworkTableUtils.failed()) {
+          clientFail();
+        } else if (NetworkTableUtils.starting()) {
+          clientStarting();
+        } else { // success
+          clientSuccess();
+        }
+      } else {
+        System.out.println("Running, but not in server or client mode");
+        generalFailure();
       }
-      connectionLabel.setText(text);
-      connectionLabel.setStyle("-fx-text-fill: white");
-      connectionBackground.setStyle("-fx-background-color: linear-gradient(to bottom, #555, #222)");
-    } else if (isConnected) {
-      // client with connection
-      connectionLabel.setText("Connected to server at " + Prefs.getResolvedAddress());
-      connectionLabel.setStyle("-fx-text-fill: white");
-      connectionBackground.setStyle("-fx-background-color: linear-gradient(to bottom, blue, darkblue)");
     } else {
-      // client, no connection
-      String text = "No connection";
-      String addr = Prefs.getResolvedAddress();
-      if (addr != null) {
-        text += " to " + addr;
-      }
-      connectionLabel.setText(text);
-      connectionLabel.setStyle("-fx-text-fill: white");
-      connectionBackground.setStyle("-fx-background-color: linear-gradient(to bottom, orangered, darkred)");
+      System.out.println("Not running anything");
+      generalFailure();
     }
+    refreshWindow();
+  }
+
+  private void refreshWindow() {
+  }
+
+  private void clientStarting() {
+    connectionLabel.setText("Connecting to " + Prefs.getResolvedAddress() + "...");
+    connectionBackground.pseudoClassStateChanged(CLIENT, true);
+    connectionBackground.pseudoClassStateChanged(SERVER, false);
+    connectionBackground.pseudoClassStateChanged(FAILED, false);
+  }
+
+  private void clientFail() {
+    String text = "No connection";
+    String addr = Prefs.getResolvedAddress();
+    if (addr != null) {
+      text += " to " + addr;
+    }
+    connectionLabel.setText(text);
+    connectionBackground.pseudoClassStateChanged(CLIENT, true);
+    connectionBackground.pseudoClassStateChanged(SERVER, false);
+    connectionBackground.pseudoClassStateChanged(FAILED, true);
+  }
+
+  private void clientSuccess() {
+    connectionLabel.setText("Connected to server at " + Prefs.getResolvedAddress());
+    connectionBackground.pseudoClassStateChanged(CLIENT, true);
+    connectionBackground.pseudoClassStateChanged(SERVER, false);
+    connectionBackground.pseudoClassStateChanged(FAILED, false);
+  }
+
+  private void serverStarting() {
+    connectionLabel.setText("Starting server...");
+    connectionBackground.pseudoClassStateChanged(CLIENT, false);
+    connectionBackground.pseudoClassStateChanged(SERVER, true);
+    connectionBackground.pseudoClassStateChanged(FAILED, false);
+  }
+
+  private void serverFail() {
+    connectionLabel.setText("Could not run server");
+    connectionBackground.pseudoClassStateChanged(CLIENT, false);
+    connectionBackground.pseudoClassStateChanged(SERVER, true);
+    connectionBackground.pseudoClassStateChanged(FAILED, true);
+  }
+
+  private void serverSuccess() {
+    String text = "Running server";
+    int numClients = NetworkTablesJNI.getConnections().length;
+    switch (numClients) {
+      case 0:
+        text += " (No clients)";
+        break;
+      case 1:
+        text += " (1 client)";
+        break;
+      default:
+        text += " (" + numClients + " clients)";
+        break;
+    }
+    connectionLabel.setText(text);
+    connectionBackground.pseudoClassStateChanged(CLIENT, false);
+    connectionBackground.pseudoClassStateChanged(SERVER, true);
+    connectionBackground.pseudoClassStateChanged(FAILED, false);
+  }
+
+  private void generalFailure() {
+    connectionLabel.setText("Something went terribly wrong");
+    connectionBackground.pseudoClassStateChanged(CLIENT, false);
+    connectionBackground.pseudoClassStateChanged(SERVER, false);
+    connectionBackground.pseudoClassStateChanged(FAILED, true);
   }
 
   @FXML
@@ -130,8 +195,14 @@ public class MainWindowController {
                                       (uid, key, value, flags) -> Platform.runLater(() -> makeBranches(key, value, flags)),
                                       0xFF);
     NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> {
-      Platform.runLater(() -> updateConnectionLabel(connected, conn));
+      Platform.runLater(this::updateConnectionLabel);
     }, true);
+    Prefs.serverProperty().addListener(__ -> Platform.runLater(this::updateConnectionLabel));
+    Executors.newSingleThreadScheduledExecutor(r -> {
+      Thread t = new Thread(r);
+      t.setDaemon(true);
+      return t;
+    }).scheduleAtFixedRate(() -> Platform.runLater(this::updateConnectionLabel), 0L, 1000, TimeUnit.MILLISECONDS);
 
     root.setOnKeyPressed(event -> {
       if (event.isControlDown() && event.getCode() == KeyCode.F) {
@@ -174,7 +245,8 @@ public class MainWindowController {
 
     valueColumn.setOnEditCommit(e -> {
       TableEntryData entry = e.getRowValue().getValue();
-      String key = entry.getKey();
+      String key = entry.getKey(); // entry keys are guaranteed to be normalized
+      // Use raw object put from NetworkTable API (JNI doesn't support it)
       NetworkTable.getTable(key.substring(0, key.lastIndexOf('/'))).putValue(simpleKey(key), e.getNewValue());
     });
 
@@ -297,10 +369,7 @@ public class MainWindowController {
         hideMetadata();
       }
       // dirty hack to refresh the view, otherwise the tree won't render correctly
-      Window window = root.getScene().getWindow();
-      window.requestFocus();
-      window.setY(window.getY() + 1);
-      window.setY(window.getY() - 1);
+      refreshWindow();
     });
   }
 
@@ -456,23 +525,11 @@ public class MainWindowController {
 
   @FXML
   private void showPrefs() throws IOException {
-    GridPane pane = new GridPane();
-    pane.setHgap(8);
-    pane.setVgap(8);
-
-    Label metaLabel = new Label("Show Metadata");
-    ToggleSwitch showMeta = new ToggleSwitch();
-    showMeta.selectedProperty().bindBidirectional(Prefs.showMetaDataProperty());
-    pane.add(metaLabel, 0, 0, 1, 1);
-    pane.add(showMeta, 1, 0, 1, 1);
-
-    Dialog<Object> d = new Dialog<>();
-    d.setTitle("Preferences");
-    d.getDialogPane().setContent(pane);
-    d.getDialogPane().getButtonTypes().addAll(ButtonType.FINISH);
-    d.setResult(new Object());
-    d.show();
-    Dialogs.center(d.getDialogPane().getScene().getWindow());
+    PreferencesDialog dialog = new PreferencesDialog("Preferences", ButtonType.FINISH);
+    Platform.runLater(() -> Dialogs.center(dialog.getDialogPane().getScene().getWindow()));
+    dialog.showAndWait()
+          .map(ButtonType.FINISH::equals)
+          .ifPresent(__ -> dialog.getController().start());
   }
 
 }

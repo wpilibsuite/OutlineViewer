@@ -11,34 +11,24 @@ import java.io.IOException;
 /**
  *
  */
-public class PreferencesDialog extends Dialog<PreferencesDialog.PrefsResult> {
+public class PreferencesDialog extends Dialog<ButtonType> {
 
-  public enum PrefsResult {
-    CLIENT, SERVER
-  }
+  private static final ButtonType start = new ButtonType("Start");
 
-  private static final ButtonType server = new ButtonType("Start Server");
-  private static final ButtonType client = new ButtonType("Start Client");
+  private final PreferencesController controller;
 
-  public PreferencesDialog() throws IOException {
-    setTitle("Network Table Viewer");
+  public PreferencesDialog(String title, ButtonType... buttonTypes) throws IOException {
+    setTitle(title);
     FXMLLoader loader = new FXMLLoader(PreferencesController.class.getResource("Preferences.fxml"));
     Pane prefsPane = loader.load();
-    PreferencesController controller = loader.getController();
+    controller = loader.getController();
     getDialogPane().setContent(prefsPane);
-    getDialogPane().getButtonTypes().addAll(client, server, ButtonType.CANCEL);
-    setResultConverter(x -> {
-      if (x == server) {
-        controller.startServer();
-        return PrefsResult.SERVER;
-      } else if (x == client) {
-        controller.startClient();
-        return PrefsResult.CLIENT;
-      } else {
-        controller.cancel();
-        return null;
-      }
-    });
+    getDialogPane().getButtonTypes().addAll(buttonTypes);
+    setResultConverter(x -> x);
+  }
+
+  public PreferencesController getController() {
+    return controller;
   }
 
 }

@@ -13,3 +13,23 @@
 .tree-table-row-cell:odd {
     -fx-background-color: derive(white, -2%);
 }
+
+.connection-background {
+    -fx-background-color: black;
+}
+
+.connection-background:client {
+    -fx-background-color: linear-gradient(to bottom, blue, darkblue);
+}
+
+.connection-background:server {
+    -fx-background-color: linear-gradient(to bottom, #444, #222);
+}
+
+.connection-background:server:failed, .connection-background:client:failed {
+    -fx-background-color: linear-gradient(to bottom, red, darkred);
+}
+
+.connection-label {
+    -fx-text-fill: white;
+}

@@ -1,7 +1,9 @@
 package edu.wpi.first.tableviewer;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -16,6 +18,7 @@ public class Prefs {
   public static final String SERVER = "server";
   public static final String IP = "ip";
   public static final String RESOLVED_ADDRESS = "resolved_address";
+  public static final String PORT = "port";
 
   private static final Preferences preferences = Preferences.userNodeForPackage(Main.class);
 
@@ -42,6 +45,8 @@ public class Prefs {
   private static final StringProperty ip
       = new SimpleStringProperty(Prefs.class, IP, "localhost");
 
+  private static IntegerProperty port = new SimpleIntegerProperty(Prefs.class, "port", 1735);
+
 
   /**
    * The actual address for the client to connect to. Does nothing if the app is in server mode.
@@ -57,11 +62,13 @@ public class Prefs {
     setServer(preferences.getBoolean(SERVER, false));
     setIp(preferences.get(IP, "localhost"));
     setResolvedAddress(preferences.get(RESOLVED_ADDRESS, "localhost"));
+    setPort(preferences.getInt(PORT, 1735));
 
     showMetaDataProperty().addListener((__, o, n) -> preferences.putBoolean(SHOW_METADATA, n));
     serverProperty().addListener((__, o, n) -> preferences.putBoolean(SERVER, n));
     ipProperty().addListener((__, o, n) -> preferences.put(IP, n));
     resolvedAddressProperty().addListener((__, o, n) -> preferences.put(RESOLVED_ADDRESS, n));
+    portProperty().addListener((__, o, n) -> preferences.putInt(PORT, n.intValue()));
   }
 
   private Prefs() {
@@ -113,6 +120,18 @@ public class Prefs {
 
   public static void setResolvedAddress(String resolvedAddress) {
     Prefs.resolvedAddress.set(resolvedAddress);
+  }
+
+  public static int getPort() {
+    return port.get();
+  }
+
+  public static IntegerProperty portProperty() {
+    return port;
+  }
+
+  public static void setPort(int port) {
+    Prefs.port.set(port);
   }
 
 }

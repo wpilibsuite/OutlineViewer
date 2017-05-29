@@ -31,10 +31,11 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
+    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:linux"
     compile "org.controlsfx:controlsfx:+"
 }
 
