@@ -33,7 +33,7 @@ public class NetworkTableTree extends TreeTableView<Entry> implements Filterable
   public NetworkTableTree() {
     super();
     rootProperty().addListener(__ -> {
-      if (getFilter() == null) {
+      if (getFilter() == null || realRoot == null) {
         realRoot = getRoot();
       }
     });
