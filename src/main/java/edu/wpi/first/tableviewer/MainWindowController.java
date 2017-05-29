@@ -5,6 +5,8 @@ import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringDialog;
 import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
+import edu.wpi.first.tableviewer.entry.Entry;
+import edu.wpi.first.tableviewer.entry.TableEntry;
 import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
@@ -58,16 +60,16 @@ public class MainWindowController {
   private Pane root;
 
   @FXML
-  private TreeTableView<TableEntryData> tableView;
+  private TreeTableView<Entry> tableView;
   @FXML
-  private TreeItem<TableEntryData> ntRoot;
+  private TreeItem<Entry> ntRoot;
 
   @FXML
-  private TreeTableColumn<TableEntryData, String> keyColumn;
+  private TreeTableColumn<Entry, String> keyColumn;
   @FXML
-  private TreeTableColumn<TableEntryData, Object> valueColumn;
+  private TreeTableColumn<Entry, Object> valueColumn;
   @FXML
-  private TreeTableColumn<TableEntryData, String> typeColumn;
+  private TreeTableColumn<Entry, String> typeColumn;
 
   @FXML
   private ToolBar searchBar;
@@ -83,8 +85,8 @@ public class MainWindowController {
 
   private boolean showMetadata = false;
 
-  private final Predicate<TableEntryData> metadataFilter = x -> showMetadata || !x.isMetadata();
-  private final Property<Predicate<TableEntryData>> filter = new SimpleObjectProperty<>(this, "filter", Predicates.always());
+  private final Predicate<Entry> metadataFilter = x -> showMetadata || !x.isMetadata();
+  private final Property<Predicate<Entry>> filter = new SimpleObjectProperty<>(this, "filter", Predicates.always());
 
   private static final PseudoClass CLIENT = PseudoClass.getPseudoClass("client");
   private static final PseudoClass SERVER = PseudoClass.getPseudoClass("server");
@@ -225,11 +227,11 @@ public class MainWindowController {
 
     tableView.setOnKeyPressed(event -> {
       if (event.getCode() == KeyCode.DELETE) {
-        ObservableList<TreeItem<TableEntryData>> selectedItems = tableView.getSelectionModel().getSelectedItems();
+        ObservableList<TreeItem<Entry>> selectedItems = tableView.getSelectionModel().getSelectedItems();
         selectedItems.stream()
                      .filter(Objects::nonNull)
                      .map(TreeItem::getValue)
-                     .map(TableEntryData::getKey)
+                     .map(Entry::getKey)
                      .forEach(this::remove);
       }
     });
@@ -241,17 +243,17 @@ public class MainWindowController {
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
-    valueColumn.setCellFactory(param -> new TableEntryDataTreeTableCell());
+    valueColumn.setCellFactory(param -> new TableEntryTreeTableCell());
 
     valueColumn.setOnEditCommit(e -> {
-      TableEntryData entry = e.getRowValue().getValue();
+      Entry entry = e.getRowValue().getValue();
       String key = entry.getKey(); // entry keys are guaranteed to be normalized
       // Use raw object put from NetworkTable API (JNI doesn't support it)
       NetworkTable.getTable(key.substring(0, key.lastIndexOf('/'))).putValue(simpleKey(key), e.getNewValue());
     });
 
     tableView.setRowFactory(param -> {
-      final TreeTableRow<TableEntryData> row = new TreeTableRow<>();
+      final TreeTableRow<Entry> row = new TreeTableRow<>();
       // Clicking on an empty row should clear the selection.
       row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
         if (row.getTreeItem() == null) {
@@ -275,7 +277,7 @@ public class MainWindowController {
 
     tableView.setOnMouseClicked(e -> {
       if (e.getClickCount() == 2) {
-        TreeItem<TableEntryData> selected = tableView.getSelectionModel().getSelectedItem();
+        TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
         if (selected == null) {
           return;
         }
@@ -288,11 +290,11 @@ public class MainWindowController {
       if (tableView.getContextMenu() != null) {
         tableView.getContextMenu().hide();
       }
-      TreeItem<TableEntryData> selected = tableView.getSelectionModel().getSelectedItem();
+      TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
       if (selected == null) {
         return;
       }
-      TableEntryData entry = selected.getValue();
+      Entry entry = selected.getValue();
       String key = entry.getKey();
       ContextMenu cm = new ContextMenu();
 
@@ -302,7 +304,7 @@ public class MainWindowController {
         string.setOnAction(a -> {
           new AddStringDialog().showAndWait().ifPresent(data -> {
             String k = concat(key, data.getKey());
-            NetworkTablesJNI.putString(k, (String) data.getValue());
+            NetworkTablesJNI.putString(k, data.getValue());
           });
         });
 
@@ -310,7 +312,7 @@ public class MainWindowController {
         number.setOnAction(a -> {
           new AddNumberDialog().showAndWait().ifPresent(data -> {
             String k = concat(key, data.getKey());
-            NetworkTablesJNI.putDouble(k, (Double) data.getValue());
+            NetworkTablesJNI.putDouble(k, data.getValue().doubleValue());
           });
         });
 
@@ -318,7 +320,7 @@ public class MainWindowController {
         bool.setOnAction(a -> {
           new AddBooleanDialog().showAndWait().ifPresent(data -> {
             String k = concat(key, data.getKey());
-            NetworkTablesJNI.putBoolean(k, (Boolean) data.getValue());
+            NetworkTablesJNI.putBoolean(k, data.getValue());
           });
         });
 
@@ -401,22 +403,22 @@ public class MainWindowController {
    *
    * @param node the root node to sort
    */
-  private void sort(TreeItem<TableEntryData> node) {
+  private void sort(TreeItem<Entry> node) {
     if (!node.isLeaf()) {
       boolean wasExpanded = node.isExpanded();
       FXCollections.sort(node.getChildren(),
-                         ((Comparator<TreeItem<TableEntryData>>) (a, b) -> a.isLeaf() ? b.isLeaf() ? 0 : 1 : -1)
+                         ((Comparator<TreeItem<Entry>>) (a, b) -> a.isLeaf() ? b.isLeaf() ? 0 : 1 : -1)
                              .thenComparing(Comparator.comparing(item -> item.getValue().getKey())));
       node.getChildren().forEach(this::sort);
       node.setExpanded(wasExpanded);
     }
   }
 
-  private void filterChanged(Predicate<TableEntryData> filter) {
+  private void filterChanged(Predicate<Entry> filter) {
     if (filter == null || filter.equals(Predicates.always())) {
       tableView.setRoot(ntRoot);
     } else {
-      TreeItem<TableEntryData> filteredRoot = new TreeItem<>();
+      TreeItem<Entry> filteredRoot = new TreeItem<>();
       filteredRoot.setValue(ntRoot.getValue());
       filteredRoot.setExpanded(ntRoot.isExpanded());
       filter(ntRoot, filter, filteredRoot);
@@ -456,8 +458,8 @@ public class MainWindowController {
     List<String> pathElements = Stream.of(key.split("/"))
                                       .filter(s -> !s.isEmpty())
                                       .collect(Collectors.toList());
-    TreeItem<TableEntryData> current = ntRoot;
-    TreeItem<TableEntryData> parent;
+    TreeItem<Entry> current = ntRoot;
+    TreeItem<Entry> parent;
     StringBuilder k = new StringBuilder();
     for (int i = 0; i < pathElements.size(); i++) {
       String pathElement = pathElements.get(i);
@@ -473,13 +475,13 @@ public class MainWindowController {
         }
       } else if (i == pathElements.size() - 1) {
         if (current == null) {
-          current = new TreeItem<>(new TableEntryData(key, value));
+          current = new TreeItem<>(Entry.entryFor(key, value));
           parent.getChildren().add(current);
         } else {
           current.getValue().setValue(value);
         }
       } else if (current == null) {
-        current = new TreeItem<>(new TableEntryData(k.toString(), null));
+        current = new TreeItem<>(new TableEntry(k.toString()));
         current.setExpanded(true);
         parent.getChildren().add(current);
       }
@@ -493,7 +495,7 @@ public class MainWindowController {
    *
    * @param filter a filter for table tables.
    */
-  public void setFilter(Predicate<TableEntryData> filter) {
+  public void setFilter(Predicate<Entry> filter) {
     if (filter == null || filter.equals(Predicates.always())) {
       this.filter.setValue(metadataFilter);
     } else {
@@ -504,11 +506,11 @@ public class MainWindowController {
   /**
    * Gets the predicate used to filter the table entries to display.
    */
-  public Predicate<TableEntryData> getFilter() {
+  public Predicate<Entry> getFilter() {
     return filter.getValue();
   }
 
-  public Property<Predicate<TableEntryData>> filterProperty() {
+  public Property<Predicate<Entry>> filterProperty() {
     return filter;
   }
 
