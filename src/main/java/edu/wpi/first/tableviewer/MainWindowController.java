@@ -3,6 +3,7 @@ package edu.wpi.first.tableviewer;
 import edu.wpi.first.tableviewer.component.NetworkTableTree;
 import edu.wpi.first.tableviewer.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddBooleanDialog;
+import edu.wpi.first.tableviewer.dialog.AddBytesDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberArrayDialog;
 import edu.wpi.first.tableviewer.dialog.AddNumberDialog;
 import edu.wpi.first.tableviewer.dialog.AddStringArrayDialog;
@@ -240,7 +241,15 @@ public class MainWindowController {
       });
     });
 
-    return Arrays.asList(string, number, bool, new SeparatorMenuItem(), stringArray, numberArray, boolArray);
+    MenuItem raw = new MenuItem("Add raw bytes");
+    raw.setOnAction(__ -> {
+      new AddBytesDialog().showAndWait().ifPresent(data -> {
+        String k = concat(key, data.getKey());
+        NetworkTablesJNI.putRaw(k, data.getValue());
+      });
+    });
+
+    return Arrays.asList(string, number, bool, new SeparatorMenuItem(), stringArray, numberArray, boolArray, raw);
   }
 
   /**

@@ -48,7 +48,7 @@ public abstract class Entry<T> {
     if (value instanceof String[]) {
       return (Entry<T>) new StringArrayEntry(key, (String[]) value);
     }
-    throw new IllegalArgumentException("Unsupported type: " + value);
+    throw new IllegalArgumentException("Unsupported type: " + value + " (type: " + value.getClass().getSimpleName() + ")");
   }
 
   protected Entry(String key) {
