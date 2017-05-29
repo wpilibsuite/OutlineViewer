@@ -41,6 +41,9 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
     return new VBox(8, list, add);
   }
 
+  /**
+   * Sets the initial values in the array.
+   */
   public void setInitial(String[] initialValues) {
     list.getItems().clear();
     for (String value : initialValues) {

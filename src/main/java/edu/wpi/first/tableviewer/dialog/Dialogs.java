@@ -4,7 +4,7 @@ import com.sun.javafx.stage.StageHelper;
 import javafx.stage.Window;
 
 /**
- *
+ * Utility class for working with dialogs.
  */
 public class Dialogs {
 

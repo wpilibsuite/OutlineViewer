@@ -5,12 +5,15 @@ import javafx.scene.control.ListCell;
 import org.controlsfx.control.ToggleSwitch;
 
 /**
- * A list cell for displaying and editing boolean values.
+ * A list cell for displaying and editing boolean values that uses a toggle switch as a control.
  */
 public class ToggleSwitchListCell extends ListCell<Boolean> {
 
   private final ToggleSwitch toggleSwitch = new ToggleSwitch();
 
+  /**
+   * Creates a new ToggleSwitch list cell.
+   */
   public ToggleSwitchListCell() {
     toggleSwitch.selectedProperty().addListener((__, wasSelected, isSelected) -> {
       if (!isEditing()) {

@@ -13,6 +13,8 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
 
+import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
+
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
  */
@@ -52,8 +54,9 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       editor = checkBox;
       setGraphic(checkBox);
       checkBox.setOnAction(event -> {
-        if (!isEditing())
+        if (!isEditing()) {
           getTreeTableRow().getTreeTableView().edit(getTreeTableRow().getIndex(), getTableColumn());
+        }
         commitEdit(checkBox.isSelected());
       });
     } else if (item instanceof String) {
@@ -74,29 +77,29 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
     } else {
       // check for arrays
       if (item instanceof String[]) {
-        AddStringArrayDialog d = new AddStringArrayDialog();
-        d.setInitial((String[]) item);
-        arrayEditor = d;
+        AddStringArrayDialog dialog = new AddStringArrayDialog();
+        dialog.setInitial((String[]) item);
+        arrayEditor = dialog;
         arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       } else if (item instanceof double[]) {
-        AddNumberArrayDialog d = new AddNumberArrayDialog();
-        d.setInitial((double[]) item);
-        arrayEditor = d;
+        AddNumberArrayDialog dialog = new AddNumberArrayDialog();
+        dialog.setInitial((double[]) item);
+        arrayEditor = dialog;
         arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       } else if (item instanceof boolean[]) {
-        AddBooleanArrayDialog d = new AddBooleanArrayDialog();
-        d.setInitial((boolean[]) item);
-        arrayEditor = d;
+        AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
+        dialog.setInitial((boolean[]) item);
+        arrayEditor = dialog;
         arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       } else if (item instanceof byte[]) {
-        AddBytesDialog d = new AddBytesDialog();
-        d.setInitial((byte[]) item);
-        arrayEditor = d;
+        AddBytesDialog dialog = new AddBytesDialog();
+        dialog.setInitial((byte[]) item);
+        arrayEditor = dialog;
         arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", NetworkTableUtils.simpleKey(entry.getKey())));
+        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       } else {
         // not editable
         System.out.println("Not editable: " + item);

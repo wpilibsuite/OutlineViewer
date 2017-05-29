@@ -44,7 +44,7 @@ import static edu.wpi.first.tableviewer.NetworkTableUtils.isPersistent;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
 
 /**
- *
+ * Controller for the main window.
  */
 public class MainWindowController {
 
@@ -97,7 +97,8 @@ public class MainWindowController {
     tableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
 
-    keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(simpleKey(param.getValue().getValue().getKey())));
+    keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(
+        simpleKey(param.getValue().getValue().getKey())));
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
@@ -107,7 +108,7 @@ public class MainWindowController {
       Entry entry = e.getRowValue().getValue();
       String key = entry.getKey(); // entry keys are guaranteed to be normalized
       // Use raw object put from NetworkTable API (JNI doesn't support it)
-      NetworkTable.getTable(key.substring(0, key.lastIndexOf('/'))).putValue(simpleKey(key), e.getNewValue());
+      NetworkTable.getTable("").putValue(key, e.getNewValue());
     });
 
     tableView.setRowFactory(param -> {
@@ -129,9 +130,11 @@ public class MainWindowController {
         tableView.setFilter(metadataFilter);
       } else {
         String lower = newText.toLowerCase();
-        Predicate<Entry> filter = metadataFilter.and(data -> data.getKey().toLowerCase().contains(lower)
-            || data.getDisplayString().toLowerCase().contains(lower)
-            || data.getType().toLowerCase().contains(lower));
+        Predicate<Entry> filter = metadataFilter.and(data -> {
+          return data.getKey().toLowerCase().contains(lower)
+              || data.getDisplayString().toLowerCase().contains(lower)
+              || data.getType().toLowerCase().contains(lower);
+        });
         tableView.setFilter(filter);
       }
     });
@@ -155,7 +158,8 @@ public class MainWindowController {
       // The actions in the menu only affect one entry,
       // so we only select the entry that was clicked on.
       if (tableView.getSelectionModel().getSelectedItems().size() > 1) {
-        tableView.getSelectionModel().clearAndSelect(tableView.getSelectionModel().getSelectedIndex());
+        tableView.getSelectionModel()
+                 .clearAndSelect(tableView.getSelectionModel().getSelectedIndex());
       }
       TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
       if (selected == null) {
@@ -172,7 +176,8 @@ public class MainWindowController {
       }
 
       if (!key.isEmpty() && entry.getValue() != null) {
-        MenuItem setPersistent = new MenuItem(String.format("Set %s", isPersistent(key) ? "transient" : "persistent"));
+        MenuItem setPersistent = new MenuItem(
+            String.format("Set %s", isPersistent(key) ? "transient" : "persistent"));
         setPersistent.setOnAction(__ -> NetworkTableUtils.togglePersistent(key));
 
         MenuItem delete = new MenuItem("Delete");
@@ -190,62 +195,67 @@ public class MainWindowController {
     Prefs.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
   }
 
+  /**
+   * Creates all the menu items for a context menu for the given table entry.
+   *
+   * @param tableEntry the entry for the subtable to create the menu items for
+   */
   private List<MenuItem> createTableMenuItems(Entry<?> tableEntry) {
     final String key = tableEntry.getKey();
 
     MenuItem string = new MenuItem("Add string");
     string.setOnAction(a -> {
       new AddStringDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putString(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putString(fullKey, data.getValue());
       });
     });
 
     MenuItem number = new MenuItem("Add number");
     number.setOnAction(a -> {
       new AddNumberDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putDouble(k, data.getValue().doubleValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putDouble(fullKey, data.getValue().doubleValue());
       });
     });
 
     MenuItem bool = new MenuItem("Add boolean");
     bool.setOnAction(a -> {
       new AddBooleanDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putBoolean(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putBoolean(fullKey, data.getValue());
       });
     });
 
     MenuItem boolArray = new MenuItem("Add boolean array");
     boolArray.setOnAction(__ -> {
       new AddBooleanArrayDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putBooleanArray(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putBooleanArray(fullKey, data.getValue());
       });
     });
 
     MenuItem numberArray = new MenuItem("Add number array");
     numberArray.setOnAction(__ -> {
       new AddNumberArrayDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putDoubleArray(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putDoubleArray(fullKey, data.getValue());
       });
     });
 
     MenuItem stringArray = new MenuItem("Add string array");
     stringArray.setOnAction(__ -> {
       new AddStringArrayDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putStringArray(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putStringArray(fullKey, data.getValue());
       });
     });
 
     MenuItem raw = new MenuItem("Add raw bytes");
     raw.setOnAction(__ -> {
       new AddBytesDialog().showAndWait().ifPresent(data -> {
-        String k = concat(key, data.getKey());
-        NetworkTablesJNI.putRaw(k, data.getValue());
+        String fullKey = concat(key, data.getKey());
+        NetworkTablesJNI.putRaw(fullKey, data.getValue());
       });
     });
 

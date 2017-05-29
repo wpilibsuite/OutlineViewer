@@ -40,6 +40,9 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
     return new VBox(8, list, add);
   }
 
+  /**
+   * Sets the initial values in the array.
+   */
   public void setInitial(boolean[] initialValues) {
     list.getItems().clear();
     for (boolean value : initialValues) {

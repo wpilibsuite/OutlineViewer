@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- *
+ * A type of dialog for adding or editing entries in network tables.
  */
 public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
@@ -30,7 +30,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     super();
     setTitle("Add " + typeName);
 
-    Label keyLabel = new Label("Key");
+    final Label keyLabel = new Label("Key");
     keyField = new TextField();
     keyField.disableProperty().bind(disableKey);
     Platform.runLater(keyField::requestFocus);
@@ -52,7 +52,8 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     // disable the "Add" button if the key is empty
     Button addButton = (Button) getDialogPane().lookupButton(add);
     addButton.disableProperty().bind(
-        Bindings.createBooleanBinding(() -> keyField.getText().isEmpty() && !isDisableKey(), keyField.textProperty(), disableKey));
+        Bindings.createBooleanBinding(() -> keyField.getText().isEmpty() && !isDisableKey(),
+                                      keyField.textProperty(), disableKey));
 
     addButton.setDefaultButton(true);
 
@@ -71,8 +72,20 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     });
   }
 
+  /**
+   * Creates a control to use to edit the types of data in the entry. This could be as simple
+   * as a text field (see {@link AddStringDialog}) or a fully custom pane
+   * (see {@link AddStringArrayDialog}).
+   *
+   * @implNote all controls/nodes should be created here, and <i>not</i> in the constructor. This
+   *           method is called before a subclass' constructor, which could lead to
+   *           NullPointerExceptions if the controls are initialized in the constructor.
+   */
   protected abstract Node createCustomControl();
 
+  /**
+   * Gets the current data.
+   */
   protected abstract T getData();
 
   public void setKey(String key) {
