@@ -112,6 +112,21 @@ public class NetworkTableUtils {
   }
 
   /**
+   * Toggles persistence of the given key.
+   *
+   * @see #isPersistent(String)
+   * @see #setPersistent(String)
+   * @see #clearPersistent(String)
+   */
+  public static void togglePersistent(String key) {
+    if (isPersistent(key)) {
+      clearPersistent(key);
+    } else {
+      setPersistent(key);
+    }
+  }
+
+  /**
    * Shuts down the network table client or server, then clears all entries from network tables.
    * This should be used when changing from server mode to client mode, or changing server
    * address while in client mode.
