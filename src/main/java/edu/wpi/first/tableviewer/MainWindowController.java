@@ -249,7 +249,11 @@ public class MainWindowController {
       });
     });
 
-    return Arrays.asList(string, number, bool, new SeparatorMenuItem(), stringArray, numberArray, boolArray, raw);
+    return Arrays.asList(string, number, bool,
+                         new SeparatorMenuItem(),
+                         stringArray, numberArray, boolArray,
+                         new SeparatorMenuItem(),
+                         raw);
   }
 
   /**
