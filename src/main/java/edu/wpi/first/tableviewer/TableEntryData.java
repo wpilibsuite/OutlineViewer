@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.wpi.first.tableviewer;
 
 /**
+ * Represents an entry in network tables.
  * @author Sam
  */
 public class TableEntryData {
@@ -27,14 +24,24 @@ public class TableEntryData {
     this("/", null);
   }
 
+  /**
+   * Gets the key for the entry. This is guaranteed to be
+   * {@link NetworkTableUtils#normalize(String) normalized}.
+   */
   public String getKey() {
     return key;
   }
 
+  /**
+   * Gets the value of this entry. May be null.
+   */
   public Object getValue() {
     return value;
   }
 
+  /**
+   * Gets the type of entry.
+   */
   public String getType() {
     return type;
   }
