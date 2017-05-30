@@ -21,7 +21,7 @@ import javafx.scene.layout.GridPane;
 public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
 
-  private static final ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
+  public static final ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
 
   private final TextField keyField;
   private final BooleanProperty disableKey = new SimpleBooleanProperty(this, "disableKey", false);
@@ -32,6 +32,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
     final Label keyLabel = new Label("Key");
     keyField = new TextField();
+    keyField.setId("keyField");
     keyField.disableProperty().bind(disableKey);
     Platform.runLater(keyField::requestFocus);
     keyField.setPromptText("key");

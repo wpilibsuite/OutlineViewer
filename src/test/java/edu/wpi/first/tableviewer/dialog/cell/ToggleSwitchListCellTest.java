@@ -12,15 +12,22 @@ import static org.junit.Assert.*;
 
 public class ToggleSwitchListCellTest extends ApplicationTest {
 
+  private Stage stage;
   private ListView<Boolean> list;
 
   @Override
   public void start(Stage stage) throws Exception {
+    this.stage = stage;
     list = new ListView<>();
     list.setCellFactory(v -> new ToggleSwitchListCell());
     list.setEditable(true);
     stage.setScene(new Scene(list));
     stage.show();
+  }
+
+  @Override
+  public void stop() throws Exception {
+    stage.close();
   }
 
   @Test
