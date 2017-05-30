@@ -12,7 +12,6 @@ import edu.wpi.first.tableviewer.dialog.Dialogs;
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import edu.wpi.first.tableviewer.entry.Entry;
 import edu.wpi.first.tableviewer.entry.TableEntry;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
