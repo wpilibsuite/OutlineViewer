@@ -294,7 +294,7 @@ public class MainWindowController {
     PreferencesDialog dialog = new PreferencesDialog("Preferences", ButtonType.FINISH);
     Platform.runLater(() -> Dialogs.center(dialog.getDialogPane().getScene().getWindow()));
     dialog.showAndWait()
-          .map(ButtonType.FINISH::equals)
+          .filter(ButtonType.FINISH::equals)
           .ifPresent(__ -> dialog.getController().start());
   }
 

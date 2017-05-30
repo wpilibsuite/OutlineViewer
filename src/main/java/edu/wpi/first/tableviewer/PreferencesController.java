@@ -4,8 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.ToggleSwitch;
 
-import java.util.Arrays;
-
 /**
  * Controller for the app preferences pane.
  */
@@ -33,7 +31,6 @@ public class PreferencesController {
    * Starts running in client mode, using the address and port set in the preferences pane.
    */
   private void startClient() {
-    System.out.println("Starting client");
     NetworkTableUtils.shutdown();
     String url = idField.getText();
     int port = 1735;
@@ -44,11 +41,10 @@ public class PreferencesController {
       url = "localhost";
     }
     url = url.replaceAll("^.*://", ""); // remove leading protocol
-    if (url.matches("[0-9]+")) {
+    if (url.matches("[0-9]{1,5}")) {
       // treat as a team number
       url = "roborio-" + url + "-frc.local";
     }
-    System.out.println("Connecting to " + url + ":" + port);
     Prefs.setResolvedAddress(url);
     Prefs.setServer(false);
     Prefs.setPort(port);
@@ -59,7 +55,6 @@ public class PreferencesController {
    * Starts running in server mode, using the port set in the preferences pane.
    */
   private void startServer() {
-    System.out.println("Starting server");
     NetworkTableUtils.shutdown();
     if (portField.getText().matches("[0-9]+")) {
       int port = Integer.parseInt(portField.getText());
