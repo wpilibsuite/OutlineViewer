@@ -67,7 +67,7 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
                                       .filter(s -> !s.isEmpty())
                                       .collect(Collectors.toList());
     TreeItem<Entry> current = getRealRoot();
-    TreeItem<Entry> parent;
+    TreeItem<Entry> parent = current;
     StringBuilder path = new StringBuilder();
     for (int i = 0; i < pathElements.size(); i++) {
       String pathElement = pathElements.get(i);
@@ -96,6 +96,19 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
         current = new TreeItem<>(new TableEntry(path.toString()));
         current.setExpanded(true);
         parent.getChildren().add(current);
+      }
+    }
+    // Remove any empty subtables
+    if (deleted) {
+      for (TreeItem<Entry> item = parent; item != getRealRoot();) {
+        if (item.getValue() instanceof TableEntry && item.getChildren().isEmpty()) {
+          TreeItem<Entry> next = item.getParent();
+          item.getParent().getChildren().remove(item);
+          item = next;
+        } else {
+          // No more empty tables, bail
+          break;
+        }
       }
     }
     sort();
