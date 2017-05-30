@@ -18,6 +18,7 @@ public class AddStringDialog extends AddEntryDialog<String> {
   @Override
   protected Node createCustomControl() {
     valueField = new TextField("");
+    valueField.setId("valueField");
     return valueField;
   }
 

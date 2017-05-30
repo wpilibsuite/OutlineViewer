@@ -16,7 +16,8 @@ public class AddNumberDialog extends AddEntryDialog<Number> {
 
   @Override
   protected Node createCustomControl() {
-    numberField = new TextField("0.0");
+    numberField = new TextField("0");
+    numberField.setId("numberField");
     return numberField;
   }
 
