@@ -21,7 +21,8 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     AutoUpdater updater = new AutoUpdater();
-    PreferencesDialog preferencesDialog = new PreferencesDialog("Preferences", start, ButtonType.CANCEL);
+    PreferencesDialog preferencesDialog
+        = new PreferencesDialog("Preferences", start, ButtonType.CANCEL);
     preferencesDialog.showAndWait()
                      .filter(bt -> start != bt)
                      .ifPresent(__ -> {

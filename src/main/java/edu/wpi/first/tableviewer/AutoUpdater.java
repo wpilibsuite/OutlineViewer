@@ -24,19 +24,16 @@ public class AutoUpdater {
    */
   public void update() {
     if (Prefs.isServer()) {
-      System.out.println("Starting server on port " + Prefs.getPort());
       NetworkTableUtils.setServer(Prefs.getPort());
     } else {
       String rawAddress = Prefs.getIp();
       if (rawAddress.matches("[0-9]{1,5}")) {
         // Treat as team number. Ignore the port and resolved address to use the 5 addresses
         // used with NetworkTable.setTeam
-        System.out.println("Connecting to server for team " + rawAddress);
         NetworkTableUtils.shutdown();
         NetworkTable.setTeam(Integer.parseInt(rawAddress));
       } else {
         // Treat as a general address:port
-        System.out.println("Connecting to server " + Prefs.getResolvedAddress() + ":" + Prefs.getPort());
         NetworkTableUtils.setClient(Prefs.getResolvedAddress(), Prefs.getPort());
       }
     }

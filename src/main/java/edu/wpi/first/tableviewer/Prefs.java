@@ -61,11 +61,16 @@ public class Prefs {
 
   // Load saved preferences and set up listeners to automatically save changes
   static {
-    showMetaData.addListener((__, prev, cur) -> logger.info("Show metadata changed to " + cur));
-    server.addListener((__, prev, cur) -> logger.info("Server mode changed to " + cur));
-    ip.addListener((__, prev, cur) -> logger.info("Raw address changed from " + prev + " to " + cur));
-    resolvedAddress.addListener((__, prev, cur) -> logger.info("Resolved address changed from " + prev + " to " + cur));
-    port.addListener((__, prev, cur) -> logger.info("Port changed from " + prev + " to " + cur));
+    showMetaData.addListener(
+        (__, prev, cur) -> logger.info("Show metadata changed to " + cur));
+    server.addListener(
+        (__, prev, cur) -> logger.info("Server mode changed to " + cur));
+    ip.addListener(
+        (__, prev, cur) -> logger.info("Raw address changed from " + prev + " to " + cur));
+    resolvedAddress.addListener(
+        (__, prev, cur) -> logger.info("Resolved address changed from " + prev + " to " + cur));
+    port.addListener(
+        (__, prev, cur) -> logger.info("Port changed from " + prev + " to " + cur));
 
     setShowMetaData(preferences.getBoolean(SHOW_METADATA, false));
     setServer(preferences.getBoolean(SERVER, false));
