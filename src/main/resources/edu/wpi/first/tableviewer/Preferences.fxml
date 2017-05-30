@@ -16,7 +16,7 @@
             <Tooltip text="URL, IP address, or team number"/>
         </tooltip>
     </Label>
-    <TextField fx:id="idField" id="idField" promptText="localhost" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    <TextField fx:id="idField" id="idField" promptText="URL, IP address, or team" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
     <Label text="Server Port" id="portLabel" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <TextField fx:id="portField" id="portField" promptText="1735" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <Label text="Server Mode" id="modeLabel" GridPane.columnIndex="0" GridPane.rowIndex="2"/>

@@ -7,12 +7,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
  * App-global preferences.
  */
 public class Prefs {
+
+  private static final Logger logger = Logger.getLogger(Prefs.class.getName());
 
   public static final String SHOW_METADATA = "show_metadata";
   public static final String SERVER = "server";
@@ -58,6 +61,12 @@ public class Prefs {
 
   // Load saved preferences and set up listeners to automatically save changes
   static {
+    showMetaData.addListener((__, prev, cur) -> logger.info("Show metadata changed to " + cur));
+    server.addListener((__, prev, cur) -> logger.info("Server mode changed to " + cur));
+    ip.addListener((__, prev, cur) -> logger.info("Raw address changed from " + prev + " to " + cur));
+    resolvedAddress.addListener((__, prev, cur) -> logger.info("Resolved address changed from " + prev + " to " + cur));
+    port.addListener((__, prev, cur) -> logger.info("Port changed from " + prev + " to " + cur));
+
     setShowMetaData(preferences.getBoolean(SHOW_METADATA, false));
     setServer(preferences.getBoolean(SERVER, false));
     setIp(preferences.get(IP, "localhost"));

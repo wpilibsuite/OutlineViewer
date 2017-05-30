@@ -131,7 +131,6 @@ public class NetworkTableUtils {
    * address while in client mode.
    */
   public static void shutdown() {
-    System.out.println("shutting down network tables");
     NetworkTablesJNI.stopDSClient();
     NetworkTablesJNI.stopClient();
     NetworkTablesJNI.stopServer();
@@ -145,10 +144,9 @@ public class NetworkTableUtils {
    * @param port the port on the local machine to run the ntcore server on
    */
   public static void setServer(int port) {
+    System.out.println("NetworkTableUtils::setServer(" + port + ")");
     shutdown();
-    System.out.printf("Setting server mode (port %d)%n", port);
-    NetworkTable.setServerMode();
-    NetworkTable.setPort(port);
+    NetworkTablesJNI.startServer("networktables.ini", "", port);
     NetworkTable.initialize();
   }
 
@@ -159,11 +157,9 @@ public class NetworkTableUtils {
    * @param serverPort the port of the server to connect to. This is normally 1735.
    */
   public static void setClient(String serverIp, int serverPort) {
+    System.out.println("NetworkTableUtils::setClient(" + serverIp + ":" + serverPort + ")");
     shutdown();
-    System.out.printf("Setting client mode (remote %s:%d)%n", serverIp, serverPort);
-    NetworkTable.setClientMode();
-    NetworkTable.setIPAddress(serverIp);
-    NetworkTable.setPort(serverPort);
+    NetworkTablesJNI.startClient(serverIp, serverPort);
     NetworkTable.initialize();
   }
 

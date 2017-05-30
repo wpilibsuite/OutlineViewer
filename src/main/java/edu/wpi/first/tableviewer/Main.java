@@ -21,15 +21,15 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     AutoUpdater updater = new AutoUpdater();
+    PreferencesDialog preferencesDialog = new PreferencesDialog("Preferences", start, ButtonType.CANCEL);
+    preferencesDialog.showAndWait()
+                     .filter(bt -> start != bt)
+                     .ifPresent(__ -> {
+                       System.out.println("Cancelled");
+                       System.exit(0);
+                     });
+    preferencesDialog.getController().start();
     updater.init();
-    new PreferencesDialog("Preferences", start, ButtonType.CANCEL)
-        .showAndWait()
-        .filter(bt -> start != bt)
-        .ifPresent(__ -> {
-          System.out.println("Cancelled");
-          System.exit(0);
-        });
-    updater.update();
 
     FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
     Pane mainWindow = mainLoader.load();
