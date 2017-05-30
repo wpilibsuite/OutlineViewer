@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_CLIENT;
@@ -11,6 +12,13 @@ import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_F
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_SERVER;
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_STARTING;
 import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.getNetworkMode;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putBoolean;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putBooleanArray;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putDouble;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putDoubleArray;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putRaw;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putString;
+import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putStringArray;
 
 /**
  * Utility methods for working with network tables.
@@ -72,6 +80,53 @@ public class NetworkTableUtils {
       Stream.of(entries)
             .map(entryInfo -> entryInfo.name)
             .forEach(NetworkTableUtils::delete);
+    }
+  }
+
+  /**
+   * Puts an arbitrary value into network tables.
+   *
+   * <p>Supported types:
+   * <ul>
+   * <li>String</li>
+   * <li>All number types (byte, int, double, ...)</li>
+   * <li>Booleans</li>
+   * <li>{@code byte[]} arrays (NOT {@code Byte[]})</li>
+   * <li>{@code String[]} arrays</li>
+   * <li>{@code double[]} arrays (but no other number array type)</li>
+   * <li>{@code boolean[]} arrays</li>
+   * </ul>
+   *
+   * @param key   the key of the entry
+   * @param value the value to put
+   * @return true if the value was successfully added, false if not
+   */
+  public static boolean put(String key, Object value) {
+    Objects.requireNonNull(value, "value");
+    key = normalize(key);
+    if (value instanceof String) {
+      return putString(key, (String) value);
+    } else if (value instanceof Number) {
+      return putDouble(key, ((Number) value).doubleValue());
+    } else if (value instanceof Boolean) {
+      return putBoolean(key, (Boolean) value);
+    } else if (value instanceof byte[]) {
+      return putRaw(key, (byte[]) value);
+    } else if (value instanceof String[]) {
+      return putStringArray(key, (String[]) value);
+    } else if (value instanceof double[]) {
+      return putDoubleArray(key, (double[]) value);
+    } else if (value instanceof boolean[]) {
+      return putBooleanArray(key, (boolean[]) value);
+    } else {
+      String type;
+      if (value.getClass().isArray()) {
+        type = value.getClass().getSimpleName();
+      } else {
+        type = value.getClass().getName();
+      }
+      throw new UnsupportedOperationException(
+          "Cannot put a value of type " + type + " into network tables");
     }
   }
 

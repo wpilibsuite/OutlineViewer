@@ -29,10 +29,12 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.converter.DefaultStringConverter;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -102,13 +104,46 @@ public class MainWindowController {
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
+    keyColumn.setCellFactory(param -> {
+      return new TextFieldTreeTableCell<Entry, String>(new DefaultStringConverter()) {
+        @Override
+        public void startEdit() {
+          Entry existing = getTreeTableRow().getItem();
+          if (existing instanceof TableEntry) {
+            System.out.println("Can't edit a table name");
+            return;
+          }
+          super.startEdit();
+        }
+
+        @Override
+        public void commitEdit(String simpleKey) {
+          Entry existing = getTreeTableRow().getItem();
+          String existingKey = existing.getKey();
+          String table = existingKey.substring(0, existingKey.lastIndexOf(simpleKey(existingKey)));
+          String newKey = concat(table, simpleKey);
+          if (NetworkTablesJNI.containsKey(newKey)) {
+            // That key already exists
+            System.out.println("Can't change key to one that already exists");
+            cancelEdit();
+            return;
+          }
+          super.commitEdit(simpleKey);
+          String oldKey = existing.getKey();
+          Entry replacement = Entry.entryFor(newKey, existing.getValue());
+          final int flags = NetworkTablesJNI.getEntryFlags(oldKey);
+          NetworkTablesJNI.deleteEntry(oldKey);
+          NetworkTableUtils.put(newKey, replacement.getValue());
+          NetworkTablesJNI.setEntryFlags(newKey, flags);
+        }
+      };
+    });
     valueColumn.setCellFactory(param -> new TableEntryTreeTableCell());
 
     valueColumn.setOnEditCommit(e -> {
       Entry entry = e.getRowValue().getValue();
       String key = entry.getKey(); // entry keys are guaranteed to be normalized
-      // Use raw object put from NetworkTable API (JNI doesn't support it)
-      NetworkTable.getTable("").putValue(key, e.getNewValue());
+      NetworkTableUtils.put(key, e.getNewValue());
     });
 
     tableView.setRowFactory(param -> {

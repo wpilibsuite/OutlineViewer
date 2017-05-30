@@ -42,8 +42,8 @@
                 </TreeItem>
             </root>
             <columns>
-                <TreeTableColumn fx:id="keyColumn" editable="false" minWidth="200" prefWidth="200" sortable="false" text="Key"/>
-                <TreeTableColumn fx:id="valueColumn" editable="true" minWidth="200" prefWidth="200" sortable="false" text="Value"/>
+                <TreeTableColumn fx:id="keyColumn" minWidth="200" prefWidth="200" sortable="false" text="Key"/>
+                <TreeTableColumn fx:id="valueColumn" minWidth="200" prefWidth="200" sortable="false" text="Value"/>
                 <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type"/>
             </columns>
         </NetworkTableTree>
