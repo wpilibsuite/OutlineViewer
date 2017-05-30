@@ -15,6 +15,7 @@ public class ToggleSwitchListCell extends ListCell<Boolean> {
    * Creates a new ToggleSwitch list cell.
    */
   public ToggleSwitchListCell() {
+    getStyleClass().add("toggle-switch-list-cell");
     toggleSwitch.selectedProperty().addListener((__, wasSelected, isSelected) -> {
       if (!isEditing()) {
         getListView().edit(getIndex());
