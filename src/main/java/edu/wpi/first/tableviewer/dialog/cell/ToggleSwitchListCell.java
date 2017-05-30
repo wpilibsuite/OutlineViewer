@@ -22,16 +22,24 @@ public class ToggleSwitchListCell extends ListCell<Boolean> {
       }
       commitEdit(isSelected);
     });
-    toggleSwitch.textProperty().bind(
-        Bindings.createStringBinding(() -> String.valueOf(toggleSwitch.isSelected()),
-                                     toggleSwitch.selectedProperty()));
+    toggleSwitch.setMaxWidth(1);
+    textProperty().bind(
+        Bindings.createStringBinding(
+            this::createText,
+            itemProperty()));
+  }
+
+  private String createText() {
+    if (getItem() == null) {
+      return "";
+    }
+    return toggleSwitch.isSelected() ? "True" : "False";
   }
 
   @Override
   protected void updateItem(Boolean item, boolean empty) {
     super.updateItem(item, empty);
     if (item == null || empty) {
-      setText(null);
       setGraphic(null);
       return;
     }
