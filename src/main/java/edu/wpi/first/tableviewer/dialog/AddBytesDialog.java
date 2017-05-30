@@ -80,10 +80,10 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
 
     @Override
     public Byte fromString(String string) {
-      if (string.matches("0x[0-9A-F]{1,2}")) {
+      if (string.matches("0x[0-9a-fA-F]{1,2}")) {
         // hex, remove leading 0x
         return (byte) Integer.parseUnsignedInt(string.substring(2), 16);
-      } else if (string.matches("[0-9A-F]{1,2}")) {
+      } else if (string.matches("[0-9a-fA-F]{1,2}")) {
         return (byte) Integer.parseUnsignedInt(string, 16);
       } else {
         throw new NumberFormatException("Not a valid 1-byte hex string: " + string);
