@@ -1,5 +1,6 @@
 package edu.wpi.first.tableviewer;
 
+import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -51,6 +52,16 @@ public class PreferencesControllerTest extends ApplicationTest {
     waitForFxEvents();
     controller.start();
     assertEquals("roborio-192-frc.local", Prefs.getResolvedAddress());
+  }
+
+  @Test
+  public void testNoAddressInterpretedAsLocalhost() {
+    Prefs.setServer(false);
+    TextField idField = lookup(n -> "idField".equals(n.getId())).query();
+    idField.setText("");
+    waitForFxEvents();
+    controller.start();
+    assertEquals("localhost", Prefs.getResolvedAddress());
   }
 
   @Test
