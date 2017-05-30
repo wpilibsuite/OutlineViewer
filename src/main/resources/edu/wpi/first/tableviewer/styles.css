@@ -33,3 +33,19 @@
 .connection-label {
     -fx-text-fill: white;
 }
+
+.list-cell:even {
+    -fx-background-color: derive(white, -5%);
+}
+
+.list-cell:odd {
+    -fx-background-color: derive(white, -10%);
+}
+
+.list-cell:odd:empty, .list-cell:even:empty {
+    -fx-background-color: transparent;
+}
+
+.list-cell:even:selected, .list-cell:odd:selected {
+    -fx-background-color: #2196F3;
+}
