@@ -96,6 +96,10 @@ public class MainWindowController {
     });
 
     tableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+    NetworkTablesJNI.addEntryListener(
+        "",
+        (uid, key, value, flags) -> tableView.updateFromNetworkTables(key, value, flags),
+        0xFF);
 
 
     keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(
