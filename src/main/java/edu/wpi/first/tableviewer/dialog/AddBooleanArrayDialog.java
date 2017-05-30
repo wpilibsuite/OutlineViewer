@@ -24,6 +24,7 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
   @Override
   protected Node createCustomControl() {
     list = new ListView<>();
+    list.setId("list");
     list.setEditable(true);
     list.setCellFactory(__ -> new ToggleSwitchListCell());
     list.setOnKeyPressed(e -> {
@@ -34,6 +35,7 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
     });
 
     Button add = new Button("+");
+    add.setId("addItem");
     add.setPrefWidth(40);
     add.setOnAction(__ -> list.getItems().add(false));
 
