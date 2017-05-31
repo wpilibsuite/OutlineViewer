@@ -17,8 +17,10 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
 
   private ListView<Double> list;
 
+  @SuppressWarnings("JavadocMethod")
   public AddNumberArrayDialog() {
     super("Number Array");
+    getDialogPane().getStyleClass().add("add-number-array-dialog");
     getDialogPane().setMaxHeight(300);
   }
 

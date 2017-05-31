@@ -16,8 +16,10 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
 
   private ListView<Boolean> list;
 
+  @SuppressWarnings("JavadocMethod")
   public AddBooleanArrayDialog() {
     super("Boolean Array");
+    getDialogPane().getStyleClass().add("add-boolean-array-dialog");
     getDialogPane().setMaxHeight(300);
   }
 

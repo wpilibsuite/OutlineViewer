@@ -12,6 +12,7 @@ public class AddNumberDialog extends AddEntryDialog<Number> {
 
   public AddNumberDialog() {
     super("Number");
+    getDialogPane().getStyleClass().add("add-number-dialog");
   }
 
   @Override

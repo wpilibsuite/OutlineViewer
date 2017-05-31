@@ -22,11 +22,6 @@ public class FilterableTreeTableTest extends ApplicationTest {
     stage.show();
   }
 
-  @Override
-  public void stop() throws Exception {
-    stage.close();
-  }
-
   @Test
   public void testRootIsSetNoFilter() {
     TreeItem root = new TreeItem();
