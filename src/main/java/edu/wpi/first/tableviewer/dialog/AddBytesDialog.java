@@ -26,6 +26,7 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
   @Override
   protected Node createCustomControl() {
     list = new ListView<>();
+    list.setId("list");
     list.setEditable(true);
     list.setCellFactory(__ -> new TextFieldListCell<>(ByteToStringConverter.INSTANCE));
     list.setOnKeyPressed(e -> {
@@ -36,6 +37,7 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
     });
 
     Button add = new Button("+");
+    add.setId("addItem");
     add.setPrefWidth(40);
     add.setOnAction(__ -> list.getItems().add((byte) 0));
 
