@@ -1,5 +1,7 @@
 package edu.wpi.first.tableviewer.dialog.cell;
 
+import edu.wpi.first.tableviewer.FxHelper;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
@@ -39,12 +41,12 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
     ToggleSwitch toggleSwitch = (ToggleSwitch) cell.getGraphic();
     assertEquals(value, toggleSwitch.isSelected());
 
-    toggleSwitch.setSelected(!toggleSwitch.isSelected());
+    clickOn(toggleSwitch);
 
     assertEquals(1, list.getItems().size());
     assertEquals(false, list.getItems().get(0));
 
-    toggleSwitch.setSelected(!toggleSwitch.isSelected());
+    clickOn(toggleSwitch);
 
     assertEquals(1, list.getItems().size());
     assertEquals(true, list.getItems().get(0));

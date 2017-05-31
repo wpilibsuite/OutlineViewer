@@ -1,6 +1,7 @@
 package edu.wpi.first.tableviewer;
 
 import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -48,7 +49,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testChangeServerIdToTeamNumber() {
     Prefs.setServer(false);
     TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    idField.setText("192");
+    FxHelper.runAndWait(() -> idField.setText("192"));
     waitForFxEvents();
     controller.start();
     assertEquals("roborio-192-frc.local", Prefs.getResolvedAddress());
@@ -58,8 +59,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testNoAddressInterpretedAsLocalhost() {
     Prefs.setServer(false);
     TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    idField.setText("");
-    waitForFxEvents();
+    FxHelper.runAndWait(() -> idField.setText(""));
     controller.start();
     assertEquals("localhost", Prefs.getResolvedAddress());
   }
@@ -68,7 +68,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testServerPortInServerMode() {
     Prefs.setServer(true);
     TextField portField = lookup(n -> "portField".equals(n.getId())).query();
-    portField.setText("9999");
+    FxHelper.runAndWait(() -> portField.setText("9999"));
     waitForFxEvents();
     controller.start();
     assertEquals(9999, Prefs.getPort());
@@ -78,7 +78,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testServerPortInClientMode() {
     Prefs.setServer(false);
     TextField portField = lookup(n -> "portField".equals(n.getId())).query();
-    portField.setText("2084");
+    FxHelper.runAndWait(() -> portField.setText("2084"));
     waitForFxEvents();
     controller.start();
     assertEquals(2084, Prefs.getPort());
@@ -88,8 +88,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testServerSwitch() {
     ToggleSwitch serverSwitch = lookup(n -> "modeSwitch".equals(n.getId())).query();
     assertEquals(Prefs.isServer(), serverSwitch.isSelected());
-    serverSwitch.setSelected(!serverSwitch.isSelected());
-    waitForFxEvents();
+    FxHelper.runAndWait(() -> serverSwitch.setSelected(!serverSwitch.isSelected()));
     assertEquals(serverSwitch.isSelected(), Prefs.isServer());
   }
 
@@ -97,8 +96,7 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void testMetadataSwitch() {
     ToggleSwitch metadataSwitch = lookup(n -> "metadataSwitch".equals(n.getId())).query();
     assertEquals(Prefs.isShowMetaData(), metadataSwitch.isSelected());
-    metadataSwitch.setSelected(!metadataSwitch.isSelected());
-    waitForFxEvents();
+    FxHelper.runAndWait(() -> metadataSwitch.setSelected(!metadataSwitch.isSelected()));
     assertEquals(metadataSwitch.isSelected(), Prefs.isShowMetaData());
   }
 
