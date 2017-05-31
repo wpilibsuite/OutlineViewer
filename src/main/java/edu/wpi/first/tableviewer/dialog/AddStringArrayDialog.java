@@ -17,8 +17,10 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
 
   private ListView<String> list;
 
+  @SuppressWarnings("JavadocMethod")
   public AddStringArrayDialog() {
     super("String Array");
+    getDialogPane().getStyleClass().add("add-string-array-dialog");
     getDialogPane().setMaxHeight(300);
   }
 

@@ -18,22 +18,23 @@
             minHeight="400" minWidth="600"
             prefHeight="400.0" prefWidth="600.0"
             fx:id="root"
+            id="roor"
             xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.wpi.first.tableviewer.MainWindowController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="File" id="fileMenu">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#close" text="Close"/>
-                        <MenuItem onAction="#showPrefs" text="Preferences" accelerator="SHORTCUT+,"/>
+                        <MenuItem mnemonicParsing="false" onAction="#close" id="closeMenu" text="Close"/>
+                        <MenuItem onAction="#showPrefs" text="Preferences" id="prefsMenuButton" accelerator="SHORTCUT+,"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
     <center>
-        <NetworkTableTree fx:id="tableView" editable="true" BorderPane.alignment="CENTER">
+        <NetworkTableTree fx:id="tableView" editable="true" BorderPane.alignment="CENTER" id="tableView">
             <root>
                 <TreeItem fx:id="ntRoot" expanded="true">
                     <value>
@@ -42,21 +43,20 @@
                 </TreeItem>
             </root>
             <columns>
-                <TreeTableColumn fx:id="keyColumn" minWidth="200" prefWidth="200" sortable="false" text="Key"/>
-                <TreeTableColumn fx:id="valueColumn" minWidth="200" prefWidth="200" sortable="false" text="Value"/>
-                <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type"/>
+                <TreeTableColumn fx:id="keyColumn" minWidth="200" prefWidth="200" sortable="false" text="Key" id="keyColumn"/>
+                <TreeTableColumn fx:id="valueColumn" minWidth="200" prefWidth="200" sortable="false" text="Value" id="valueColumn"/>
+                <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type" id="typeColumn"/>
             </columns>
         </NetworkTableTree>
     </center>
     <bottom>
         <VBox>
-            <ToolBar fx:id="searchBar" managed="false" cache="true" cacheShape="true" cacheHint="SPEED" >
+            <ToolBar fx:id="searchBar" managed="false" cache="true" cacheShape="true" cacheHint="SPEED" id="searchBar">
                 <Label text="Search"/>
-                <TextField fx:id="searchField" promptText="Search..."/>
-                <Button fx:id="closeSearchButton" text="Clear"
-                        onAction="#clearSearch"/>
+                <TextField fx:id="searchField" promptText="Search..." id="searchField"/>
+                <Button fx:id="closeSearchButton" text="Clear" onAction="#clearSearch" id="clearSearchButton"/>
             </ToolBar>
-            <fx:include source="ConnectionIndicator.fxml"/>
+            <fx:include source="ConnectionIndicator.fxml" id="connectionIndicator"/>
         </VBox>
     </bottom>
     <stylesheets>

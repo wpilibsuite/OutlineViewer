@@ -28,6 +28,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
   protected AddEntryDialog(String typeName) {
     super();
+    getDialogPane().getStyleClass().add("add-entry-dialog");
     setTitle("Add " + typeName);
 
     final Label keyLabel = new Label("Key");

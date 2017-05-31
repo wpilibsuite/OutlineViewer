@@ -18,8 +18,10 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
 
   private ListView<Byte> list;
 
+  @SuppressWarnings("JavadocMethod")
   public AddBytesDialog() {
     super("Raw Bytes");
+    getDialogPane().getStyleClass().add("add-bytes-dialog");
     getDialogPane().setMaxHeight(300);
   }
 

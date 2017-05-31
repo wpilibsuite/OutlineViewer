@@ -27,11 +27,6 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
     stage.show();
   }
 
-  @Override
-  public void stop() throws Exception {
-    stage.close();
-  }
-
   @Test
   public void testCellAsEditor() {
     final boolean value = true;

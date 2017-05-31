@@ -38,7 +38,7 @@ public class ConnectionIndicatorController {
   /**
    * Updates the connection label based on the current network mode of ntcore.
    */
-  private void updateConnectionLabel() {
+  void updateConnectionLabel() {
     if (!Platform.isFxApplicationThread()) {
       Platform.runLater(this::updateConnectionLabel);
       return;

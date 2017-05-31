@@ -15,6 +15,7 @@ public class AddBooleanDialog extends AddEntryDialog<Boolean> {
 
   public AddBooleanDialog() {
     super("Boolean");
+    getDialogPane().getStyleClass().add("add-boolean-dialog");
   }
 
   @Override

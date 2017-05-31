@@ -34,11 +34,6 @@ public class NetworkTableTreeTest extends ApplicationTest {
     stage.show();
   }
 
-  @Override
-  public void stop() throws Exception {
-    stage.close();
-  }
-
   @Test
   public void testAddSimpleEntry() {
     final String key = "/key";
