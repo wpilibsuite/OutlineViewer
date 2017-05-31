@@ -10,8 +10,10 @@ public class AddStringDialog extends AddEntryDialog<String> {
 
   private TextField valueField;
 
+  @SuppressWarnings("JavadocMethod")
   public AddStringDialog() {
     super("String");
+    getDialogPane().getStyleClass().add("add-string-dialog");
     valueField.setPromptText("Value");
   }
 

@@ -20,16 +20,12 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
 
-  private Thread fxApplicationThread;
-
   public AddBytesDialogTest() {
     super(AddBytesDialog::new);
   }
 
   @Override
   public void start(Stage stage) throws Exception {
-    Platform.runLater(() -> fxApplicationThread = Thread.currentThread());
-    waitForFxEvents();
     super.start(stage);
   }
 
@@ -86,15 +82,18 @@ public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
 
   @Test
   public void testEnterHexFormattedStringUpperCase() {
-    testEnterText((byte) 0xBE, KeyCode.DIGIT0, KeyCode.X, KeyCode.CAPS, KeyCode.B, KeyCode.E, KeyCode.CAPS);
+    testEnterText((byte) 0xBE,
+                  KeyCode.DIGIT0, KeyCode.X, KeyCode.CAPS, KeyCode.B, KeyCode.E, KeyCode.CAPS);
   }
 
+  @SuppressWarnings("ParameterName")
   @Test(expected = NumberFormatException.class)
   public void testEnterNonNumericText() throws Throwable {
     // Change the uncaught exception handler to make sure the exception we want is thrown
     // Also have to make sure to set it back after we're done!
 
-    Thread.UncaughtExceptionHandler h = fxApplicationThread.getUncaughtExceptionHandler();
+    Thread fxApplicationThread = FxHelper.getFxApplicationThread();
+    Thread.UncaughtExceptionHandler old = fxApplicationThread.getUncaughtExceptionHandler();
     AtomicReference<Throwable> fxException = new AtomicReference<>(null);
     fxApplicationThread.setUncaughtExceptionHandler((t, e) -> fxException.set(e));
 
@@ -103,25 +102,28 @@ public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
       throw fxException.get();
     } finally {
       // reset the exception handler
-      fxApplicationThread.setUncaughtExceptionHandler(h);
+      fxApplicationThread.setUncaughtExceptionHandler(old);
     }
   }
 
+  @SuppressWarnings("ParameterName")
   @Test(expected = NumberFormatException.class)
   public void testEnterHexOutOfRange() throws Throwable {
     // Change the uncaught exception handler to make sure the exception we want is thrown
     // Also have to make sure to set it back after we're done!
 
-    Thread.UncaughtExceptionHandler h = fxApplicationThread.getUncaughtExceptionHandler();
+    Thread fxApplicationThread = FxHelper.getFxApplicationThread();
+    Thread.UncaughtExceptionHandler old = fxApplicationThread.getUncaughtExceptionHandler();
     AtomicReference<Throwable> fxException = new AtomicReference<>(null);
     fxApplicationThread.setUncaughtExceptionHandler((t, e) -> fxException.set(e));
 
     try {
-      testEnterText((byte) 0, KeyCode.DIGIT0, KeyCode.X, KeyCode.DIGIT1, KeyCode.DIGIT0, KeyCode.DIGIT0);
+      testEnterText((byte) 0,
+                    KeyCode.DIGIT0, KeyCode.X, KeyCode.DIGIT1, KeyCode.DIGIT0, KeyCode.DIGIT0);
       throw fxException.get();
     } finally {
       // reset the exception handler
-      fxApplicationThread.setUncaughtExceptionHandler(h);
+      fxApplicationThread.setUncaughtExceptionHandler(old);
     }
   }
 
@@ -161,7 +163,6 @@ public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
     waitForFxEvents();
     assertEquals(expectedValue, cell.getItem().byteValue());
   }
-
 
   private Stream<ListCell<Byte>> getCells() {
     Set<ListCell<Byte>> cells = lookup(".text-field-list-cell").queryAll();

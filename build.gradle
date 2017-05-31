@@ -38,7 +38,7 @@ dependencies {
     testCompile "junit:junit:+"
     testCompile "org.testfx:testfx-core:4.0.+"
     testCompile "org.testfx:testfx-junit:4.0.+"
-    testRuntime group: 'org.testfx', name: 'openjfx-monocle', version: '1.8.0_20'
+    testRuntime group: 'org.testfx', name: 'openjfx-monocle', version: '8u76-b04'
 }
 
 task wrapper(type: Wrapper) {
