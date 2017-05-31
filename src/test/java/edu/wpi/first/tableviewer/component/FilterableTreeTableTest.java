@@ -1,5 +1,6 @@
 package edu.wpi.first.tableviewer.component;
 
+import edu.wpi.first.tableviewer.FxHelper;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
@@ -29,15 +30,15 @@ public class FilterableTreeTableTest extends ApplicationTest {
   @Test
   public void testRootIsSetNoFilter() {
     TreeItem root = new TreeItem();
-    treeTable.setRoot(root);
+    FxHelper.runAndWait(() -> treeTable.setRoot(root));
     assertEquals(root, treeTable.getRealRoot());
   }
 
   @Test
   public void testRootIsSetWithFilter() {
     TreeItem root = new TreeItem();
-    treeTable.setRoot(root);
-    treeTable.setFilter(x -> true);
+    FxHelper.runAndWait(() -> treeTable.setRoot(root));
+    FxHelper.runAndWait(() -> treeTable.setFilter(x -> true));
     assertEquals(root, treeTable.getRealRoot());
     assertFalse(root == treeTable.getRoot());
   }

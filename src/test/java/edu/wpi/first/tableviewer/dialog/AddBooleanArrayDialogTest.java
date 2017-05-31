@@ -1,5 +1,6 @@
 package edu.wpi.first.tableviewer.dialog;
 
+import edu.wpi.first.tableviewer.FxHelper;
 import edu.wpi.first.tableviewer.dialog.cell.ToggleSwitchListCell;
 import edu.wpi.first.tableviewer.entry.Entry;
 import javafx.scene.control.Button;
@@ -36,10 +37,10 @@ public class AddBooleanArrayDialogTest extends AbstractAddDialogTest<boolean[]> 
     ToggleSwitchListCell cell = lookup(".toggle-switch-list-cell").query();
     ToggleSwitch toggleSwitch = (ToggleSwitch) cell.getGraphic();
 
-    toggleSwitch.setSelected(true);
+    FxHelper.runAndWait(() -> toggleSwitch.setSelected(true));
     assertTrue(getList().getItems().get(0));
 
-    toggleSwitch.setSelected(false);
+    FxHelper.runAndWait(() -> toggleSwitch.setSelected(false));
     assertFalse(getList().getItems().get(0));
   }
 
