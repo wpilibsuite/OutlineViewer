@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:linux"
+    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
     compile "org.controlsfx:controlsfx:+"
     testCompile "junit:junit:+"
     testCompile "org.testfx:testfx-core:4.0.+"
