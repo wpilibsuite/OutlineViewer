@@ -7,6 +7,8 @@ plugins {
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
 }
 
+apply plugin: "jacoco"
+
 mainClassName = 'edu.wpi.first.tableviewer.Main'
 
 publishing {
@@ -25,6 +27,13 @@ publishing {
 checkstyle {
     configFile = new File(rootDir, "checkstyle.xml")
     toolVersion = '6.19'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }
 
 repositories {
@@ -72,5 +81,5 @@ if (!hasProperty('releaseType')) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    gradleVersion = '4.0'
 }
