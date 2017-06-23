@@ -7,23 +7,14 @@ import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_CLIENT;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_FAILURE;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_SERVER;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.NT_NET_MODE_STARTING;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.getNetworkMode;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putBoolean;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putBooleanArray;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putDouble;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putDoubleArray;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putRaw;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putString;
-import static edu.wpi.first.wpilibj.networktables.NetworkTablesJNI.putStringArray;
-
 /**
  * Utility methods for working with network tables.
  */
-public class NetworkTableUtils {
+public final class NetworkTableUtils {
+
+  private NetworkTableUtils() {
+    // Utility class
+  }
 
   /**
    * Normalizes a network table key to contain no consecutive slashes and start with a single
@@ -57,7 +48,7 @@ public class NetworkTableUtils {
    * @param key the key to get the simple representation of
    */
   public static String simpleKey(String key) {
-    if (key.isEmpty() || key.equals("/")) {
+    if (key.isEmpty() || "/".equals(key)) {
       return "Root";
     }
     if (!key.contains("/")) {
@@ -71,12 +62,12 @@ public class NetworkTableUtils {
    * subtable will be deleted.
    */
   public static void delete(String key) {
-    key = normalize(key);
-    if (NetworkTablesJNI.containsKey(key)) {
-      NetworkTablesJNI.deleteEntry(key);
+    String normalKey = normalize(key);
+    if (NetworkTablesJNI.containsKey(normalKey)) {
+      NetworkTablesJNI.deleteEntry(normalKey);
     } else {
       // subtable
-      EntryInfo[] entries = NetworkTablesJNI.getEntries(key, 0xFF);
+      EntryInfo[] entries = NetworkTablesJNI.getEntries(normalKey, 0xFF);
       Stream.of(entries)
             .map(entryInfo -> entryInfo.name)
             .forEach(NetworkTableUtils::delete);
@@ -103,21 +94,21 @@ public class NetworkTableUtils {
    */
   public static boolean put(String key, Object value) {
     Objects.requireNonNull(value, "value");
-    key = normalize(key);
+    String normalKey = normalize(key);
     if (value instanceof String) {
-      return putString(key, (String) value);
+      return NetworkTablesJNI.putString(normalKey, (String) value);
     } else if (value instanceof Number) {
-      return putDouble(key, ((Number) value).doubleValue());
+      return NetworkTablesJNI.putDouble(normalKey, ((Number) value).doubleValue());
     } else if (value instanceof Boolean) {
-      return putBoolean(key, (Boolean) value);
+      return NetworkTablesJNI.putBoolean(normalKey, (Boolean) value);
     } else if (value instanceof byte[]) {
-      return putRaw(key, (byte[]) value);
+      return NetworkTablesJNI.putRaw(normalKey, (byte[]) value);
     } else if (value instanceof String[]) {
-      return putStringArray(key, (String[]) value);
+      return NetworkTablesJNI.putStringArray(normalKey, (String[]) value);
     } else if (value instanceof double[]) {
-      return putDoubleArray(key, (double[]) value);
+      return NetworkTablesJNI.putDoubleArray(normalKey, (double[]) value);
     } else if (value instanceof boolean[]) {
-      return putBooleanArray(key, (boolean[]) value);
+      return NetworkTablesJNI.putBooleanArray(normalKey, (boolean[]) value);
     } else {
       String type;
       if (value.getClass().isArray()) {
@@ -137,8 +128,8 @@ public class NetworkTableUtils {
    * @return true if the entry is persistent, false if it is not
    */
   public static boolean isPersistent(String key) {
-    key = normalize(key);
-    return (NetworkTablesJNI.getEntryFlags(key) & NetworkTable.PERSISTENT) != 0;
+    String normalKey = normalize(key);
+    return (NetworkTablesJNI.getEntryFlags(normalKey) & NetworkTable.PERSISTENT) != 0;
   }
 
   /**
@@ -148,9 +139,9 @@ public class NetworkTableUtils {
    * @param key the key of the entry to make persistent
    */
   public static void setPersistent(String key) {
-    key = normalize(key);
-    int flags = NetworkTablesJNI.getEntryFlags(key);
-    NetworkTablesJNI.setEntryFlags(key, flags | NetworkTable.PERSISTENT);
+    String normalKey = normalize(key);
+    int flags = NetworkTablesJNI.getEntryFlags(normalKey);
+    NetworkTablesJNI.setEntryFlags(normalKey, flags | NetworkTable.PERSISTENT);
   }
 
   /**
@@ -160,9 +151,9 @@ public class NetworkTableUtils {
    * @param key the of the entry to make non-persistent
    */
   public static void clearPersistent(String key) {
-    key = normalize(key);
-    int flags = NetworkTablesJNI.getEntryFlags(key);
-    NetworkTablesJNI.setEntryFlags(key, flags & ~NetworkTable.PERSISTENT);
+    String normalKey = normalize(key);
+    int flags = NetworkTablesJNI.getEntryFlags(normalKey);
+    NetworkTablesJNI.setEntryFlags(normalKey, flags & ~NetworkTable.PERSISTENT);
   }
 
   /**
@@ -199,7 +190,6 @@ public class NetworkTableUtils {
    * @param port the port on the local machine to run the ntcore server on
    */
   public static void setServer(int port) {
-    System.out.println("NetworkTableUtils::setServer(" + port + ")");
     shutdown();
     NetworkTablesJNI.startServer("networktables.ini", "", port);
     NetworkTable.initialize();
@@ -212,7 +202,6 @@ public class NetworkTableUtils {
    * @param serverPort the port of the server to connect to. This is normally 1735.
    */
   public static void setClient(String serverIp, int serverPort) {
-    System.out.println("NetworkTableUtils::setClient(" + serverIp + ":" + serverPort + ")");
     shutdown();
     NetworkTablesJNI.startClient(serverIp, serverPort);
     NetworkTable.initialize();
@@ -232,7 +221,7 @@ public class NetworkTableUtils {
    * Checks if ntcore is currently running.
    */
   public static boolean isRunning() {
-    return getNetworkMode() != 0;
+    return NetworkTablesJNI.getNetworkMode() != 0;
   }
 
   /**
@@ -241,28 +230,28 @@ public class NetworkTableUtils {
    * at the requested address (client mode).
    */
   public static boolean failed() {
-    return hasFlag(getNetworkMode(), NT_NET_MODE_FAILURE);
+    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_FAILURE);
   }
 
   /**
    * Checks if ntcore is currently starting up the client or server.
    */
   public static boolean starting() {
-    return hasFlag(getNetworkMode(), NT_NET_MODE_STARTING);
+    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_STARTING);
   }
 
   /**
    * Checks if ntcore is currently running in server mode.
    */
   public static boolean isServer() {
-    return hasFlag(getNetworkMode(), NT_NET_MODE_SERVER);
+    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_SERVER);
   }
 
   /**
    * Checks if ntcore is currently running in client mode.
    */
   public static boolean isClient() {
-    return hasFlag(getNetworkMode(), NT_NET_MODE_CLIENT);
+    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_CLIENT);
   }
 
 }

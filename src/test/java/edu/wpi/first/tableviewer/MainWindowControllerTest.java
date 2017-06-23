@@ -18,13 +18,11 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
   private Stage stage;
-  private MainWindowController controller;
 
   @Override
   public void start(Stage stage) throws Exception {
     FXMLLoader loader = new FXMLLoader(MainWindowController.class.getResource("MainWindow.fxml"));
     Pane rootPane = loader.load();
-    controller = loader.getController();
     this.stage = stage;
     stage.setScene(new Scene(rootPane));
     stage.show();

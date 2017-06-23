@@ -20,7 +20,7 @@ public abstract class Entry<T> {
   private static final Predicate<String> isMetadata = s -> s.matches("^.*/(\\..*|~.*~).*$");
 
   private final StringProperty key = new SimpleStringProperty(this, "key", "");
-  private ObjectProperty<T> value = new SimpleObjectProperty<>(this, "value", null);
+  private final ObjectProperty<T> value = new SimpleObjectProperty<>(this, "value", null);
   private final StringProperty type = new SimpleStringProperty(this, "type", "");
 
   /**
@@ -107,6 +107,7 @@ public abstract class Entry<T> {
    * @param value the current value of this entry
    * @return a string representing the type of the current value in this entry.
    */
+  // TODO: Does this need a value argument?
   protected abstract String getTypeString(T value);
 
   /**
@@ -130,7 +131,7 @@ public abstract class Entry<T> {
   /**
    * Gets the value of this entry.
    */
-  public T getValue() {
+  public final T getValue() {
     return value.get();
   }
 
@@ -143,7 +144,7 @@ public abstract class Entry<T> {
    *
    * @param value the new value for this entry
    */
-  public void setValue(T value) {
+  public final void setValue(T value) {
     this.value.set(value);
   }
 

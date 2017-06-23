@@ -38,6 +38,7 @@ import javafx.util.converter.DefaultStringConverter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
@@ -107,40 +108,39 @@ public class MainWindowController {
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
-    keyColumn.setCellFactory(param -> {
-      return new TextFieldTreeTableCell<Entry, String>(new DefaultStringConverter()) {
-        @Override
-        public void startEdit() {
-          Entry existing = getTreeTableRow().getItem();
-          if (existing instanceof TableEntry) {
-            System.out.println("Can't edit a table name");
-            return;
+    keyColumn.setCellFactory(param
+        -> new TextFieldTreeTableCell<Entry, String>(new DefaultStringConverter()) {
+          @Override
+          public void startEdit() {
+            Entry existing = getTreeTableRow().getItem();
+            if (existing instanceof TableEntry) {
+              // Can't edit a table name
+              return;
+            }
+            super.startEdit();
           }
-          super.startEdit();
-        }
 
-        @Override
-        public void commitEdit(String simpleKey) {
-          Entry existing = getTreeTableRow().getItem();
-          String existingKey = existing.getKey();
-          String table = existingKey.substring(0, existingKey.lastIndexOf(simpleKey(existingKey)));
-          String newKey = concat(table, simpleKey);
-          if (NetworkTablesJNI.containsKey(newKey)) {
-            // That key already exists
-            System.out.println("Can't change key to one that already exists");
-            cancelEdit();
-            return;
+          @Override
+          public void commitEdit(String simpleKey) {
+            Entry existing = getTreeTableRow().getItem();
+            String existingKey = existing.getKey();
+            String table
+                = existingKey.substring(0, existingKey.lastIndexOf(simpleKey(existingKey)));
+            String newKey = concat(table, simpleKey);
+            if (NetworkTablesJNI.containsKey(newKey)) {
+              // That key already exists
+              cancelEdit();
+              return;
+            }
+            super.commitEdit(simpleKey);
+            String oldKey = existing.getKey();
+            Entry replacement = Entry.entryFor(newKey, existing.getValue());
+            final int flags = NetworkTablesJNI.getEntryFlags(oldKey);
+            NetworkTablesJNI.deleteEntry(oldKey);
+            NetworkTableUtils.put(newKey, replacement.getValue());
+            NetworkTablesJNI.setEntryFlags(newKey, flags);
           }
-          super.commitEdit(simpleKey);
-          String oldKey = existing.getKey();
-          Entry replacement = Entry.entryFor(newKey, existing.getValue());
-          final int flags = NetworkTablesJNI.getEntryFlags(oldKey);
-          NetworkTablesJNI.deleteEntry(oldKey);
-          NetworkTableUtils.put(newKey, replacement.getValue());
-          NetworkTablesJNI.setEntryFlags(newKey, flags);
-        }
-      };
-    });
+        });
     valueColumn.setCellFactory(param -> new TableEntryTreeTableCell());
 
     valueColumn.setOnEditCommit(e -> {
@@ -167,12 +167,11 @@ public class MainWindowController {
       if (newText.isEmpty()) {
         tableView.setFilter(metadataFilter);
       } else {
-        String lower = newText.toLowerCase();
-        Predicate<Entry> filter = metadataFilter.and(data -> {
-          return data.getKey().toLowerCase().contains(lower)
-              || data.getDisplayString().toLowerCase().contains(lower)
-              || data.getType().toLowerCase().contains(lower);
-        });
+        String lower = newText.toLowerCase(Locale.getDefault());
+        Predicate<Entry> filter = metadataFilter.and(data
+            -> data.getKey().toLowerCase(Locale.getDefault()).contains(lower)
+              || data.getDisplayString().toLowerCase(Locale.getDefault()).contains(lower)
+              || data.getType().toLowerCase(Locale.getDefault()).contains(lower));
         tableView.setFilter(filter);
       }
     });
@@ -213,7 +212,10 @@ public class MainWindowController {
         cm.getItems().add(new SeparatorMenuItem());
       }
 
-      if (!key.isEmpty() && entry.getValue() != null) {
+      if (key.isEmpty() && entry.getValue() == null) {
+        // Remove the separator
+        cm.getItems().remove(cm.getItems().size() - 1);
+      } else {
         MenuItem setPersistent = new MenuItem(
             String.format("Set %s", isPersistent(key) ? "transient" : "persistent"));
         setPersistent.setOnAction(__ -> NetworkTableUtils.togglePersistent(key));
@@ -222,9 +224,6 @@ public class MainWindowController {
         delete.setOnAction(__ -> deleteSelectedEntries());
 
         cm.getItems().addAll(setPersistent, delete);
-      } else {
-        // Remove the separator
-        cm.getItems().remove(cm.getItems().size() - 1);
       }
 
       tableView.setContextMenu(cm);

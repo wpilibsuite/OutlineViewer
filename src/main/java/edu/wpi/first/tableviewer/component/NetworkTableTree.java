@@ -56,7 +56,7 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
    * @param value the new value of the update entry
    * @param flags the flags for the updated entry
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "unchecked"})
   public void updateFromNetworkTables(String key, Object value, int flags) {
     if (!Platform.isFxApplicationThread()) {
       Platform.runLater(() -> updateFromNetworkTables(key, value, flags));
@@ -71,7 +71,7 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
     StringBuilder path = new StringBuilder();
     for (int i = 0; i < pathElements.size(); i++) {
       String pathElement = pathElements.get(i);
-      path.append("/").append(pathElement);
+      path.append('/').append(pathElement);
       parent = current;
       current = current.getChildren()
                        .stream()

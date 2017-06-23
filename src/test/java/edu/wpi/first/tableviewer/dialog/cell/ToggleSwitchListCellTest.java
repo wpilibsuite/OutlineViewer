@@ -9,15 +9,15 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ToggleSwitchListCellTest extends ApplicationTest {
 
-  private Stage stage;
   private ListView<Boolean> list;
 
   @Override
   public void start(Stage stage) throws Exception {
-    this.stage = stage;
     list = new ListView<>();
     list.setCellFactory(v -> new ToggleSwitchListCell());
     list.setEditable(true);
@@ -37,12 +37,12 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
     clickOn(toggleSwitch);
 
     assertEquals(1, list.getItems().size());
-    assertEquals(false, list.getItems().get(0));
+    assertFalse(list.getItems().get(0));
 
     clickOn(toggleSwitch);
 
     assertEquals(1, list.getItems().size());
-    assertEquals(true, list.getItems().get(0));
+    assertTrue(list.getItems().get(0));
   }
 
 }

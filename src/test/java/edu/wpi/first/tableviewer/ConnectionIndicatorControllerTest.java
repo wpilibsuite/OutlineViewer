@@ -13,13 +13,11 @@ import static org.junit.Assert.assertEquals;
 
 public class ConnectionIndicatorControllerTest extends ApplicationTest {
 
-  private Stage stage;
   private ConnectionIndicatorController controller;
 
   @Override
   public void start(Stage stage) throws Exception {
     NetworkTable.shutdown();
-    this.stage = stage;
     FXMLLoader loader =
         new FXMLLoader(ConnectionIndicatorController.class.getResource("ConnectionIndicator.fxml"));
     Pane connectionIndicator = loader.load();

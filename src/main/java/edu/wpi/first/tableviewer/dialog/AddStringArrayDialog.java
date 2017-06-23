@@ -17,7 +17,6 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
 
   private ListView<String> list;
 
-  @SuppressWarnings("JavadocMethod")
   public AddStringArrayDialog() {
     super("String Array");
     getDialogPane().getStyleClass().add("add-string-array-dialog");
@@ -46,6 +45,7 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
   /**
    * Sets the initial values in the array.
    */
+  @SuppressWarnings("PMD.UseVarargs")
   public void setInitial(String[] initialValues) {
     list.getItems().clear();
     for (String value : initialValues) {

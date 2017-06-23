@@ -20,13 +20,11 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class NetworkTableTreeTest extends ApplicationTest {
 
-  private Stage stage;
   private NetworkTableTree tree;
   private TreeItem<Entry> root;
 
   @Override
   public void start(Stage stage) throws Exception {
-    this.stage = stage;
     tree = new NetworkTableTree();
     root = new TreeItem<>(new RootTableEntry());
     root.setExpanded(true);

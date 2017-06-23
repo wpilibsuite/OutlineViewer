@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public abstract class AbstractAddDialogTest<T> extends ApplicationTest {
 
   protected AddEntryDialog<T> dialog;
-  private Supplier<AddEntryDialog<T>> dialogSupplier;
+  private final Supplier<AddEntryDialog<T>> dialogSupplier;
 
   public AbstractAddDialogTest(Supplier<AddEntryDialog<T>> dialogSupplier) {
     this.dialogSupplier = dialogSupplier;

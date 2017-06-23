@@ -95,7 +95,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     keyField.setText(key);
   }
 
-  public boolean isDisableKey() {
+  public final boolean isDisableKey() {
     return disableKey.get();
   }
 

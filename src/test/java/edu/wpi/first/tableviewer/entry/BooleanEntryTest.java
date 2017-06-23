@@ -3,6 +3,7 @@ package edu.wpi.first.tableviewer.entry;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class BooleanEntryTest {
 
@@ -10,7 +11,7 @@ public class BooleanEntryTest {
   public void testConstructor() {
     BooleanEntry entry = new BooleanEntry("key", false);
     assertEquals("/key", entry.getKey());
-    assertEquals(false, entry.getValue());
+    assertFalse(entry.getValue());
     assertEquals("false", entry.getDisplayString());
     assertEquals("Boolean", entry.getType());
   }

@@ -7,11 +7,13 @@ import java.util.Arrays;
  */
 public class BooleanArrayEntry extends Entry<boolean[]> {
 
+  @SuppressWarnings("PMD.UseVarargs")
   public BooleanArrayEntry(String key, boolean[] value) {
     super(key, value);
   }
 
   @Override
+  @SuppressWarnings("PMD.UseVarargs")
   protected String getTypeString(boolean[] value) {
     return String.format("Boolean[%d]", value.length);
   }

@@ -25,19 +25,19 @@ public class NetworkTableUtilsTest {
 
   @Test
   public void testNormalizeNOP() {
-    String ok = "/this/doesn't/need/to/be/normalized";
+    final String ok = "/this/doesn't/need/to/be/normalized";
     assertEquals(ok, normalize(ok));
   }
 
   @Test
   public void testNormalizeAddLeadingSlash() {
-    String key = "no/leading/slash";
+    final String key = "no/leading/slash";
     assertEquals("/" + key, normalize(key));
   }
 
   @Test
   public void testNormalizeAwfulString() {
-    String awful = "//////what////an/awful/////key///";
+    final String awful = "//////what////an/awful/////key///";
     assertEquals("/what/an/awful/key/", normalize(awful));
   }
 
@@ -73,9 +73,9 @@ public class NetworkTableUtilsTest {
 
   @Test
   public void testDeleteKey() {
-    String key = "/NetworkTableUtilsTest::testDeleteKey";
+    final String key = "/NetworkTableUtilsTest::testDeleteKey";
     NetworkTablesJNI.putString(key, "dummy");
-    assertTrue(NetworkTablesJNI.containsKey(key));
+
     delete(key);
     assertFalse(NetworkTablesJNI.containsKey(key));
   }
@@ -88,12 +88,11 @@ public class NetworkTableUtilsTest {
     NetworkTablesJNI.putString(first, "");
     NetworkTablesJNI.putString(second, "");
     NetworkTablesJNI.putString(third, "");
+
     delete("/a/b");
-    assertFalse(NetworkTablesJNI.containsKey(first));
-    assertFalse(NetworkTablesJNI.containsKey(second));
-    assertTrue(NetworkTablesJNI.containsKey(third));
-    delete("/a");
-    assertFalse(NetworkTablesJNI.containsKey(third));
+    assertTrue(!NetworkTablesJNI.containsKey(first)
+        && !NetworkTablesJNI.containsKey(second)
+        && NetworkTablesJNI.containsKey(third));
   }
 
 }

@@ -16,7 +16,6 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
 
   private ListView<Boolean> list;
 
-  @SuppressWarnings("JavadocMethod")
   public AddBooleanArrayDialog() {
     super("Boolean Array");
     getDialogPane().getStyleClass().add("add-boolean-array-dialog");
@@ -47,6 +46,7 @@ public class AddBooleanArrayDialog extends AddEntryDialog<boolean[]> {
   /**
    * Sets the initial values in the array.
    */
+  @SuppressWarnings("PMD.UseVarargs")
   public void setInitial(boolean[] initialValues) {
     list.getItems().clear();
     for (boolean value : initialValues) {
