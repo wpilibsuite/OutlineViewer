@@ -3,9 +3,11 @@ package edu.wpi.first.tableviewer;
 import javafx.application.Platform;
 import org.testfx.util.WaitForAsyncUtils;
 
-public class FxHelper {
+public final class FxHelper {
 
-  private static Thread fxApplicationThread = null;
+  private FxHelper() {
+    // Utility class
+  }
 
   /**
    * Runs the given runnable on the JavaFX application thread and waits for it to complete.
@@ -15,13 +17,6 @@ public class FxHelper {
   public static void runAndWait(Runnable runnable) {
     Platform.runLater(runnable);
     WaitForAsyncUtils.waitForFxEvents();
-  }
-
-  public static Thread getFxApplicationThread() {
-    if (fxApplicationThread == null) {
-      runAndWait(() -> fxApplicationThread = Thread.currentThread());
-    }
-    return fxApplicationThread;
   }
 
 }

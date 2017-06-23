@@ -15,9 +15,7 @@ public class BooleanArrayEntryTest {
 
   @Test
   public void testTypeString() {
-    for (int i = 0; i < 100; i++) {
-      assertEquals("Boolean[" + i + "]", new BooleanArrayEntry("", new boolean[i]).getType());
-    }
+    assertEquals("Boolean[100]", new BooleanArrayEntry("", new boolean[100]).getType());
   }
 
   @Test

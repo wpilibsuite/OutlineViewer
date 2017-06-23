@@ -17,7 +17,6 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
 
   private ListView<Double> list;
 
-  @SuppressWarnings("JavadocMethod")
   public AddNumberArrayDialog() {
     super("Number Array");
     getDialogPane().getStyleClass().add("add-number-array-dialog");
@@ -46,6 +45,7 @@ public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
   /**
    * Sets the initial values in the array.
    */
+  @SuppressWarnings("PMD.UseVarargs")
   public void setInitial(double[] initialValues) {
     list.getItems().clear();
     for (double value : initialValues) {

@@ -15,7 +15,6 @@ public class AutoUpdater {
     Prefs.ipProperty().addListener(__ -> update());
     Prefs.portProperty().addListener(__ -> update());
     Prefs.serverProperty().addListener(__ -> update());
-    Prefs.resolvedAddressProperty().addListener(__ -> update());
     update();
   }
 
@@ -28,13 +27,13 @@ public class AutoUpdater {
     } else {
       String rawAddress = Prefs.getIp();
       if (rawAddress.matches("[0-9]{1,5}")) {
-        // Treat as team number. Ignore the port and resolved address to use the 5 addresses
+        // Treat as team number. Ignore the port and resolved address to use the addresses
         // used with NetworkTable.setTeam
         NetworkTableUtils.shutdown();
         NetworkTable.setTeam(Integer.parseInt(rawAddress));
       } else {
         // Treat as a general address:port
-        NetworkTableUtils.setClient(Prefs.getResolvedAddress(), Prefs.getPort());
+        NetworkTableUtils.setClient(rawAddress, Prefs.getPort());
       }
     }
   }

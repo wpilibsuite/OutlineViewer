@@ -7,36 +7,33 @@ import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 public class FilterableTreeTableTest extends ApplicationTest {
 
-  private Stage stage;
-  private FilterableTreeTable treeTable;
+  private FilterableTreeTable<String> treeTable;
 
   @Override
   public void start(Stage stage) throws Exception {
-    this.stage = stage;
-    treeTable = new FilterableTreeTable();
+    treeTable = new FilterableTreeTable<>();
     stage.setScene(new Scene(treeTable));
     stage.show();
   }
 
   @Test
   public void testRootIsSetNoFilter() {
-    TreeItem root = new TreeItem();
+    TreeItem<String> root = new TreeItem<>();
     FxHelper.runAndWait(() -> treeTable.setRoot(root));
-    assertEquals(root, treeTable.getRealRoot());
+    assertSame(root, treeTable.getRealRoot());
   }
 
   @Test
   public void testRootIsSetWithFilter() {
-    TreeItem root = new TreeItem();
+    TreeItem<String> root = new TreeItem<>();
     FxHelper.runAndWait(() -> treeTable.setRoot(root));
     FxHelper.runAndWait(() -> treeTable.setFilter(x -> true));
-    assertEquals(root, treeTable.getRealRoot());
-    assertFalse(root == treeTable.getRoot());
+    assertNotSame(root, treeTable.getRoot());
   }
 
 }

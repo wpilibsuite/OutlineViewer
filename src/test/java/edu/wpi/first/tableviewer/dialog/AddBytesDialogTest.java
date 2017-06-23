@@ -8,7 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
 import org.junit.Test;
 
 import java.util.Set;
@@ -23,11 +22,6 @@ public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
 
   public AddBytesDialogTest() {
     super(AddBytesDialog::new);
-  }
-
-  @Override
-  public void start(Stage stage) throws Exception {
-    super.start(stage);
   }
 
   @Test

@@ -7,6 +7,7 @@ plugins {
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
 }
 
+apply plugin: "pmd"
 apply plugin: "jacoco"
 
 mainClassName = 'edu.wpi.first.tableviewer.Main'
@@ -27,6 +28,13 @@ publishing {
 checkstyle {
     configFile = new File(rootDir, "checkstyle.xml")
     toolVersion = '6.19'
+}
+
+pmd {
+    consoleOutput = true
+    reportsDir = file("$project.buildDir/reports/pmd")
+    ruleSetFiles = files(new File(rootDir, "pmd-ruleset.xml"))
+    ruleSets = []
 }
 
 jacocoTestReport {
