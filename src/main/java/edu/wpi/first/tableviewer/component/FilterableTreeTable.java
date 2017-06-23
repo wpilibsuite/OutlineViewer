@@ -47,7 +47,7 @@ public class FilterableTreeTable<T> extends TreeTableView<T> implements Filterab
   /**
    * Updates the items in this tree to only show items that pass the current filter.
    */
-  public void updateItemsFromFilter() {
+  public final void updateItemsFromFilter() {
     if (realRoot == null) {
       // no items
       return;
@@ -71,6 +71,7 @@ public class FilterableTreeTable<T> extends TreeTableView<T> implements Filterab
    * @param <T> the type of entry to filter on
    * @return the root item of the filtered tree
    */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   private static <T> TreeItem<T> filter(TreeItem<T> allRoot,
                                         Predicate<T> filter,
                                         TreeItem<T> filteredRoot) {
@@ -106,7 +107,7 @@ public class FilterableTreeTable<T> extends TreeTableView<T> implements Filterab
   }
 
   @Override
-  public Predicate<T> getFilter() {
+  public final Predicate<T> getFilter() {
     return filter.get();
   }
 

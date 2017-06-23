@@ -6,7 +6,11 @@ import javafx.stage.Window;
 /**
  * Utility class for working with dialogs.
  */
-public class Dialogs {
+public final class Dialogs {
+
+  private Dialogs() {
+    // Utility class
+  }
 
   /**
    * Centers a window relative to the primary stage.

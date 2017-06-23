@@ -46,22 +46,12 @@ public class PreferencesControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void testChangeServerIdToTeamNumber() {
-    Prefs.setServer(false);
-    TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> idField.setText("192"));
-    waitForFxEvents();
-    controller.start();
-    assertEquals("roborio-192-frc.local", Prefs.getResolvedAddress());
-  }
-
-  @Test
   public void testNoAddressInterpretedAsLocalhost() {
     Prefs.setServer(false);
     TextField idField = lookup(n -> "idField".equals(n.getId())).query();
     FxHelper.runAndWait(() -> idField.setText(""));
     controller.start();
-    assertEquals("localhost", Prefs.getResolvedAddress());
+    assertEquals("localhost", Prefs.getIp());
   }
 
   @Test
@@ -85,17 +75,27 @@ public class PreferencesControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void testServerSwitch() {
+  public void testServerSwitchInital() {
     ToggleSwitch serverSwitch = lookup(n -> "modeSwitch".equals(n.getId())).query();
-    assertEquals(Prefs.isServer(), serverSwitch.isSelected());
+    assertEquals(serverSwitch.isSelected(), Prefs.isServer());
+  }
+
+  @Test
+  public void testServerSwitchChange() {
+    ToggleSwitch serverSwitch = lookup(n -> "modeSwitch".equals(n.getId())).query();
     FxHelper.runAndWait(() -> serverSwitch.setSelected(!serverSwitch.isSelected()));
     assertEquals(serverSwitch.isSelected(), Prefs.isServer());
   }
 
   @Test
-  public void testMetadataSwitch() {
+  public void testMetadataSwitchInital() {
     ToggleSwitch metadataSwitch = lookup(n -> "metadataSwitch".equals(n.getId())).query();
     assertEquals(Prefs.isShowMetaData(), metadataSwitch.isSelected());
+  }
+
+  @Test
+  public void testMetadataSwitchChange() {
+    ToggleSwitch metadataSwitch = lookup(n -> "metadataSwitch".equals(n.getId())).query();
     FxHelper.runAndWait(() -> metadataSwitch.setSelected(!metadataSwitch.isSelected()));
     assertEquals(metadataSwitch.isSelected(), Prefs.isShowMetaData());
   }

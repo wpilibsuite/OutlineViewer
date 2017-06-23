@@ -32,23 +32,11 @@ public class PreferencesController {
    */
   private void startClient() {
     NetworkTableUtils.shutdown();
-    String url = idField.getText();
-    int port = 1735;
-    if (portField.getText().matches("[0-9]+")) {
-      port = Integer.parseInt(portField.getText());
-    }
-    if (url.isEmpty()) {
-      url = "localhost";
-    }
-    url = url.replaceAll("^.*://", ""); // remove leading protocol
-    if (url.matches("[0-9]{1,5}")) {
-      // treat as a team number
-      url = "roborio-" + url + "-frc.local";
-    }
-    Prefs.setResolvedAddress(url);
     Prefs.setServer(false);
-    Prefs.setPort(port);
-    Prefs.setIp(idField.getText());
+
+    if (portField.getText().matches("[0-9]+")) {
+      Prefs.setPort(Integer.parseInt(portField.getText()));
+    }
   }
 
   /**
@@ -57,10 +45,16 @@ public class PreferencesController {
   private void startServer() {
     NetworkTableUtils.shutdown();
     if (portField.getText().matches("[0-9]+")) {
-      int port = Integer.parseInt(portField.getText());
-      Prefs.setPort(port);
+      Prefs.setPort(Integer.parseInt(portField.getText()));
     }
-    Prefs.setIp(idField.getText());
+
+    String url = idField.getText();
+    if (url.isEmpty()) {
+      url = "localhost";
+    }
+    url = url.replaceAll("^.*://", ""); // remove leading protocol
+    Prefs.setIp(url);
+
     Prefs.setServer(true);
   }
 
@@ -68,7 +62,6 @@ public class PreferencesController {
    * Starts running ntcore in the selected mode.
    */
   public void start() {
-    System.out.println("Starting");
     if (Prefs.isServer()) {
       startServer();
     } else {

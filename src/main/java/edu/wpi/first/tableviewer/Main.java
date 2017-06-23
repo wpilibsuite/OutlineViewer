@@ -25,10 +25,7 @@ public class Main extends Application {
         = new PreferencesDialog("Preferences", start, ButtonType.CANCEL);
     preferencesDialog.showAndWait()
                      .filter(bt -> start != bt)
-                     .ifPresent(__ -> {
-                       System.out.println("Cancelled");
-                       System.exit(0);
-                     });
+                     .ifPresent(__ -> System.exit(0));
     preferencesDialog.getController().start();
     updater.init();
 

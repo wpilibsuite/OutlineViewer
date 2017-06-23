@@ -61,36 +61,36 @@ public class ConnectionIndicatorController {
           clientSuccess();
         }
       } else {
-        System.out.println("Running, but not in server or client mode");
+        // Running, but not in server or client mode
         generalFailure();
       }
     } else {
-      System.out.println("Not running anything");
+      // Not running anything
       generalFailure();
     }
   }
 
   private void clientStarting() {
-    connectionLabel.setText("Connecting to " + Prefs.getResolvedAddress() + "...");
+    connectionLabel.setText("Connecting to " + Prefs.getIp() + "...");
     root.pseudoClassStateChanged(CLIENT, true);
     root.pseudoClassStateChanged(SERVER, false);
     root.pseudoClassStateChanged(FAILED, false);
   }
 
   private void clientFail() {
-    String text = "No connection";
-    String addr = Prefs.getResolvedAddress();
+    StringBuffer text = new StringBuffer("No connection");
+    String addr = Prefs.getIp();
     if (addr != null) {
-      text += " to " + addr;
+      text.append(" to ").append(addr);
     }
-    connectionLabel.setText(text);
+    connectionLabel.setText(text.toString());
     root.pseudoClassStateChanged(CLIENT, true);
     root.pseudoClassStateChanged(SERVER, false);
     root.pseudoClassStateChanged(FAILED, true);
   }
 
   private void clientSuccess() {
-    connectionLabel.setText("Connected to server at " + Prefs.getResolvedAddress());
+    connectionLabel.setText("Connected to server at " + Prefs.getIp());
     root.pseudoClassStateChanged(CLIENT, true);
     root.pseudoClassStateChanged(SERVER, false);
     root.pseudoClassStateChanged(FAILED, false);
@@ -111,20 +111,20 @@ public class ConnectionIndicatorController {
   }
 
   private void serverSuccess() {
-    String text = "Running server";
+    StringBuffer text = new StringBuffer("Running server");
     int numClients = NetworkTablesJNI.getConnections().length;
     switch (numClients) {
       case 0:
-        text += " (No clients)";
+        text.append(" (No clients)");
         break;
       case 1:
-        text += " (1 client)";
+        text.append(" (1 client)");
         break;
       default:
-        text += " (" + numClients + " clients)";
+        text.append(" (").append(numClients).append(" clients)");
         break;
     }
-    connectionLabel.setText(text);
+    connectionLabel.setText(text.toString());
     root.pseudoClassStateChanged(CLIENT, false);
     root.pseudoClassStateChanged(SERVER, true);
     root.pseudoClassStateChanged(FAILED, false);

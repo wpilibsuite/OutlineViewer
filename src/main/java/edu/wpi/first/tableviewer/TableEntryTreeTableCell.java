@@ -20,11 +20,10 @@ import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
  */
 class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
 
-  private Class<?> type = null;
-  private Control editor = null;
-  private Node graphic = null;
-  private String text = null;
-  private boolean canEdit = false;
+  private Control editor;
+  private Node graphic;
+  private String text;
+  private boolean canEdit;
   private AddEntryDialog<?> arrayEditor;
 
   public TableEntryTreeTableCell() {
@@ -42,7 +41,6 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
     Entry entry = getTreeTableRow()
         .getTreeItem()
         .getValue();
-    type = item.getClass();
     setGraphic(null);
     setText(null);
 
@@ -102,7 +100,6 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
         arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       } else {
         // not editable
-        System.out.println("Not editable: " + item);
         canEdit = false;
       }
     }
@@ -115,7 +112,14 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       return;
     }
     super.startEdit();
-    if (arrayEditor != null) {
+    if (arrayEditor == null) {
+      graphic = getGraphic();
+      text = getText();
+      setGraphic(editor);
+      if (!(editor instanceof CheckBox)) {
+        setText(null);
+      }
+    } else {
       arrayEditor.setDisableKey(true);
       arrayEditor.setOnCloseRequest(e -> {
         Entry<?> result = arrayEditor.getResult();
@@ -128,25 +132,18 @@ class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       arrayEditor.show();
       arrayEditor.getDialogPane().getScene().getWindow().requestFocus();
       Dialogs.center(arrayEditor.getDialogPane().getScene().getWindow());
-    } else {
-      graphic = getGraphic();
-      text = getText();
-      setGraphic(editor);
-      if (!(editor instanceof CheckBox)) {
-        setText(null);
-      }
     }
   }
 
   @Override
   public void cancelEdit() {
     super.cancelEdit();
-    if (arrayEditor != null) {
-      arrayEditor.setResult(null);
-      arrayEditor.close();
-    } else {
+    if (arrayEditor == null) {
       setGraphic(graphic);
       setText(text);
+    } else {
+      arrayEditor.setResult(null);
+      arrayEditor.close();
     }
   }
 

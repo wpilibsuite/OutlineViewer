@@ -7,11 +7,13 @@ import java.util.Arrays;
  */
 public class StringArrayEntry extends Entry<String[]> {
 
+  @SuppressWarnings("PMD.UseVarargs")
   public StringArrayEntry(String key, String[] value) {
     super(key, value);
   }
 
   @Override
+  @SuppressWarnings("PMD.UseVarargs")
   protected String getTypeString(String[] value) {
     return String.format("String[%d]", value.length);
   }

@@ -9,6 +9,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Parameterized.class)
 public class EntryTest {
 
+  private final Class<?> expectedEntryType;
+  private final Entry<?> actualEntry;
+
   @Parameterized.Parameters(name = "{index}: {1} instanceof {0}")
   public static Object[][] params() {
     return new Object[][]{
@@ -23,9 +26,6 @@ public class EntryTest {
         new Object[]{StringArrayEntry.class, Entry.entryFor("key", new String[0])}
     };
   }
-
-  private final Class<?> expectedEntryType;
-  private final Entry<?> actualEntry;
 
   public EntryTest(Class<?> expectedEntryType, Entry<?> actualEntry) {
     this.expectedEntryType = expectedEntryType;
