@@ -1,7 +1,5 @@
 package edu.wpi.first.tableviewer;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-
 /**
  * Class for automatically updating ntcore client/server status when preferences are changed.
  */
@@ -25,16 +23,7 @@ public class AutoUpdater {
     if (Prefs.isServer()) {
       NetworkTableUtils.setServer(Prefs.getPort());
     } else {
-      String rawAddress = Prefs.getIp();
-      if (rawAddress.matches("[0-9]{1,5}")) {
-        // Treat as team number. Ignore the port and resolved address to use the addresses
-        // used with NetworkTable.setTeam
-        NetworkTableUtils.shutdown();
-        NetworkTable.setTeam(Integer.parseInt(rawAddress));
-      } else {
-        // Treat as a general address:port
-        NetworkTableUtils.setClient(rawAddress, Prefs.getPort());
-      }
+      NetworkTableUtils.setClient(Prefs.getIp(), Prefs.getPort());
     }
   }
 

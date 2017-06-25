@@ -32,7 +32,9 @@ public class PreferencesController {
    */
   private void startClient() {
     NetworkTableUtils.shutdown();
+
     Prefs.setServer(false);
+    Prefs.setIp(idField.getText());
 
     if (portField.getText().matches("[0-9]+")) {
       Prefs.setPort(Integer.parseInt(portField.getText()));
