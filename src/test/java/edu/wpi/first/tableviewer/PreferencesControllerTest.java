@@ -46,15 +46,6 @@ public class PreferencesControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void testNoAddressInterpretedAsLocalhost() {
-    Prefs.setServer(false);
-    TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> idField.setText(""));
-    controller.start();
-    assertEquals("localhost", Prefs.getIp());
-  }
-
-  @Test
   public void testServerPortInServerMode() {
     Prefs.setServer(true);
     TextField portField = lookup(n -> "portField".equals(n.getId())).query();

@@ -177,11 +177,8 @@ public final class NetworkTableUtils {
    * address while in client mode.
    */
   public static void shutdown() {
-    NetworkTablesJNI.stopDSClient();
-    NetworkTablesJNI.stopClient();
-    NetworkTablesJNI.stopServer();
-    NetworkTablesJNI.deleteAllEntries(); // delete AFTER shutting down the server/client
     NetworkTable.shutdown();
+    NetworkTable.globalDeleteAll();
   }
 
   /**
@@ -191,19 +188,26 @@ public final class NetworkTableUtils {
    */
   public static void setServer(int port) {
     shutdown();
-    NetworkTablesJNI.startServer("networktables.ini", "", port);
+    NetworkTable.setPort(port);
+    NetworkTable.setServerMode();
     NetworkTable.initialize();
   }
 
   /**
    * Sets ntcore to client mode.
    *
-   * @param serverIp   the ip of the server to connect to, eg "127.0.0.1" or "localhost"
+   * @param serverId   the ip or team number of the server to connect to, eg "127.0.0.1" or "190"
    * @param serverPort the port of the server to connect to. This is normally 1735.
    */
-  public static void setClient(String serverIp, int serverPort) {
+  public static void setClient(String serverId, int serverPort) {
     shutdown();
-    NetworkTablesJNI.startClient(serverIp, serverPort);
+    NetworkTable.setClientMode();
+    NetworkTable.setPort(serverPort);
+    if (serverId.matches("[1-9](\\d{1,3})?")) {
+      NetworkTable.setTeam(Integer.parseInt(serverId));
+    } else {
+      NetworkTable.setIPAddress(serverId);
+    }
     NetworkTable.initialize();
   }
 
