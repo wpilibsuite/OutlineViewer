@@ -1,7 +1,5 @@
 package edu.wpi.first.tableviewer.dialog.cell;
 
-import edu.wpi.first.tableviewer.FxHelper;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
@@ -10,7 +8,7 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ToggleSwitchListCellTest extends ApplicationTest {
 

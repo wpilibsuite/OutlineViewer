@@ -12,10 +12,11 @@ import javafx.stage.Stage;
 import org.junit.Test;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
@@ -57,7 +58,7 @@ public class AddBytesDialogTest extends AbstractAddDialogTest<byte[]> {
       });
       waitForFxEvents();
       ListCell<Byte> cell = getCells().findAny()
-                                      .orElse(null);
+          .orElse(null);
       if (cell == null) {
         fail("No cell for " + (b & 0xFF)); // convert back to i
       }
