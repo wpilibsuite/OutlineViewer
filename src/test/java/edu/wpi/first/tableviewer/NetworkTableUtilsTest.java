@@ -7,7 +7,9 @@ import static edu.wpi.first.tableviewer.NetworkTableUtils.concat;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.delete;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.normalize;
 import static edu.wpi.first.tableviewer.NetworkTableUtils.simpleKey;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class NetworkTableUtilsTest {
 

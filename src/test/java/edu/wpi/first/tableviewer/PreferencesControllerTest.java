@@ -1,7 +1,5 @@
 package edu.wpi.first.tableviewer;
 
-import edu.wpi.first.tableviewer.dialog.PreferencesDialog;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -11,7 +9,9 @@ import org.controlsfx.control.ToggleSwitch;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class PreferencesControllerTest extends ApplicationTest {

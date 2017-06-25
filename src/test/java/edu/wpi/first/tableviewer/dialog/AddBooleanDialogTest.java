@@ -8,7 +8,9 @@ import org.controlsfx.control.ToggleSwitch;
 import org.junit.Test;
 import org.testfx.util.WaitForAsyncUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AddBooleanDialogTest extends AbstractAddDialogTest<Boolean> {
 

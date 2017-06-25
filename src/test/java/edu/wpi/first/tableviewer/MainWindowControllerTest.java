@@ -1,20 +1,17 @@
 package edu.wpi.first.tableviewer;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
-import javafx.scene.control.TreeTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.testfx.matcher.base.NodeMatchers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
