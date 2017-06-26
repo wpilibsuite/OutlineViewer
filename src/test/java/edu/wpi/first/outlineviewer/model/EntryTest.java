@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 public class EntryTest {
 
   @Test
+  @SuppressWarnings("PMD.EmptyCatchBlock")
   public void invalidEntryForTest() {
     try {
       Entry.entryFor("", new Object());
