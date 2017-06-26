@@ -1,40 +1,41 @@
 package edu.wpi.first.outlineviewer.model;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-@RunWith(Parameterized.class)
 public class EntryTest {
 
-  private final Class<?> expectedEntryType;
-  private final Entry<?> actualEntry;
-
-  @Parameterized.Parameters(name = "{index}: {1} instanceof {0}")
-  public static Object[][] params() {
-    return new Object[][]{
-        new Object[]{BooleanEntry.class, Entry.entryFor("key", false)},
-        new Object[]{BooleanArrayEntry.class, Entry.entryFor("key", new boolean[0])},
-        new Object[]{NumberEntry.class, Entry.entryFor("key", 0)},
-        new Object[]{NumberEntry.class, Entry.entryFor("key", 0.0)},
-        new Object[]{NumberEntry.class, Entry.entryFor("key", 0L)},
-        new Object[]{NumberArrayEntry.class, Entry.entryFor("key", new double[0])},
-        new Object[]{RawBytesEntry.class, Entry.entryFor("key", new byte[0])},
-        new Object[]{StringEntry.class, Entry.entryFor("key", "some string")},
-        new Object[]{StringArrayEntry.class, Entry.entryFor("key", new String[0])}
-    };
-  }
-
-  public EntryTest(Class<?> expectedEntryType, Entry<?> actualEntry) {
-    this.expectedEntryType = expectedEntryType;
-    this.actualEntry = actualEntry;
+  @Test
+  public void invalidEntryForTest() {
+    try {
+      Entry.entryFor("", new Object());
+      fail();
+    } catch (IllegalArgumentException ex) {
+      // We want this exception to be thrown
+    }
   }
 
   @Test
-  public void test() {
-    assertEquals(expectedEntryType, actualEntry.getClass());
+  public void testTableEntryDisplayString() {
+    TableEntry entry = new TableEntry("");
+
+    assertEquals("", entry.getDisplayString());
+  }
+
+  @Test
+  public void testTableEntryTypeString() {
+    TableEntry entry = new TableEntry("");
+
+    assertEquals("", entry.getTypeString(null));
+  }
+
+  @Test
+  public void testRootPath() {
+    RootTableEntry root = new RootTableEntry();
+
+    assertEquals("/", root.getKey());
   }
 
 }
