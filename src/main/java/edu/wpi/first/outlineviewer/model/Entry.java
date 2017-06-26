@@ -23,12 +23,12 @@ public abstract class Entry<T> {
   private final StringProperty type = new SimpleStringProperty(this, "type", "");
 
   /**
-   * Creates an model for the given key-value pair.
+   * Creates an entry for the given key-value pair.
    *
-   * @param key   the absolute key of the model
-   * @param value the initial value of the model
-   * @param <T>   the type of values in the model
-   * @return an model for the given key-value pair
+   * @param key   the absolute key of the entry
+   * @param value the initial value of the entry
+   * @param <T>   the type of values in the entry
+   * @return an entry for the given key-value pair
    * @throws IllegalArgumentException if the value is an unsupported type
    */
   @SuppressWarnings("unchecked")
@@ -60,9 +60,9 @@ public abstract class Entry<T> {
   }
 
   /**
-   * Creates an model with the given key and no value.
+   * Creates an entry with the given key and no value.
    *
-   * @param key the key of the model
+   * @param key the key of the entry
    */
   protected Entry(String key) {
     Objects.requireNonNull(key, "key");
@@ -80,10 +80,10 @@ public abstract class Entry<T> {
   }
 
   /**
-   * Creates an model with the given key and value.
+   * Creates an entry with the given key and value.
    *
-   * @param key   the key of the model
-   * @param value the value of the model
+   * @param key   the key of the entry
+   * @param value the value of the entry
    */
   protected Entry(String key, T value) {
     this(key);
@@ -92,55 +92,55 @@ public abstract class Entry<T> {
   }
 
   /**
-   * Checks if this model is metadata.
+   * Checks if this entry is metadata.
    */
   public boolean isMetadata() {
     return isMetadata.test(getKey());
   }
 
   /**
-   * Gets a string representing the type of value in this model based on the current value. For
+   * Gets a string representing the type of value in this entry based on the current value. For
    * example, array-based entries may want to show the number of elements in the value array
    * eg "Number[10]".
    *
-   * @param value the current value of this model
-   * @return a string representing the type of the current value in this model.
+   * @param value the current value of this entry
+   * @return a string representing the type of the current value in this entry.
    */
   // TODO: Does this need a value argument?
   protected abstract String getTypeString(T value);
 
   /**
-   * Gets a string representing the value in this model.
+   * Gets a string representing the value in this entry.
    */
   public String getDisplayString() {
     return getValue().toString();
   }
 
   /**
-   * Gets the key for this model.
+   * Gets the key for this entry.
    */
   public String getKey() {
     return key.get();
   }
 
   /**
-   * Gets the value of this model.
+   * Gets the value of this entry.
    */
   public final T getValue() {
     return value.get();
   }
 
   /**
-   * Sets the value of this model. This may not be null.
+   * Sets the value of this entry. This may not be null.
    *
-   * @param value the new value for this model
+   * @param value the new value for this entry
    */
   public final void setValue(T value) {
     this.value.set(value);
   }
 
   /**
-   * Gets a string representing the type of data in this model.
+   * Gets a string representing the type of data in this entry.
    */
   public String getType() {
     return type.get();

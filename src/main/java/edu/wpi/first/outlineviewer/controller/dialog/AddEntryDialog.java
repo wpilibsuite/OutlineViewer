@@ -76,7 +76,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
   }
 
   /**
-   * Creates a control to use to edit the types of data in the model. This could be as simple
+   * Creates a control to use to edit the types of data in the entry. This could be as simple
    * as a text field (see {@link AddStringDialog}) or a fully custom pane
    * (see {@link AddStringArrayDialog}).
    *

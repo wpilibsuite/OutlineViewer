@@ -3,7 +3,7 @@ package edu.wpi.first.outlineviewer.model;
 import java.util.Arrays;
 
 /**
- * An model containing an array of strings.
+ * An entry containing an array of strings.
  */
 public class StringArrayEntry extends Entry<String[]> {
 

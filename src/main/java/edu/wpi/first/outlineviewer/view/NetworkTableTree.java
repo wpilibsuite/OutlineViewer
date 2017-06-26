@@ -40,11 +40,11 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
   }
 
   /**
-   * Updates this tree based on information about a specific model in network tables. This is
-   * intended to be called directly from a NetworkTablesJNI model listener function. This method
+   * Updates this tree based on information about a specific entry in network tables. This is
+   * intended to be called directly from a NetworkTablesJNI entry listener function. This method
    * is smart enough to always run on the JavaFX application thread.
    *
-   * <p>Example use to update the tree whenever any model updates:
+   * <p>Example use to update the tree whenever any entry updates:
    * <pre><code>
    * NetworkTablesJNI.addEntryListener(
    *       "",
@@ -52,9 +52,9 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
    *       0xFF);
    * </code></pre>
    *
-   * @param key   the key of the model that updated
-   * @param value the new value of the update model
-   * @param flags the flags for the updated model
+   * @param key   the key of the entry that updated
+   * @param value the new value of the update entry
+   * @param flags the flags for the updated entry
    */
   @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "unchecked"})
   public void updateFromNetworkTables(String key, Object value, int flags) {

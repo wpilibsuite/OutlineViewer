@@ -3,7 +3,7 @@ package edu.wpi.first.outlineviewer.model;
 import java.util.Arrays;
 
 /**
- * An model containing an array of boolean values.
+ * An entry containing an array of boolean values.
  */
 public class BooleanArrayEntry extends Entry<boolean[]> {
 

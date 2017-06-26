@@ -3,7 +3,7 @@ package edu.wpi.first.outlineviewer.model;
 import java.util.Arrays;
 
 /**
- * An model containing an array of numbers.
+ * An entry containing an array of numbers.
  */
 public class NumberArrayEntry extends Entry<double[]> {
 

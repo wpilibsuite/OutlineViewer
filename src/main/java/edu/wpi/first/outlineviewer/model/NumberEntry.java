@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
 /**
- * An model containing a single number.
+ * An entry containing a single number.
  */
 public class NumberEntry extends Entry<Number> {
 

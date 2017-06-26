@@ -88,7 +88,7 @@ public final class NetworkTableUtils {
    * <li>{@code boolean[]} arrays</li>
    * </ul>
    *
-   * @param key   the key of the model
+   * @param key   the key of the entry
    * @param value the value to put
    * @return true if the value was successfully added, false if not
    */
@@ -122,10 +122,10 @@ public final class NetworkTableUtils {
   }
 
   /**
-   * Checks if an model is persistent.
+   * Checks if an entry is persistent.
    *
-   * @param key the key of the model to check
-   * @return true if the model is persistent, false if it is not
+   * @param key the key of the entry to check
+   * @return true if the entry is persistent, false if it is not
    */
   public static boolean isPersistent(String key) {
     String normalKey = normalize(key);
@@ -133,10 +133,10 @@ public final class NetworkTableUtils {
   }
 
   /**
-   * Sets the model with the given key to be persistent. Has no effect if the model is already
+   * Sets the entry with the given key to be persistent. Has no effect if the entry is already
    * persistent.
    *
-   * @param key the key of the model to make persistent
+   * @param key the key of the entry to make persistent
    */
   public static void setPersistent(String key) {
     String normalKey = normalize(key);
@@ -145,10 +145,10 @@ public final class NetworkTableUtils {
   }
 
   /**
-   * Makes the model with the given key non-persistent. Has no effect if the model is already
+   * Makes the entry with the given key non-persistent. Has no effect if the entry is already
    * not persistent.
    *
-   * @param key the of the model to make non-persistent
+   * @param key the of the entry to make non-persistent
    */
   public static void clearPersistent(String key) {
     String normalKey = normalize(key);

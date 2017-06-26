@@ -11,7 +11,7 @@ import javafx.util.StringConverter;
 import java.util.List;
 
 /**
- * A dialog for adding or editing arrays of numbers in a network table model.
+ * A dialog for adding or editing arrays of numbers in a network table entry.
  */
 public class AddNumberArrayDialog extends AddEntryDialog<double[]> {
 
