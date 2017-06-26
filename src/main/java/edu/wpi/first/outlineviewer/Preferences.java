@@ -14,7 +14,7 @@ import javafx.beans.property.StringProperty;
 public final class Preferences {
 
   private static final String SHOW_METADATA = "show_metadata";
-  private static final String SERVER = "server";
+  private static final String SERVER = "serverMode";
   private static final String IP = "ip";
   private static final String PORT = "port";
 
