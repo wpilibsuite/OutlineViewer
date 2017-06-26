@@ -72,7 +72,8 @@ public class MainWindowController {
   @FXML
   private TextField searchField;
 
-  private final Predicate<Entry> metadataFilter = x -> Prefs.isShowMetaData() || !x.isMetadata();
+  private final Predicate<Entry> metadataFilter
+      = x -> Preferences.isShowMetaData() || !x.isMetadata();
 
   @FXML
   private void initialize() {
@@ -229,7 +230,7 @@ public class MainWindowController {
       tableView.setContextMenu(cm);
       cm.show(tableView, e.getScreenX(), e.getScreenY());
     });
-    Prefs.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
+    Preferences.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
   }
 
   /**

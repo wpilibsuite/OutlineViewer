@@ -20,10 +20,10 @@ public class PreferencesController {
 
   @FXML
   private void initialize() {
-    idField.setText(Prefs.getIp());
-    portField.setText(String.valueOf(Prefs.getPort()));
-    serverModeSwitch.selectedProperty().bindBidirectional(Prefs.serverProperty());
-    metadataSwitch.selectedProperty().bindBidirectional(Prefs.showMetaDataProperty());
+    idField.setText(Preferences.getIp());
+    portField.setText(String.valueOf(Preferences.getPort()));
+    serverModeSwitch.selectedProperty().bindBidirectional(Preferences.serverProperty());
+    metadataSwitch.selectedProperty().bindBidirectional(Preferences.showMetaDataProperty());
     idField.disableProperty().bind(serverModeSwitch.selectedProperty());
   }
 
@@ -33,11 +33,11 @@ public class PreferencesController {
   private void startClient() {
     NetworkTableUtils.shutdown();
 
-    Prefs.setServer(false);
-    Prefs.setIp(idField.getText());
+    Preferences.setServer(false);
+    Preferences.setIp(idField.getText());
 
     if (portField.getText().matches("[0-9]+")) {
-      Prefs.setPort(Integer.parseInt(portField.getText()));
+      Preferences.setPort(Integer.parseInt(portField.getText()));
     }
   }
 
@@ -47,7 +47,7 @@ public class PreferencesController {
   private void startServer() {
     NetworkTableUtils.shutdown();
     if (portField.getText().matches("[0-9]+")) {
-      Prefs.setPort(Integer.parseInt(portField.getText()));
+      Preferences.setPort(Integer.parseInt(portField.getText()));
     }
 
     String url = idField.getText();
@@ -55,16 +55,16 @@ public class PreferencesController {
       url = "localhost";
     }
     url = url.replaceAll("^.*://", ""); // remove leading protocol
-    Prefs.setIp(url);
+    Preferences.setIp(url);
 
-    Prefs.setServer(true);
+    Preferences.setServer(true);
   }
 
   /**
    * Starts running ntcore in the selected mode.
    */
   public void start() {
-    if (Prefs.isServer()) {
+    if (Preferences.isServer()) {
       startServer();
     } else {
       startClient();
