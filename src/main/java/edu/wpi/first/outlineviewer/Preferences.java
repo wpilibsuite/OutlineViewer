@@ -8,40 +8,38 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.prefs.Preferences;
-
 /**
  * App-global preferences.
  */
-public final class Prefs {
+public final class Preferences {
 
   private static final String SHOW_METADATA = "show_metadata";
   private static final String SERVER = "server";
   private static final String IP = "ip";
   private static final String PORT = "port";
 
-  private static final Preferences preferences
-      = Preferences.userNodeForPackage(OutlineViewer.class);
+  private static final java.util.prefs.Preferences preferences
+      = java.util.prefs.Preferences.userNodeForPackage(OutlineViewer.class);
 
   /**
    * Whether or not metadata should be visible in the tree. Defaults to true.
    */
   private static final BooleanProperty showMetaData
-      = new SimpleBooleanProperty(Prefs.class, SHOW_METADATA, true);
+      = new SimpleBooleanProperty(Preferences.class, SHOW_METADATA, true);
 
   /**
    * Whether or not the app should be running in server mode. Defaults to false (client mode).
    */
   private static final BooleanProperty server
-      = new SimpleBooleanProperty(Prefs.class, SERVER, false);
+      = new SimpleBooleanProperty(Preferences.class, SERVER, false);
 
   /**
    * The address or team number given by the user.
    */
   private static final StringProperty ip
-      = new SimpleStringProperty(Prefs.class, IP, "localhost");
+      = new SimpleStringProperty(Preferences.class, IP, "localhost");
 
-  private static IntegerProperty port = new SimpleIntegerProperty(Prefs.class, "port",
+  private static IntegerProperty port = new SimpleIntegerProperty(Preferences.class, "port",
       NetworkTable.DEFAULT_PORT);
 
   // Load saved preferences and set up listeners to automatically save changes
@@ -61,7 +59,7 @@ public final class Prefs {
         (__, oldValue, newValue) -> preferences.putInt(PORT, newValue.intValue()));
   }
 
-  private Prefs() {
+  private Preferences() {
     // Utility class
   }
 
@@ -74,7 +72,7 @@ public final class Prefs {
   }
 
   public static void setShowMetaData(boolean showMetaData) {
-    Prefs.showMetaData.set(showMetaData);
+    Preferences.showMetaData.set(showMetaData);
   }
 
   public static boolean isServer() {
@@ -86,7 +84,7 @@ public final class Prefs {
   }
 
   public static void setServer(boolean server) {
-    Prefs.server.set(server);
+    Preferences.server.set(server);
   }
 
   public static String getIp() {
@@ -98,7 +96,7 @@ public final class Prefs {
   }
 
   public static void setIp(String ip) {
-    Prefs.ip.set(ip);
+    Preferences.ip.set(ip);
   }
 
   public static int getPort() {
@@ -110,7 +108,7 @@ public final class Prefs {
   }
 
   public static void setPort(int port) {
-    Prefs.port.set(port);
+    Preferences.port.set(port);
   }
 
 }
