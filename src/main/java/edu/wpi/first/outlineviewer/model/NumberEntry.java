@@ -13,15 +13,4 @@ public class NumberEntry extends Entry<Number> {
   protected String getTypeString(Number value) {
     return "Number";
   }
-
-  @Override
-  public String getDisplayString() {
-    double value = getValue().doubleValue();
-    if (value == (int) value) {
-      return Integer.toString((int) value);
-    } else {
-      return Double.toString(value);
-    }
-  }
-
 }
