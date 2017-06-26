@@ -149,7 +149,7 @@ public class MainWindowController {
 
     valueColumn.setOnEditCommit(e -> {
       Entry entry = e.getRowValue().getValue();
-      String key = entry.getKey(); // model keys are guaranteed to be normalized
+      String key = entry.getKey(); // entry keys are guaranteed to be normalized
       NetworkTableUtils.put(key, e.getNewValue());
     });
 
@@ -196,8 +196,8 @@ public class MainWindowController {
         // Close previous context menu
         tableView.getContextMenu().hide();
       }
-      // The actions in the menu only affect one model,
-      // so we only select the model that was clicked on.
+      // The actions in the menu only affect one entry,
+      // so we only select the entry that was clicked on.
       if (tableView.getSelectionModel().getSelectedItems().size() > 1) {
         tableView.getSelectionModel()
                  .clearAndSelect(tableView.getSelectionModel().getSelectedIndex());
@@ -237,9 +237,9 @@ public class MainWindowController {
   }
 
   /**
-   * Creates all the menu items for a context menu for the given table model.
+   * Creates all the menu items for a context menu for the given table entry.
    *
-   * @param tableEntry the model for the subtable to create the menu items for
+   * @param tableEntry the entry for the subtable to create the menu items for
    */
   private List<MenuItem> createTableMenuItems(Entry<?> tableEntry) {
     final String key = tableEntry.getKey();

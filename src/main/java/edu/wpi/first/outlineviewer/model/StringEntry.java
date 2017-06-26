@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
 /**
- * An model containing a single string.
+ * An entry containing a single string.
  */
 public class StringEntry extends Entry<String> {
 

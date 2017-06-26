@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
 /**
- * An model containing a single boolean.
+ * An entry containing a single boolean.
  */
 public class BooleanEntry extends Entry<Boolean> {
 
