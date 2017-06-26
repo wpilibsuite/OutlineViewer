@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
 /**
- * An model containing an array of raw bytes.
+ * An entry containing an array of raw bytes.
  */
 public class RawBytesEntry extends Entry<byte[]> {
 
