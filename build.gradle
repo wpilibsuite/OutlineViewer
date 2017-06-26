@@ -10,7 +10,7 @@ plugins {
 apply plugin: "pmd"
 apply plugin: "jacoco"
 
-mainClassName = 'edu.wpi.first.tableviewer.Main'
+mainClassName = 'edu.wpi.first.outlineviewer.OutlineViewer'
 
 publishing {
     publications {
