@@ -3,7 +3,6 @@ package edu.wpi.first.outlineviewer.model;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,7 +16,7 @@ import java.util.function.Predicate;
  */
 public abstract class Entry<T> {
 
-  private static final Predicate<String> isMetadata = s -> s.matches("^.*/(\\..*|~.*~).*$");
+  private static final Predicate<String> isMetadata = s -> s.matches(".*~[A-Z]*~");
 
   private final StringProperty key = new SimpleStringProperty(this, "key", "");
   private final ObjectProperty<T> value = new SimpleObjectProperty<>(this, "value", null);
@@ -124,19 +123,11 @@ public abstract class Entry<T> {
     return key.get();
   }
 
-  public ReadOnlyStringProperty keyProperty() {
-    return key;
-  }
-
   /**
    * Gets the value of this model.
    */
   public final T getValue() {
     return value.get();
-  }
-
-  public ObjectProperty<T> valueProperty() {
-    return value;
   }
 
   /**
@@ -153,10 +144,6 @@ public abstract class Entry<T> {
    */
   public String getType() {
     return type.get();
-  }
-
-  public ReadOnlyStringProperty typeProperty() {
-    return type;
   }
 
   @Override
