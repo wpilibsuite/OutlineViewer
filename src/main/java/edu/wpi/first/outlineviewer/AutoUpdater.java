@@ -10,9 +10,9 @@ public class AutoUpdater {
    * single initial update.
    */
   public void init() {
-    Prefs.ipProperty().addListener(__ -> update());
-    Prefs.portProperty().addListener(__ -> update());
-    Prefs.serverProperty().addListener(__ -> update());
+    Preferences.ipProperty().addListener(__ -> update());
+    Preferences.portProperty().addListener(__ -> update());
+    Preferences.serverProperty().addListener(__ -> update());
     update();
   }
 
@@ -20,10 +20,10 @@ public class AutoUpdater {
    * Performs a single update.
    */
   public void update() {
-    if (Prefs.isServer()) {
-      NetworkTableUtils.setServer(Prefs.getPort());
+    if (Preferences.isServer()) {
+      NetworkTableUtils.setServer(Preferences.getPort());
     } else {
-      NetworkTableUtils.setClient(Prefs.getIp(), Prefs.getPort());
+      NetworkTableUtils.setClient(Preferences.getIp(), Preferences.getPort());
     }
   }
 

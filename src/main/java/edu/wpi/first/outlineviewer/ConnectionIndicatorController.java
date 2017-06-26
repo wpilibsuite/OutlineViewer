@@ -27,7 +27,7 @@ public class ConnectionIndicatorController {
   @FXML
   private void initialize() {
     NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> updateConnectionLabel(), true);
-    Prefs.serverProperty().addListener(__ -> updateConnectionLabel());
+    Preferences.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
       Thread thread = new Thread(r);
       thread.setDaemon(true);
@@ -71,7 +71,7 @@ public class ConnectionIndicatorController {
   }
 
   private void clientStarting() {
-    connectionLabel.setText("Connecting to " + Prefs.getIp() + "...");
+    connectionLabel.setText("Connecting to " + Preferences.getIp() + "...");
     root.pseudoClassStateChanged(CLIENT, true);
     root.pseudoClassStateChanged(SERVER, false);
     root.pseudoClassStateChanged(FAILED, false);
@@ -79,7 +79,7 @@ public class ConnectionIndicatorController {
 
   private void clientFail() {
     StringBuffer text = new StringBuffer("No connection");
-    String addr = Prefs.getIp();
+    String addr = Preferences.getIp();
     if (addr != null) {
       text.append(" to ").append(addr);
     }
@@ -90,7 +90,7 @@ public class ConnectionIndicatorController {
   }
 
   private void clientSuccess() {
-    connectionLabel.setText("Connected to server at " + Prefs.getIp());
+    connectionLabel.setText("Connected to server at " + Preferences.getIp());
     root.pseudoClassStateChanged(CLIENT, true);
     root.pseudoClassStateChanged(SERVER, false);
     root.pseudoClassStateChanged(FAILED, false);
