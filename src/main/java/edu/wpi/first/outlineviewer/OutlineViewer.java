@@ -14,10 +14,6 @@ public class OutlineViewer extends Application {
 
   private static final ButtonType start = new ButtonType("Start");
 
-  public static void main(String[] args) {
-    launch(args);
-  }
-
   @Override
   public void start(Stage primaryStage) throws IOException {
     AutoUpdater updater = new AutoUpdater();
@@ -29,16 +25,12 @@ public class OutlineViewer extends Application {
     preferencesDialog.getController().start();
     updater.init();
 
-    FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-    Pane mainWindow = mainLoader.load();
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+    Pane mainWindow = loader.load();
 
-    primaryStage.setTitle("Network Table Viewer");
-    primaryStage.setOnCloseRequest(e -> System.exit(0));
+    primaryStage.setTitle("OutlineViewer");
     primaryStage.setScene(new Scene(mainWindow));
     primaryStage.show();
-    primaryStage.setMinWidth(600);
-    primaryStage.setMinHeight(450);
-    primaryStage.centerOnScreen();
   }
 
 }
