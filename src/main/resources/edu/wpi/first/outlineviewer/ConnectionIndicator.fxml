@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.StackPane?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="edu.wpi.first.outlineviewer.ConnectionIndicatorController"
+           fx:controller="edu.wpi.first.outlineviewer.controller.ConnectionIndicatorController"
            fx:id="root"
            styleClass="connection-background"
            prefHeight="50">

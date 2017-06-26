@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.outlineviewer.dialog.PreferencesDialog;
+import edu.wpi.first.outlineviewer.controller.dialog.PreferencesDialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
