@@ -6,10 +6,10 @@ import javafx.stage.Window;
 /**
  * Utility class for working with dialogs.
  */
-public final class Dialogs {
+public final class DialogUtils {
 
-  private Dialogs() {
-    // Utility class
+  private DialogUtils() {
+    throw new UnsupportedOperationException("This is a utility class!");
   }
 
   /**

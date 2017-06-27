@@ -4,11 +4,6 @@ import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import org.junit.After;
 import org.junit.Test;
 
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.concat;
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.delete;
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.normalize;
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -42,7 +37,7 @@ public class NetworkTableUtilsTest extends UtilityClassTest {
     final String key = "/NetworkTableUtilsTest::testDeleteKey";
     NetworkTablesJNI.putString(key, "dummy");
 
-    delete(key);
+    NetworkTableUtils.delete(key);
     assertFalse(NetworkTablesJNI.containsKey(key));
   }
 
@@ -55,7 +50,7 @@ public class NetworkTableUtilsTest extends UtilityClassTest {
     NetworkTablesJNI.putString(second, "");
     NetworkTablesJNI.putString(third, "");
 
-    delete("/a/b");
+    NetworkTableUtils.delete("/a/b");
     assertTrue(!NetworkTablesJNI.containsKey(first)
         && !NetworkTablesJNI.containsKey(second)
         && NetworkTablesJNI.containsKey(third));

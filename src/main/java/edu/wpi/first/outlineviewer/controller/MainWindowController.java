@@ -11,7 +11,7 @@ import edu.wpi.first.outlineviewer.controller.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.controller.dialog.AddNumberDialog;
 import edu.wpi.first.outlineviewer.controller.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.controller.dialog.AddStringDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.Dialogs;
+import edu.wpi.first.outlineviewer.controller.dialog.DialogUtils;
 import edu.wpi.first.outlineviewer.controller.dialog.PreferencesDialog;
 import edu.wpi.first.outlineviewer.model.Entry;
 import edu.wpi.first.outlineviewer.model.TableEntry;
@@ -326,7 +326,7 @@ public class MainWindowController {
   @FXML
   private void showPrefs() throws IOException {
     PreferencesDialog dialog = new PreferencesDialog("Preferences", ButtonType.FINISH);
-    Platform.runLater(() -> Dialogs.center(dialog.getDialogPane().getScene().getWindow()));
+    Platform.runLater(() -> DialogUtils.center(dialog.getDialogPane().getScene().getWindow()));
     dialog.showAndWait()
           .filter(ButtonType.FINISH::equals)
           .ifPresent(__ -> dialog.getController().start());

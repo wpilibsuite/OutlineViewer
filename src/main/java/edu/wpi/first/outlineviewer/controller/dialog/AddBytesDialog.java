@@ -1,48 +1,20 @@
 package edu.wpi.first.outlineviewer.controller.dialog;
 
-import javafx.scene.Node;
-import javafx.scene.control.Button;
+import com.google.common.primitives.Bytes;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.util.List;
 
 /**
  * A dialog for editing arrays of raw bytes. These are represented as integers because Java doesn't
  * support unsigned bytes.
  */
-public class AddBytesDialog extends AddEntryDialog<byte[]> {
-
-  private ListView<Byte> list;
+public class AddBytesDialog extends AddEntryArrayDialog<Byte, byte[]> {
 
   public AddBytesDialog() {
     super("Raw Bytes");
-    getDialogPane().getStyleClass().add("add-bytes-dialog");
-    getDialogPane().setMaxHeight(300);
-  }
-
-  @Override
-  protected Node createCustomControl() {
-    list = new ListView<>();
-    list.setId("list");
-    list.setEditable(true);
-    list.setCellFactory(__ -> new TextFieldListCell<>(ByteToStringConverter.INSTANCE));
-    list.setOnKeyPressed(e -> {
-      KeyCode code = e.getCode();
-      if (code == KeyCode.DELETE) {
-        removeSelected();
-      }
-    });
-
-    Button add = new Button("+");
-    add.setId("addItem");
-    add.setPrefWidth(40);
-    add.setOnAction(__ -> list.getItems().add((byte) 0));
-
-    return new VBox(8, list, add);
   }
 
   /**
@@ -55,26 +27,24 @@ public class AddBytesDialog extends AddEntryDialog<byte[]> {
     }
   }
 
-  private void removeSelected() {
-    list.getItems().removeAll(list.getSelectionModel().getSelectedItems());
+  @Override
+  protected Byte getDefaultItem() {
+    return 0;
+  }
+
+  @Override
+  protected Callback<ListView<Byte>, ListCell<Byte>> getCellFactory() {
+    return __ -> new TextFieldListCell<>(ByteToStringConverter.INSTANCE);
   }
 
   @Override
   protected byte[] getData() {
-    return toPrimitiveArray(list.getItems());
-  }
-
-  private static byte[] toPrimitiveArray(List<Byte> list) {
-    byte[] arr = new byte[list.size()];
-    for (byte i = 0; i < list.size(); i++) {
-      arr[i] = list.get(i);
-    }
-    return arr;
+    return Bytes.toArray(list.getItems());
   }
 
   private static final class ByteToStringConverter extends StringConverter<Byte> {
 
-    public static final StringConverter<Byte> INSTANCE = new ByteToStringConverter();
+    static final StringConverter<Byte> INSTANCE = new ByteToStringConverter();
 
     @Override
     public String toString(Byte object) {
