@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.outlineviewer.model.TableEntry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
