@@ -1,6 +1,7 @@
 package edu.wpi.first.outlineviewer;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
+import org.junit.After;
 import org.junit.Test;
 
 import static edu.wpi.first.outlineviewer.NetworkTableUtils.concat;
@@ -11,64 +12,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class NetworkTableUtilsTest {
+public class NetworkTableUtilsTest extends UtilityClassTest {
 
-  @Test
-  public void testNormalizeEmpty() {
-    assertEquals("/", normalize(""));
+  public NetworkTableUtilsTest() {
+    super(NetworkTableUtils.class);
+  }
+
+  @After
+  public void after() {
+    NetworkTableUtils.shutdown();
   }
 
   @Test
-  public void testNormalizeAllSlashes() {
-    assertEquals("/", normalize("//////////////////"));
+  public void testServer() {
+    NetworkTableUtils.setServer(9999);
+
+    assertTrue(NetworkTableUtils.isServer());
   }
 
   @Test
-  public void testNormalizeNOP() {
-    final String ok = "/this/doesn't/need/to/be/normalized";
-    assertEquals(ok, normalize(ok));
-  }
+  public void testClient() {
+    NetworkTableUtils.setClient("localhost", 9999);
 
-  @Test
-  public void testNormalizeAddLeadingSlash() {
-    final String key = "no/leading/slash";
-    assertEquals("/" + key, normalize(key));
-  }
-
-  @Test
-  public void testNormalizeAwfulString() {
-    final String awful = "//////what////an/awful/////key///";
-    assertEquals("/what/an/awful/key/", normalize(awful));
-  }
-
-  @Test
-  public void testConcatTwo() {
-    assertEquals("/foo/bar", concat("foo", "bar"));
-  }
-
-  @Test
-  public void testConcatMany() {
-    assertEquals("/one/two/three/four", concat("one", "two", "three", "four"));
-  }
-
-  @Test
-  public void testConcatWithSlashes() {
-    assertEquals("/one/two", concat("/////one////", "///two"));
-  }
-
-  @Test
-  public void testSimpleKeySimple() {
-    assertEquals("simple", simpleKey("simple"));
-  }
-
-  @Test
-  public void testSimpleKeyComplex() {
-    assertEquals("simple", simpleKey("one/two/many/simple"));
-  }
-
-  @Test
-  public void testSimpleKeyAwful() {
-    assertEquals("simple", simpleKey("//////an/////awful/key////simple"));
+    assertTrue(NetworkTableUtils.isClient());
   }
 
   @Test
