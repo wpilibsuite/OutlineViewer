@@ -49,7 +49,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     gridPane.add(createCustomControl(), 1, 1, 1, 1);
 
     getDialogPane().setContent(gridPane);
-    //getDialogPane().getStylesheets().add("/edu/wpi/first/tableviewer/styles.css");
+    getDialogPane().getStylesheets().add("/edu/wpi/first/outlineviewer/styles.css");
     getDialogPane().getButtonTypes().addAll(add, ButtonType.CANCEL);
 
     // disable the "Add" button if the key is empty
@@ -70,7 +70,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
     showingProperty().addListener(__ -> {
       if (isShowing()) {
-        Dialogs.center(getDialogPane().getScene().getWindow());
+        DialogUtils.center(getDialogPane().getScene().getWindow());
       }
     });
   }

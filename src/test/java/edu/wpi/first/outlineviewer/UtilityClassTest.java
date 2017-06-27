@@ -9,7 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.Assert.assertFalse;
 
-public class UtilityClassTest {
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+public abstract class UtilityClassTest {
 
   private final Class clazz;
 
@@ -22,8 +23,9 @@ public class UtilityClassTest {
 
   @Test
   public void testConstructorPrivate() {
-    Constructor[] c = clazz.getDeclaredConstructors();
-    assertFalse(c[0].isAccessible());
+    Constructor constructor = clazz.getDeclaredConstructors()[0];
+
+    assertFalse(constructor.isAccessible());
   }
 
   @Test
@@ -31,13 +33,13 @@ public class UtilityClassTest {
   public void testConstructorReflection() throws Throwable {
     thrown.expect(UnsupportedOperationException.class);
     thrown.expectMessage("This is a utility class!");
-    Constructor[] c = clazz.getDeclaredConstructors();
-    c[0].setAccessible(true);
+    Constructor constructor = clazz.getDeclaredConstructors()[0];
+    constructor.setAccessible(true);
 
     try {
-      c[0].newInstance();
-    } catch (InvocationTargetException | InstantiationException e) {
-      throw e.getCause();
+      constructor.newInstance();
+    } catch (InvocationTargetException | InstantiationException ex) {
+      throw ex.getCause();
     }
   }
 }

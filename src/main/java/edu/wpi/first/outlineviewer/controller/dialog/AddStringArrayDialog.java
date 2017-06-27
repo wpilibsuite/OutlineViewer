@@ -1,50 +1,36 @@
 package edu.wpi.first.outlineviewer.controller.dialog;
 
-import javafx.scene.Node;
-import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.util.List;
 
 /**
  * Dialog for adding string arrays to network tables.
  */
-public class AddStringArrayDialog extends AddEntryDialog<String[]> {
-
-  private ListView<String> list;
+public class AddStringArrayDialog extends AddEntryArrayDialog<String, String[]> {
 
   public AddStringArrayDialog() {
     super("String Array");
-    getDialogPane().getStyleClass().add("add-string-array-dialog");
-    getDialogPane().setMaxHeight(300);
   }
 
   @Override
-  protected Node createCustomControl() {
-    list = new ListView<>();
-    list.setEditable(true);
-    list.setCellFactory(__ -> new TextFieldListCell<>(StringToStringConverter.INSTANCE));
-    list.setOnKeyPressed(e -> {
-      KeyCode code = e.getCode();
-      if (code == KeyCode.DELETE) {
-        removeSelected();
-      }
-    });
-
-    Button add = new Button("+");
-    add.setPrefWidth(40);
-    add.setOnAction(__ -> list.getItems().add("change me!"));
-
-    return new VBox(8, list, add);
+  protected String getDefaultItem() {
+    return "change me!";
   }
 
-  /**
-   * Sets the initial values in the array.
-   */
+  @Override
+  protected Callback<ListView<String>, ListCell<String>> getCellFactory() {
+    return __ -> new TextFieldListCell<>(StringToStringConverter.INSTANCE);
+  }
+
+  @Override
+  protected String[] getData() {
+    return list.getItems().toArray(new String[list.getItems().size()]);
+  }
+
+  @Override
   @SuppressWarnings("PMD.UseVarargs")
   public void setInitial(String[] initialValues) {
     list.getItems().clear();
@@ -53,19 +39,9 @@ public class AddStringArrayDialog extends AddEntryDialog<String[]> {
     }
   }
 
-  private void removeSelected() {
-    list.getItems().removeAll(list.getSelectionModel().getSelectedItems());
-  }
-
-  @Override
-  protected String[] getData() {
-    List<String> items = list.getItems();
-    return items.toArray(new String[items.size()]);
-  }
-
   private static final class StringToStringConverter extends StringConverter<String> {
 
-    public static final StringConverter<String> INSTANCE = new StringToStringConverter();
+    static final StringConverter<String> INSTANCE = new StringToStringConverter();
 
     @Override
     public String toString(String string) {
