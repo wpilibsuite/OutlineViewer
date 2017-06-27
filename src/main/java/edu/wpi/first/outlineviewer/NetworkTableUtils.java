@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public final class NetworkTableUtils {
 
   private NetworkTableUtils() {
-    // Utility class
+    throw new UnsupportedOperationException("This is a utility class!");
   }
 
   /**
