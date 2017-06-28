@@ -15,3 +15,7 @@ gradle-app.setting
 *.iws
 *.iml
 *.ipr
+
+### NetworkTable Persistence ###
+networktables.ini
+networktables.ini.bak

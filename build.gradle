@@ -1,12 +1,16 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'maven-publish'
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
 }
 
-mainClassName = 'edu.wpi.first.tableviewer.TableViewer'
+apply plugin: "pmd"
+apply plugin: "jacoco"
+
+mainClassName = 'edu.wpi.first.tableviewer.Main'
 
 publishing {
     publications {
@@ -21,11 +25,22 @@ publishing {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs = ["src"]
-        }
+checkstyle {
+    configFile = new File(rootDir, "checkstyle.xml")
+    toolVersion = '6.19'
+}
+
+pmd {
+    consoleOutput = true
+    reportsDir = file("$project.buildDir/reports/pmd")
+    ruleSetFiles = files(new File(rootDir, "pmd-ruleset.xml"))
+    ruleSets = []
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
     }
 }
 
@@ -35,9 +50,44 @@ repositories {
 
 dependencies {
     compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
-    compile 'uk.gov.nationalarchives.thirdparty.netbeans:org-netbeans-swing-outline:7.2'
+    compile "org.controlsfx:controlsfx:+"
+
+    testCompile "junit:junit:+"
+    testCompile "org.testfx:testfx-core:4.0.+"
+    testCompile "org.testfx:testfx-junit:4.0.+"
+
+    testRuntime group: 'org.testfx', name: 'openjfx-monocle', version: '8u76-b04'
+}
+
+test {
+    testLogging {
+        if (project.hasProperty('logTests') || project.hasProperty('jenkinsBuild')) {
+            events "started", "passed", "skipped", "failed"
+        } else {
+            events "failed"
+        }
+        exceptionFormat "full"
+    }
+}
+
+/*
+ * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless argument
+ */
+if (project.hasProperty('jenkinsBuild') || project.hasProperty('headless')) {
+    println "Running UI Tests Headless"
+    test {
+        jvmArgs = ['-Djava.awt.headless=true', '-Dtestfx.robot=glass', '-Dtestfx.headless=true', '-Dprism.order=sw', '-Dprism.text=t2k']
+    }
+}
+
+// Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
+// already specified on the command line
+if (!hasProperty('releaseType')) {
+    WPILibVersion {
+        releaseType = 'dev'
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    gradleVersion = '4.0'
 }
