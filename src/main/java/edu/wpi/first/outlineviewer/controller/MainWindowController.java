@@ -11,7 +11,6 @@ import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
-import edu.wpi.first.outlineviewer.view.dialog.DialogUtils;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import edu.wpi.first.outlineviewer.model.Entry;
 import edu.wpi.first.outlineviewer.model.TableEntry;
@@ -326,7 +325,6 @@ public class MainWindowController {
   @FXML
   private void showPreferences() throws IOException {
     PreferencesDialog dialog = new PreferencesDialog(ButtonType.FINISH);
-    Platform.runLater(() -> DialogUtils.center(dialog.getDialogPane().getScene().getWindow()));
     dialog.show();
   }
 

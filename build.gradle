@@ -69,6 +69,7 @@ test {
             events "failed"
         }
         exceptionFormat "full"
+        showStandardStreams = true
     }
 }
 
