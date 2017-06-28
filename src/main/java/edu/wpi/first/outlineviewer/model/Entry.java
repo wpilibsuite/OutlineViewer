@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  */
 public abstract class Entry<T> {
 
-  private static final Predicate<String> isMetadata = s -> s.matches(".*~[A-Z]*~");
+  private static final Predicate<String> IS_METADATA = s -> s.matches(".*~[A-Z]*~");
 
   private final StringProperty key = new SimpleStringProperty(this, "key", "");
   private final ObjectProperty<T> value = new SimpleObjectProperty<>(this, "value", null);
@@ -95,7 +95,7 @@ public abstract class Entry<T> {
    * Checks if this entry is metadata.
    */
   public boolean isMetadata() {
-    return isMetadata.test(getKey());
+    return IS_METADATA.test(getKey());
   }
 
   /**

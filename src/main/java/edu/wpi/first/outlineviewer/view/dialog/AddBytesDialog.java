@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import com.google.common.primitives.Bytes;
 import javafx.scene.control.ListCell;

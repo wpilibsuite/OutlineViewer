@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import com.google.common.primitives.Booleans;
 import javafx.scene.control.ListView;
@@ -20,6 +20,15 @@ public class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest {
 
     assertArrayEquals(test,
         Booleans.toArray(((ListView) lookup(".list-view").query()).getItems()));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetData() {
+    final boolean[] test = new boolean[]{false, true, false, true};
+    ((AddEntryArrayDialog) dialog).setInitial(test);
+
+    assertArrayEquals(test, (boolean[]) dialog.getData());
   }
 
 }
