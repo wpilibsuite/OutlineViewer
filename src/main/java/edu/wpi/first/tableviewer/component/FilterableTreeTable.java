@@ -54,7 +54,7 @@ public class FilterableTreeTable<T> extends TreeTableView<T> implements Filterab
     }
     TreeItem<T> root = realRoot;
     TreeItem<T> filteredRoot = new TreeItem<>(root.getValue(), root.getGraphic());
-    filteredRoot.setExpanded(root.isExpanded());
+    filteredRoot.expandedProperty().bindBidirectional(root.expandedProperty());
     setRoot(filter(root, getFilter(), filteredRoot));
   }
 
@@ -83,7 +83,7 @@ public class FilterableTreeTable<T> extends TreeTableView<T> implements Filterab
       // Copy the child to avoid mucking with the real tree
       TreeItem<T> filteredChild = new TreeItem<>();
       filteredChild.setValue(child.getValue());
-      filteredChild.setExpanded(child.isExpanded());
+      filteredChild.expandedProperty().bindBidirectional(child.expandedProperty());
       // Recurse; filter children
       filteredChild = filter(child, filter, filteredChild);
       if (matches(child, filter)) {
