@@ -60,7 +60,7 @@ public final class Preferences {
   }
 
   private Preferences() {
-    // Utility class
+    throw new UnsupportedOperationException("This is a utility class!");
   }
 
   public static boolean isShowMetaData() {
