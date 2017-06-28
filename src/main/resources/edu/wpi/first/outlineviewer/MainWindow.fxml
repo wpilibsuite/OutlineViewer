@@ -18,7 +18,7 @@
             minHeight="400" minWidth="600"
             prefHeight="400.0" prefWidth="600.0"
             fx:id="root"
-            id="roor"
+            id="root"
             xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="edu.wpi.first.outlineviewer.controller.MainWindowController">
     <top>
@@ -27,7 +27,7 @@
                 <Menu mnemonicParsing="false" text="File" id="fileMenu">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#close" id="closeMenu" text="Close"/>
-                        <MenuItem onAction="#showPreferences" text="Preferences" id="prefsMenuButton" accelerator="SHORTCUT+,"/>
+                        <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
                     </items>
                 </Menu>
             </menus>
