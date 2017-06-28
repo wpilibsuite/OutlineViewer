@@ -16,17 +16,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * A type of dialog for adding or editing entries in network tables.
+ * A type of dialog for adding or editing entries in NetworkTables.
  */
 public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
 
-  public static final ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
+  static final ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
 
   private final TextField keyField;
   private final BooleanProperty disableKey = new SimpleBooleanProperty(this, "disableKey", false);
 
-  protected AddEntryDialog(String typeName) {
+  AddEntryDialog(String typeName) {
     super();
     getDialogPane().getStyleClass().add("add-model-dialog");
     setTitle("Add " + typeName);
@@ -65,12 +65,6 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
         return Entry.entryFor(keyField.getText(), getData());
       } else {
         return null;
-      }
-    });
-
-    showingProperty().addListener(__ -> {
-      if (isShowing()) {
-        DialogUtils.center(getDialogPane().getScene().getWindow());
       }
     });
   }
