@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.outlineviewer.controller.dialog.PreferencesDialog;
+import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,17 +12,17 @@ import java.io.IOException;
 
 public class OutlineViewer extends Application {
 
-  private static final ButtonType start = new ButtonType("Start");
+  private static final ButtonType START = new ButtonType("Start");
+  private static final ButtonType QUIT = new ButtonType("Quit");
 
   @Override
   public void start(Stage primaryStage) throws IOException {
     AutoUpdater updater = new AutoUpdater();
     PreferencesDialog preferencesDialog
-        = new PreferencesDialog("Preferences", start, ButtonType.CANCEL);
+        = new PreferencesDialog(START, QUIT);
     preferencesDialog.showAndWait()
-                     .filter(bt -> start != bt)
+                     .filter(bt -> START != bt)
                      .ifPresent(__ -> System.exit(0));
-    preferencesDialog.getController().start();
     updater.init();
 
     FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));

@@ -27,7 +27,7 @@
                 <Menu mnemonicParsing="false" text="File" id="fileMenu">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#close" id="closeMenu" text="Close"/>
-                        <MenuItem onAction="#showPrefs" text="Preferences" id="prefsMenuButton" accelerator="SHORTCUT+,"/>
+                        <MenuItem onAction="#showPreferences" text="Preferences" id="prefsMenuButton" accelerator="SHORTCUT+,"/>
                     </items>
                 </Menu>
             </menus>

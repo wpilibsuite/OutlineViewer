@@ -1,8 +1,8 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.FxHelper;
-import edu.wpi.first.outlineviewer.OutlineViewer;
 import edu.wpi.first.outlineviewer.Preferences;
+import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -23,10 +23,11 @@ public class PreferencesControllerTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws Exception {
-    FXMLLoader loader = new FXMLLoader(OutlineViewer.class.getResource("Preferences.fxml"));
-    Pane prefsPane = loader.load();
+    FXMLLoader loader
+        = new FXMLLoader(PreferencesDialog.class.getResource("PreferencesDialog.fxml"));
+    Pane pane = loader.load();
     controller = loader.getController();
-    stage.setScene(new Scene(prefsPane));
+    stage.setScene(new Scene(pane));
     stage.show();
     Preferences.setServer(true);
     Preferences.setPort(1735);

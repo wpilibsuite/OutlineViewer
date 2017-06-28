@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import com.google.common.primitives.Doubles;
 import javafx.scene.control.ListView;
@@ -20,6 +20,15 @@ public class AddNumberArrayDialogTest extends AddEntryArrayDialogTest {
 
     assertArrayEquals(test,
         Doubles.toArray(((ListView) lookup(".list-view").query()).getItems()), 0.0);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetData() {
+    final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
+    ((AddEntryArrayDialog) dialog).setInitial(test);
+
+    assertArrayEquals(test, (double[]) dialog.getData(), 0.0);
   }
 
 }

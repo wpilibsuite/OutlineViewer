@@ -4,15 +4,15 @@ import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.view.TableEntryTreeTableCell;
 import edu.wpi.first.outlineviewer.view.NetworkTableTree;
-import edu.wpi.first.outlineviewer.controller.dialog.AddBooleanArrayDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddBooleanDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddBytesDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddNumberArrayDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddNumberDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddStringArrayDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.AddStringDialog;
-import edu.wpi.first.outlineviewer.controller.dialog.DialogUtils;
-import edu.wpi.first.outlineviewer.controller.dialog.PreferencesDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddBooleanDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddNumberDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
+import edu.wpi.first.outlineviewer.view.dialog.DialogUtils;
+import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import edu.wpi.first.outlineviewer.model.Entry;
 import edu.wpi.first.outlineviewer.model.TableEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
@@ -324,12 +324,10 @@ public class MainWindowController {
   }
 
   @FXML
-  private void showPrefs() throws IOException {
-    PreferencesDialog dialog = new PreferencesDialog("Preferences", ButtonType.FINISH);
+  private void showPreferences() throws IOException {
+    PreferencesDialog dialog = new PreferencesDialog(ButtonType.FINISH);
     Platform.runLater(() -> DialogUtils.center(dialog.getDialogPane().getScene().getWindow()));
-    dialog.showAndWait()
-          .filter(ButtonType.FINISH::equals)
-          .ifPresent(__ -> dialog.getController().start());
+    dialog.show();
   }
 
 }

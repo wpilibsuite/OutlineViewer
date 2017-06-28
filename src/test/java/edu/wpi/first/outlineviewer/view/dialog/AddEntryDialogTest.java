@@ -1,8 +1,8 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
-import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
 import javafx.stage.Stage;
 import org.junit.Test;
+import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.function.Supplier;
 
@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
-public abstract class AddEntryDialogTest extends AutoClosingApplicationTest {
+public abstract class AddEntryDialogTest extends ApplicationTest {
 
   AddEntryDialog dialog;
   private final Supplier<AddEntryDialog> dialogSupplier;
@@ -22,28 +22,19 @@ public abstract class AddEntryDialogTest extends AutoClosingApplicationTest {
   @Override
   public void start(Stage stage) throws Exception {
     dialog = dialogSupplier.get();
-    dialog.show();
-  }
-
-  @Test
-  public void testCanceled() {
-    clickOn("Cancel");
-
-    assertFalse(dialog.isShowing());
+    stage.setScene(dialog.getDialogPane().getScene());
+    stage.show();
   }
 
   @Test
   public void testAddDisabled() {
-    clickOn("Add");
-
-    assertTrue(dialog.isShowing());
+    assertTrue(lookup("Add").query().isDisabled());
   }
 
   @Test
   public void testAddEnabled() {
     clickOn("#keyField").write('a');
-    clickOn("Add");
 
-    assertFalse(dialog.isShowing());
+    assertFalse(lookup("Add").query().isDisabled());
   }
 }

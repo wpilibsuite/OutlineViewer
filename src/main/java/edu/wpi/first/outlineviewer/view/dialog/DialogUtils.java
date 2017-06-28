@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import com.sun.javafx.stage.StageHelper;
 import javafx.stage.Window;
