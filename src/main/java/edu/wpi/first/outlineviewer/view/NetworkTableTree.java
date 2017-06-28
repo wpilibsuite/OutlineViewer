@@ -19,9 +19,9 @@ import java.util.stream.Stream;
 public class NetworkTableTree extends FilterableTreeTable<Entry> {
 
   // node comparators
-  private static final Comparator<TreeItem<Entry>> branchesFirst
+  private static final Comparator<TreeItem<Entry>> BRANCHES_FIRST
       = (o1, o2) -> o1.isLeaf() ? (o2.isLeaf() ? 0 : 1) : -1;
-  private static final Comparator<TreeItem<Entry>> alphabetical
+  private static final Comparator<TreeItem<Entry>> ALPHABETICAL
       = Comparator.comparing(i -> i.getValue().getKey());
 
   /**
@@ -123,7 +123,7 @@ public class NetworkTableTree extends FilterableTreeTable<Entry> {
   private void sort(TreeItem<Entry> node) {
     if (!node.isLeaf()) {
       boolean wasExpanded = node.isExpanded();
-      FXCollections.sort(node.getChildren(), branchesFirst.thenComparing(alphabetical));
+      FXCollections.sort(node.getChildren(), BRANCHES_FIRST.thenComparing(ALPHABETICAL));
       node.getChildren().forEach(this::sort);
       node.setExpanded(wasExpanded);
     }

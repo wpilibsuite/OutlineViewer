@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;

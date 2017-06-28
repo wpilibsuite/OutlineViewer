@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.model.Entry;
 import javafx.application.Platform;
@@ -21,7 +21,7 @@ import javafx.scene.layout.GridPane;
 public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
 
-  public static final ButtonType add = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
+  public static final ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
 
   private final TextField keyField;
   private final BooleanProperty disableKey = new SimpleBooleanProperty(this, "disableKey", false);
@@ -50,10 +50,10 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
     getDialogPane().setContent(gridPane);
     getDialogPane().getStylesheets().add("/edu/wpi/first/outlineviewer/styles.css");
-    getDialogPane().getButtonTypes().addAll(add, ButtonType.CANCEL);
+    getDialogPane().getButtonTypes().addAll(ADD, ButtonType.CANCEL);
 
     // disable the "Add" button if the key is empty
-    Button addButton = (Button) getDialogPane().lookupButton(add);
+    Button addButton = (Button) getDialogPane().lookupButton(ADD);
     addButton.disableProperty().bind(
         Bindings.createBooleanBinding(() -> keyField.getText().isEmpty() && !isDisableKey(),
                                       keyField.textProperty(), disableKey));
@@ -61,7 +61,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
     addButton.setDefaultButton(true);
 
     setResultConverter(buttonType -> {
-      if (buttonType == add) {
+      if (buttonType == ADD) {
         return Entry.entryFor(keyField.getText(), getData());
       } else {
         return null;

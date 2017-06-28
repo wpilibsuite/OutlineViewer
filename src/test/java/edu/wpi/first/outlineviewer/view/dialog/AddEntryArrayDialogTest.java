@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.controller.dialog;
+package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.ListView;
 import org.junit.Test;
