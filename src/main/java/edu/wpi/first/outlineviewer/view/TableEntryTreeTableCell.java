@@ -5,7 +5,6 @@ import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
-import edu.wpi.first.outlineviewer.view.dialog.DialogUtils;
 import edu.wpi.first.outlineviewer.model.Entry;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -131,7 +130,6 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       });
       arrayEditor.show();
       arrayEditor.getDialogPane().getScene().getWindow().requestFocus();
-      DialogUtils.center(arrayEditor.getDialogPane().getScene().getWindow());
     }
   }
 
