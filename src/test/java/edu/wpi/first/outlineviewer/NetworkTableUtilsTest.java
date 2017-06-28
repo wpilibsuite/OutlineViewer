@@ -39,13 +39,6 @@ public class NetworkTableUtilsTest {
     }
 
     @Test
-    public void isNotRunningTest() {
-      NetworkTable.shutdown();
-
-      assertFalse(NetworkTableUtils.isRunning());
-    }
-
-    @Test
     public void startingTest() {
       NetworkTableUtils.setClient("localhost", 9999); // Should never connect
       assertTrue(NetworkTableUtils.starting());

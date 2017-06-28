@@ -36,10 +36,10 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
     clickOn("#fileMenu", MouseButton.PRIMARY);
     waitForFxEvents();
 
-    clickOn("#prefsMenuButton", MouseButton.PRIMARY);
+    clickOn("#preferencesMenuButton", MouseButton.PRIMARY);
     waitForFxEvents();
 
-    assertThat(lookup("#prefsPaneRoot").query(), isVisible());
+    assertThat(lookup("#preferencesPaneRoot").query(), isVisible());
     targetWindow("Preferences").closeCurrentWindow();
   }
 

@@ -18,19 +18,18 @@ public class OutlineViewer extends Application {
   @Override
   public void start(Stage primaryStage) throws IOException {
     AutoUpdater updater = new AutoUpdater();
-    PreferencesDialog preferencesDialog
-        = new PreferencesDialog(START, QUIT);
-    preferencesDialog.showAndWait()
-                     .filter(bt -> START != bt)
-                     .ifPresent(__ -> System.exit(0));
-    updater.init();
+    PreferencesDialog preferencesDialog = new PreferencesDialog(START, QUIT);
+    Boolean start = preferencesDialog.showAndWait().filter(bt -> START == bt).isPresent();
+    if (start) {
+      updater.init();
 
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-    Pane mainWindow = loader.load();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+      Pane mainWindow = loader.load();
 
-    primaryStage.setTitle("OutlineViewer");
-    primaryStage.setScene(new Scene(mainWindow));
-    primaryStage.show();
+      primaryStage.setTitle("OutlineViewer");
+      primaryStage.setScene(new Scene(mainWindow));
+      primaryStage.show();
+    }
   }
 
 }
