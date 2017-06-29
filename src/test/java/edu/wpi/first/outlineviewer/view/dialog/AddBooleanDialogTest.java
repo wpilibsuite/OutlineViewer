@@ -11,7 +11,7 @@ public class AddBooleanDialogTest extends AddEntryDialogTest {
   }
 
   @Test
-  public void testGetData() throws Exception {
+  public void testGetData() {
     clickOn(".toggle-switch");
 
     assertTrue((boolean) dialog.getData());

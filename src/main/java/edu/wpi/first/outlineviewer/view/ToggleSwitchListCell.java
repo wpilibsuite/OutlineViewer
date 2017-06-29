@@ -16,17 +16,16 @@ public class ToggleSwitchListCell extends ListCell<Boolean> {
    */
   public ToggleSwitchListCell() {
     getStyleClass().add("toggle-switch-list-cell");
+    listViewProperty().addListener((observable, oldValue, newValue) -> {
+      editableProperty().unbind();
+      editableProperty().bind(newValue.editableProperty());
+    });
     toggleSwitch.selectedProperty().addListener((__, wasSelected, isSelected) -> {
-      if (!isEditing()) {
-        getListView().edit(getIndex());
-      }
+      getListView().edit(getIndex());
       commitEdit(isSelected);
     });
     toggleSwitch.setMaxWidth(1);
-    textProperty().bind(
-        Bindings.createStringBinding(
-            this::createText,
-            itemProperty()));
+    textProperty().bind(Bindings.createStringBinding(this::createText, itemProperty()));
   }
 
   private String createText() {

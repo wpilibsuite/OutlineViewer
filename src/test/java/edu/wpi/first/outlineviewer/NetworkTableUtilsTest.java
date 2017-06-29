@@ -38,6 +38,15 @@ public class NetworkTableUtilsTest {
       assertTrue(NetworkTableUtils.isRunning());
     }
 
+    /*
+    @Test
+    public void isNotRunningTest() {
+      NetworkTableUtils.shutdown();
+
+      assertFalse(NetworkTableUtils.isRunning());
+    }
+    */
+
     @Test
     public void startingTest() {
       NetworkTableUtils.setClient("localhost", 9999); // Should never connect
