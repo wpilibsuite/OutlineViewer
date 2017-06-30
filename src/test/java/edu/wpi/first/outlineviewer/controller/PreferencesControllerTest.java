@@ -1,21 +1,23 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.FxHelper;
+import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.controlsfx.control.ToggleSwitch;
+import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class PreferencesControllerTest extends ApplicationTest {
 
@@ -23,76 +25,53 @@ public class PreferencesControllerTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws Exception {
+    Preferences.reset();
+
     FXMLLoader loader
         = new FXMLLoader(PreferencesDialog.class.getResource("PreferencesDialog.fxml"));
     Pane pane = loader.load();
     controller = loader.getController();
     stage.setScene(new Scene(pane));
     stage.show();
-    Preferences.setServer(true);
-    Preferences.setPort(1735);
-    Preferences.setIp("localhost");
-    Preferences.setShowMetaData(true);
+  }
+
+  @After
+  public void after() {
+    NetworkTableUtils.shutdown();
   }
 
   @Test
   public void testServerIdDisabledInServerMode() {
-    Preferences.setServer(true);
-    TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    assertTrue(idField.isDisable());
+    FxHelper.runAndWait(()
+        -> ((ToggleSwitch) lookup("#modeSwitch").query()).setSelected(true));
+    assertTrue(lookup("#idField").query().isDisable());
   }
 
   @Test
   public void testServerIdEnabledInClientMode() {
-    Preferences.setServer(false);
-    TextField idField = lookup(n -> "idField".equals(n.getId())).query();
-    assertFalse(idField.isDisable());
+    FxHelper.runAndWait(()
+        -> ((ToggleSwitch) lookup("#modeSwitch").query()).setSelected(false));
+    assertFalse(lookup("#idField").query().isDisable());
   }
 
   @Test
-  public void testServerPortInServerMode() {
-    Preferences.setServer(true);
-    TextField portField = lookup(n -> "portField".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> portField.setText("9999"));
-    waitForFxEvents();
-    controller.start();
-    assertEquals(9999, Preferences.getPort());
+  public void testServerPort() {
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("1234"));
+    controller.save();
+    assertEquals(1234, Preferences.getPort());
   }
 
   @Test
-  public void testServerPortInClientMode() {
-    Preferences.setServer(false);
-    TextField portField = lookup(n -> "portField".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> portField.setText("2084"));
-    waitForFxEvents();
-    controller.start();
-    assertEquals(2084, Preferences.getPort());
+  public void testServerPortEmpty() {
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).clear());
+    controller.save();
+    assertEquals(NetworkTable.DEFAULT_PORT, Preferences.getPort());
   }
 
   @Test
-  public void testServerSwitchInital() {
-    ToggleSwitch serverSwitch = lookup(n -> "modeSwitch".equals(n.getId())).query();
-    assertEquals(serverSwitch.isSelected(), Preferences.isServer());
+  public void testIdEmpty() {
+    FxHelper.runAndWait(() -> ((TextField) lookup("#idField").query()).clear());
+    controller.save();
+    assertEquals("localhost", Preferences.getIp());
   }
-
-  @Test
-  public void testServerSwitchChange() {
-    ToggleSwitch serverSwitch = lookup(n -> "modeSwitch".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> serverSwitch.setSelected(!serverSwitch.isSelected()));
-    assertEquals(serverSwitch.isSelected(), Preferences.isServer());
-  }
-
-  @Test
-  public void testMetadataSwitchInital() {
-    ToggleSwitch metadataSwitch = lookup(n -> "metadataSwitch".equals(n.getId())).query();
-    assertEquals(Preferences.isShowMetaData(), metadataSwitch.isSelected());
-  }
-
-  @Test
-  public void testMetadataSwitchChange() {
-    ToggleSwitch metadataSwitch = lookup(n -> "metadataSwitch".equals(n.getId())).query();
-    FxHelper.runAndWait(() -> metadataSwitch.setSelected(!metadataSwitch.isSelected()));
-    assertEquals(metadataSwitch.isSelected(), Preferences.isShowMetaData());
-  }
-
 }

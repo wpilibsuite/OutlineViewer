@@ -13,6 +13,7 @@ public class AutoUpdater {
     Preferences.ipProperty().addListener(__ -> update());
     Preferences.portProperty().addListener(__ -> update());
     Preferences.serverProperty().addListener(__ -> update());
+
     update();
   }
 
