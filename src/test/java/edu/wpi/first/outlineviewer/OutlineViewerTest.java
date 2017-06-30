@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
-import javafx.application.Application;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.api.FxRobot;
@@ -9,25 +9,29 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import java.util.concurrent.TimeoutException;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class OutlineViewerTest extends FxRobot {
-
-  Application app;
 
   @Before
   public void before() throws Exception {
     FxToolkit.registerPrimaryStage();
     Thread fxThread = new Thread(() -> {
       try {
-        app = FxToolkit.setupApplication(OutlineViewer::new);
+        FxToolkit.setupApplication(OutlineViewer::new);
       } catch (TimeoutException ex) {
         fail();
       }
     });
     fxThread.start();
     WaitForAsyncUtils.waitForFxEvents();
+  }
+
+  @After
+  public void after() {
+    NetworkTableUtils.shutdown();
   }
 
   @Test
@@ -40,5 +44,7 @@ public class OutlineViewerTest extends FxRobot {
   @Test
   public void preferencesExit() {
     clickOn("Quit");
+
+    assertFalse(lookup("#root").tryQuery().isPresent());
   }
 }

@@ -63,6 +63,16 @@ public final class Preferences {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
+  /**
+   * Resets all preferences to their defaults.
+   */
+  public static void reset() {
+    setShowMetaData(false);
+    setServer(false);
+    setIp("localhost");
+    setPort(NetworkTable.DEFAULT_PORT);
+  }
+
   public static boolean isShowMetaData() {
     return showMetaData.get();
   }

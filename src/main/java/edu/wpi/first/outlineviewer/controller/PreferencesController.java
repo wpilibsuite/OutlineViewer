@@ -1,7 +1,8 @@
 package edu.wpi.first.outlineviewer.controller;
 
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.ToggleSwitch;
@@ -22,34 +23,29 @@ public class PreferencesController {
 
   @FXML
   private void initialize() {
+    idField.disableProperty().bind(serverModeSwitch.selectedProperty());
+
     idField.setText(Preferences.getIp());
     portField.setText(String.valueOf(Preferences.getPort()));
-    serverModeSwitch.selectedProperty().bindBidirectional(Preferences.serverProperty());
-    metadataSwitch.selectedProperty().bindBidirectional(Preferences.showMetaDataProperty());
-    idField.disableProperty().bind(serverModeSwitch.selectedProperty());
+    serverModeSwitch.setSelected(Preferences.isServer());
+    metadataSwitch.setSelected(Preferences.isShowMetaData());
+
+    Platform.runLater(() -> {
+      // If the id field is not disabled, request focus.  Otherwise, the port field should request
+      // focus.
+      portField.requestFocus();
+      idField.requestFocus();
+    });
   }
 
   /**
-   * Starts running in client mode, using the address and port set in the preferences pane.
+   * Starts running ntcore in the selected mode.
    */
-  private void startClient() {
-    NetworkTableUtils.shutdown();
-
-    Preferences.setServer(false);
-    Preferences.setIp(idField.getText());
-
+  public void save() {
     if (portField.getText().matches("[0-9]+")) {
       Preferences.setPort(Integer.parseInt(portField.getText()));
-    }
-  }
-
-  /**
-   * Starts running in server mode, using the port set in the preferences pane.
-   */
-  private void startServer() {
-    NetworkTableUtils.shutdown();
-    if (portField.getText().matches("[0-9]+")) {
-      Preferences.setPort(Integer.parseInt(portField.getText()));
+    } else {
+      Preferences.setPort(NetworkTable.DEFAULT_PORT);
     }
 
     String url = idField.getText();
@@ -59,18 +55,7 @@ public class PreferencesController {
     url = url.replaceAll("^.*://", ""); // remove leading protocol
     Preferences.setIp(url);
 
-    Preferences.setServer(true);
-  }
-
-  /**
-   * Starts running ntcore in the selected mode.
-   */
-  public void start() {
-    if (Preferences.isServer()) {
-      startServer();
-    } else {
-      startClient();
-    }
+    Preferences.setServer(serverModeSwitch.isSelected());
   }
 
 }

@@ -5,7 +5,9 @@ import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class PreferencesDialogTest extends ApplicationTest {
 
@@ -13,16 +15,28 @@ public class PreferencesDialogTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws Exception {
-    dialog = new PreferencesDialog(ButtonType.CLOSE);
+    dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
     stage.setScene(dialog.getDialogPane().getScene());
     stage.show();
   }
 
   @Test
-  public void testResultConverter() {
-    clickOn("Close");
+  public void testResultConverterFalse() {
+    clickOn("Cancel");
 
-    assertEquals(ButtonType.CLOSE, dialog.getResult());
+    assertFalse(dialog.getResult());
+  }
+
+  @Test
+  public void testResultConverterTrue() {
+    clickOn("OK");
+
+    assertTrue(dialog.getResult());
+  }
+
+  @Test
+  public void getControllerTest() {
+    assertNotNull(dialog.getController());
   }
 
 }

@@ -324,8 +324,10 @@ public class MainWindowController {
 
   @FXML
   private void showPreferences() throws IOException {
-    PreferencesDialog dialog = new PreferencesDialog(ButtonType.FINISH);
-    dialog.show();
+    PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
+    if (dialog.showAndWait().orElse(false)) {
+      dialog.getController().save();
+    }
   }
 
 }
