@@ -1,11 +1,11 @@
 package edu.wpi.first.outlineviewer.view;
 
+import edu.wpi.first.outlineviewer.model.Entry;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
-import edu.wpi.first.outlineviewer.model.Entry;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
@@ -71,36 +71,33 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
         }
       });
       editor = field;
+    } else if (item instanceof String[]) {
+      AddStringArrayDialog dialog = new AddStringArrayDialog();
+      dialog.setInitial((String[]) item);
+      arrayEditor = dialog;
+      arrayEditor.setKey(entry.getKey());
+      arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+    } else if (item instanceof double[]) {
+      AddNumberArrayDialog dialog = new AddNumberArrayDialog();
+      dialog.setInitial((double[]) item);
+      arrayEditor = dialog;
+      arrayEditor.setKey(entry.getKey());
+      arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+    } else if (item instanceof boolean[]) {
+      AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
+      dialog.setInitial((boolean[]) item);
+      arrayEditor = dialog;
+      arrayEditor.setKey(entry.getKey());
+      arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+    } else if (item instanceof byte[]) {
+      AddBytesDialog dialog = new AddBytesDialog();
+      dialog.setInitial((byte[]) item);
+      arrayEditor = dialog;
+      arrayEditor.setKey(entry.getKey());
+      arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
     } else {
-      // check for arrays
-      if (item instanceof String[]) {
-        AddStringArrayDialog dialog = new AddStringArrayDialog();
-        dialog.setInitial((String[]) item);
-        arrayEditor = dialog;
-        arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-      } else if (item instanceof double[]) {
-        AddNumberArrayDialog dialog = new AddNumberArrayDialog();
-        dialog.setInitial((double[]) item);
-        arrayEditor = dialog;
-        arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-      } else if (item instanceof boolean[]) {
-        AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
-        dialog.setInitial((boolean[]) item);
-        arrayEditor = dialog;
-        arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-      } else if (item instanceof byte[]) {
-        AddBytesDialog dialog = new AddBytesDialog();
-        dialog.setInitial((byte[]) item);
-        arrayEditor = dialog;
-        arrayEditor.setKey(entry.getKey());
-        arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-      } else {
-        // not editable
-        canEdit = false;
-      }
+      // not editable
+      canEdit = false;
     }
     setText(entry.getDisplayString());
   }

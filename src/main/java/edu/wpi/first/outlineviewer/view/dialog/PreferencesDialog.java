@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
+import edu.wpi.first.outlineviewer.controller.PreferencesController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -9,7 +10,9 @@ import java.io.IOException;
 /**
  * A dialog for changing the app preferences.
  */
-public class PreferencesDialog extends Dialog<ButtonType> {
+public class PreferencesDialog extends Dialog<Boolean> {
+
+  private final PreferencesController controller;
 
   /**
    * Creates a new preferences dialog with the given title and button types.
@@ -24,7 +27,11 @@ public class PreferencesDialog extends Dialog<ButtonType> {
         = new FXMLLoader(PreferencesDialog.class.getResource("PreferencesDialog.fxml"));
     getDialogPane().setContent(loader.load());
     getDialogPane().getButtonTypes().addAll(buttonTypes);
-    setResultConverter(x -> x);
+    setResultConverter(buttonType -> !buttonType.getButtonData().isCancelButton());
+    controller = loader.getController();
   }
 
+  public PreferencesController getController() {
+    return controller;
+  }
 }
