@@ -7,6 +7,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
     id 'maven-publish'
     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.6'
+    id 'com.github.ben-manes.versions' version '0.15.0'
 }
 
 apply plugin: "pmd"
@@ -52,7 +53,7 @@ repositories {
 
 dependencies {
     compile 'edu.wpi.first.ntcore:ntcore-java:+'
-    compile 'edu.wpi.first.ntcore:ntcore-jni:+:osxx86-64'
+    compile 'edu.wpi.first.ntcore:ntcore-jni:+:all'
     compile 'edu.wpi.first.wpiutil:wpiutil-java:+'
     compile "org.controlsfx:controlsfx:+"
     compile group: 'com.google.guava', name: 'guava', version: '21.0'

@@ -58,6 +58,8 @@ public class MainWindowController {
 
   @FXML
   private NetworkTableTree tableView;
+  @FXML
+  private TreeItem<TableEntry> ntRoot;
 
   @FXML
   private TreeTableColumn<TableEntry, String> keyColumn;
@@ -92,6 +94,8 @@ public class MainWindowController {
       }
     });
 
+    ntRoot.setValue(new TableEntry(""));
+
     tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     tableView.setOnKeyPressed(event -> {
@@ -103,7 +107,7 @@ public class MainWindowController {
     tableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
     keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(
-        simpleKey(param.getValue().getValue().getKey())));
+        NetworkTableUtils.simpleKey(param.getValue().getValue().getKey())));
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
@@ -210,7 +214,7 @@ public class MainWindowController {
       String key = entry.getKey();
       ContextMenu cm = new ContextMenu();
 
-      if (entry instanceof TableValueEntry) {
+      if (!(entry instanceof TableValueEntry)) {
         // It's a table, add the 'add x' items
         cm.getItems().addAll(createTableMenuItems(entry));
         cm.getItems().add(new SeparatorMenuItem());

@@ -1,7 +1,11 @@
 package edu.wpi.first.outlineviewer;
 
+import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
+
+import java.util.stream.Stream;
 
 /**
  * Utility methods for working with network tables.
@@ -78,15 +82,13 @@ public final class NetworkTableUtils {
    */
   public static void delete(String key) {
     String normalKey = normalize(key);
+
     if (getRootTable().containsKey(normalKey)) {
       getRootTable().delete(normalKey);
-    } // else {
+    } else {
       // subtable
-      //EntryInfo[] entries = getRootTable().get.getEntries(normalKey, 0xFF);
-      //Stream.of(entries)
-      //      .map(entryInfo -> entryInfo.name)
-      //      .forEach(NetworkTableUtils::delete);
-      //}
+      getRootTable().getSubTable(normalKey).getKeys().forEach(NetworkTableUtils::delete);
+    }
   }
 
   /**

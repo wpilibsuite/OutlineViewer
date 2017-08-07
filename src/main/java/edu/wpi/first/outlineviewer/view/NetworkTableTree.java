@@ -74,7 +74,7 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
     if (listenerHandle != -1) {
       networkTableInstance.removeEntryListener(listenerHandle);
     }
-    //listenerHandle = networkTableInstance.addEntryListener("", this, 0xFF);
+    listenerHandle = networkTableInstance.addEntryListener("", this, 0xFF);
     networkTable = networkTableInstance.getTable("");
   }
 
@@ -104,6 +104,7 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
           .filter(item -> item.getValue().getKey().equals(path.toString()))
           .findFirst()
           .orElse(null);
+
       if (deleted) {
         if (current == null) {
           break;
@@ -119,11 +120,12 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
           current.getValue().valueProperty().setValue(value);
         }
       } else if (current == null) {
-        current = new TreeItem<>(new TableEntry(""));
+        current = new TreeItem<>(new TableEntry(path.toString()));
         current.setExpanded(true);
         parent.getChildren().add(current);
       }
     }
+
     // Remove any empty subtables
     if (deleted) {
       for (TreeItem<TableEntry> item = parent; item != getRealRoot();) {

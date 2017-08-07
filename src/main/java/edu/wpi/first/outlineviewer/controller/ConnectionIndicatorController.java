@@ -27,8 +27,8 @@ public class ConnectionIndicatorController {
 
   @FXML
   private void initialize() {
-    //NetworkTableUtils.getNetworkTableInstance().addConnectionListener((uid, connected, conn)
-    //    -> updateConnectionLabel(), true);
+    NetworkTableUtils.getNetworkTableInstance().addConnectionListener((uid, connected, conn)
+        -> updateConnectionLabel(), true);
     Preferences.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
       Thread thread = new Thread(r);

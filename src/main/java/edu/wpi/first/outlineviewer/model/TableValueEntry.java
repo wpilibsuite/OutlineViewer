@@ -26,15 +26,15 @@ public class TableValueEntry extends TableEntry {
     networkTableEntry.addListener((__, oldValue, newValue) -> Objects.requireNonNull(newValue));
     networkTableValue.addListener((__, oldValue, newValue) -> Objects.requireNonNull(newValue));
 
+    networkTableEntry.setValue(entry);
+    networkTableValue.setValue(value);
+
     this.key.bind(Bindings.createStringBinding(
-        () -> NetworkTableUtils.simpleKey(networkTableEntry.getName()), networkTableEntry));
+        () -> networkTableEntry.get().getName(), networkTableEntry));
     this.value.bind(Bindings.createObjectBinding(
         () -> networkTableValue.get().getValue(), networkTableValue));
     this.type.bind(Bindings.createObjectBinding(
         () -> networkTableValue.get().getType().toString(), networkTableValue));
-
-    networkTableEntry.setValue(entry);
-    networkTableValue.setValue(value);
   }
 
   public final NetworkTableEntry getNetworkTableEntry() {
