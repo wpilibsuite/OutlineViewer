@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import edu.wpi.first.outlineviewer.model.Entry;
+import edu.wpi.first.outlineviewer.model.TableEntry;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -18,10 +18,10 @@ import javafx.scene.layout.GridPane;
 /**
  * A type of dialog for adding or editing entries in NetworkTables.
  */
-public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
+public abstract class AddEntryDialog<T> extends Dialog<TableEntry> {
 
 
-  static final ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
+  private static final ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.APPLY);
 
   private final TextField keyField;
   private final BooleanProperty disableKey = new SimpleBooleanProperty(this, "disableKey", false);
@@ -62,7 +62,7 @@ public abstract class AddEntryDialog<T> extends Dialog<Entry<T>> {
 
     setResultConverter(buttonType -> {
       if (buttonType == ADD) {
-        return Entry.entryFor(keyField.getText(), getData());
+        return new TableEntry(keyField.getText(), getData());
       } else {
         return null;
       }

@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.view;
 
-import edu.wpi.first.outlineviewer.model.Entry;
+import edu.wpi.first.outlineviewer.model.TableEntry;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
@@ -17,7 +17,7 @@ import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
  */
-public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
+public class TableEntryTreeTableCell<T extends TableEntry> extends TreeTableCell<T, Object> {
 
   private Control editor;
   private Node graphic;
@@ -37,7 +37,7 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       setGraphic(null);
       return;
     }
-    Entry entry = getTreeTableRow()
+    TableEntry entry = getTreeTableRow()
         .getTreeItem()
         .getValue();
     setGraphic(null);
@@ -61,7 +61,7 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       field.setOnAction(e -> commitEdit(field.getText()));
       editor = field;
     } else if (item instanceof Number) {
-      TextField field = new TextField(entry.getDisplayString());
+      TextField field = new TextField(entry.getValue().toString());
       field.setOnAction(e -> {
         try {
           commitEdit(Double.parseDouble(field.getText()));
@@ -99,7 +99,7 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
       // not editable
       canEdit = false;
     }
-    setText(entry.getDisplayString());
+    setText(entry.getValue().toString());
   }
 
   @Override
@@ -118,7 +118,7 @@ public class TableEntryTreeTableCell extends TreeTableCell<Entry, Object> {
     } else {
       arrayEditor.setDisableKey(true);
       arrayEditor.setOnCloseRequest(e -> {
-        Entry<?> result = arrayEditor.getResult();
+        TableEntry result = arrayEditor.getResult();
         if (result == null) {
           cancelEdit();
         } else {

@@ -1,16 +1,31 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
-
-import java.util.Objects;
-import java.util.stream.Stream;
+import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
 
 /**
  * Utility methods for working with network tables.
  */
 public final class NetworkTableUtils {
+
+  private static NetworkTableInstance networkTableInstance = NetworkTableInstance.create();
+
+  public static NetworkTableInstance getNetworkTableInstance() {
+    return networkTableInstance;
+  }
+
+  public static NetworkTable getRootTable() {
+    return networkTableInstance.getTable("");
+  }
+
+  static void createNewNetworkTableInstance() {
+    if (networkTableInstance != null) {
+      networkTableInstance.stopClient();
+      networkTableInstance.stopServer();
+      networkTableInstance.stopDSClient();
+    }
+    networkTableInstance = NetworkTableInstance.create();
+  }
 
   private NetworkTableUtils() {
     throw new UnsupportedOperationException("This is a utility class!");
@@ -63,112 +78,15 @@ public final class NetworkTableUtils {
    */
   public static void delete(String key) {
     String normalKey = normalize(key);
-    if (NetworkTablesJNI.containsKey(normalKey)) {
-      NetworkTablesJNI.deleteEntry(normalKey);
-    } else {
+    if (getRootTable().containsKey(normalKey)) {
+      getRootTable().delete(normalKey);
+    } // else {
       // subtable
-      EntryInfo[] entries = NetworkTablesJNI.getEntries(normalKey, 0xFF);
-      Stream.of(entries)
-            .map(entryInfo -> entryInfo.name)
-            .forEach(NetworkTableUtils::delete);
-    }
-  }
-
-  /**
-   * Puts an arbitrary value into network tables.
-   *
-   * <p>Supported types:
-   * <ul>
-   * <li>String</li>
-   * <li>All number types (byte, int, double, ...)</li>
-   * <li>Booleans</li>
-   * <li>{@code byte[]} arrays (NOT {@code Byte[]})</li>
-   * <li>{@code String[]} arrays</li>
-   * <li>{@code double[]} arrays (but no other number array type)</li>
-   * <li>{@code boolean[]} arrays</li>
-   * </ul>
-   *
-   * @param key   the key of the entry
-   * @param value the value to put
-   * @return true if the value was successfully added, false if not
-   */
-  public static boolean put(String key, Object value) {
-    Objects.requireNonNull(value, "value");
-    String normalKey = normalize(key);
-    if (value instanceof String) {
-      return NetworkTablesJNI.putString(normalKey, (String) value);
-    } else if (value instanceof Number) {
-      return NetworkTablesJNI.putDouble(normalKey, ((Number) value).doubleValue());
-    } else if (value instanceof Boolean) {
-      return NetworkTablesJNI.putBoolean(normalKey, (Boolean) value);
-    } else if (value instanceof byte[]) {
-      return NetworkTablesJNI.putRaw(normalKey, (byte[]) value);
-    } else if (value instanceof String[]) {
-      return NetworkTablesJNI.putStringArray(normalKey, (String[]) value);
-    } else if (value instanceof double[]) {
-      return NetworkTablesJNI.putDoubleArray(normalKey, (double[]) value);
-    } else if (value instanceof boolean[]) {
-      return NetworkTablesJNI.putBooleanArray(normalKey, (boolean[]) value);
-    } else {
-      String type;
-      if (value.getClass().isArray()) {
-        type = value.getClass().getSimpleName();
-      } else {
-        type = value.getClass().getName();
-      }
-      throw new UnsupportedOperationException(
-          "Cannot put a value of type " + type + " into network tables");
-    }
-  }
-
-  /**
-   * Checks if an entry is persistent.
-   *
-   * @param key the key of the entry to check
-   * @return true if the entry is persistent, false if it is not
-   */
-  public static boolean isPersistent(String key) {
-    String normalKey = normalize(key);
-    return (NetworkTablesJNI.getEntryFlags(normalKey) & NetworkTable.PERSISTENT) != 0;
-  }
-
-  /**
-   * Sets the entry with the given key to be persistent. Has no effect if the entry is already
-   * persistent.
-   *
-   * @param key the key of the entry to make persistent
-   */
-  public static void setPersistent(String key) {
-    String normalKey = normalize(key);
-    int flags = NetworkTablesJNI.getEntryFlags(normalKey);
-    NetworkTablesJNI.setEntryFlags(normalKey, flags | NetworkTable.PERSISTENT);
-  }
-
-  /**
-   * Makes the entry with the given key non-persistent. Has no effect if the entry is already
-   * not persistent.
-   *
-   * @param key the of the entry to make non-persistent
-   */
-  public static void clearPersistent(String key) {
-    String normalKey = normalize(key);
-    int flags = NetworkTablesJNI.getEntryFlags(normalKey);
-    NetworkTablesJNI.setEntryFlags(normalKey, flags & ~NetworkTable.PERSISTENT);
-  }
-
-  /**
-   * Toggles persistence of the given key.
-   *
-   * @see #isPersistent(String)
-   * @see #setPersistent(String)
-   * @see #clearPersistent(String)
-   */
-  public static void togglePersistent(String key) {
-    if (isPersistent(key)) {
-      clearPersistent(key);
-    } else {
-      setPersistent(key);
-    }
+      //EntryInfo[] entries = getRootTable().get.getEntries(normalKey, 0xFF);
+      //Stream.of(entries)
+      //      .map(entryInfo -> entryInfo.name)
+      //      .forEach(NetworkTableUtils::delete);
+      //}
   }
 
   /**
@@ -177,8 +95,11 @@ public final class NetworkTableUtils {
    * address while in client mode.
    */
   public static void shutdown() {
-    NetworkTable.shutdown();
-    NetworkTable.globalDeleteAll();
+    networkTableInstance.stopDSClient();
+    networkTableInstance.stopClient();
+    networkTableInstance.stopServer();
+
+    networkTableInstance.deleteAllEntries();
   }
 
   /**
@@ -188,9 +109,9 @@ public final class NetworkTableUtils {
    */
   public static void setServer(int port) {
     shutdown();
-    NetworkTable.setPort(port);
-    NetworkTable.setServerMode();
-    NetworkTable.initialize();
+
+    networkTableInstance.setServer("OutlineViewer", port);
+    networkTableInstance.startServer();
   }
 
   /**
@@ -201,31 +122,19 @@ public final class NetworkTableUtils {
    */
   public static void setClient(String serverId, int serverPort) {
     shutdown();
-    NetworkTable.setClientMode();
-    NetworkTable.setPort(serverPort);
-    if (serverId.matches("[1-9](\\d{1,3})?")) {
-      NetworkTable.setTeam(Integer.parseInt(serverId));
-    } else {
-      NetworkTable.setIPAddress(serverId);
-    }
-    NetworkTable.initialize();
-  }
 
-  /**
-   * Checks if the given bit flags contains the given flag.
-   *
-   * @param flags       the bit flags to check
-   * @param flagToCheck the specific flag to check
-   */
-  public static boolean hasFlag(int flags, int flagToCheck) {
-    return (flags & flagToCheck) != 0;
+    if (serverId.matches("[1-9](\\d{1,3})?")) {
+      networkTableInstance.startClientTeam(Integer.parseInt(serverId), serverPort);
+    } else {
+      networkTableInstance.startClient(serverId, serverPort);
+    }
   }
 
   /**
    * Checks if ntcore is currently running.
    */
   public static boolean isRunning() {
-    return NetworkTablesJNI.getNetworkMode() != 0;
+    return networkTableInstance.getNetworkMode() != 0;
   }
 
   /**
@@ -234,28 +143,38 @@ public final class NetworkTableUtils {
    * at the requested address (client mode).
    */
   public static boolean failed() {
-    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_FAILURE);
+    return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeFailure);
   }
 
   /**
    * Checks if ntcore is currently starting up the client or server.
    */
   public static boolean starting() {
-    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_STARTING);
+    return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeStarting);
   }
 
   /**
    * Checks if ntcore is currently running in server mode.
    */
   public static boolean isServer() {
-    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_SERVER);
+    return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeServer);
   }
 
   /**
    * Checks if ntcore is currently running in client mode.
    */
   public static boolean isClient() {
-    return hasFlag(NetworkTablesJNI.getNetworkMode(), NetworkTablesJNI.NT_NET_MODE_CLIENT);
+    return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeClient);
+  }
+
+  /**
+   * Checks if the given bit flags contains the given flag.
+   *
+   * @param flags       the bit flags to check
+   * @param flagToCheck the specific flag to check
+   */
+  private static boolean hasFlag(int flags, int flagToCheck) {
+    return (flags & flagToCheck) != 0;
   }
 
 }

@@ -1,7 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,10 +77,10 @@ public class NetworkTableUtilsTest {
     @Test
     public void testDeleteKey() {
       final String key = "/NetworkTableUtilsTest::testDeleteKey";
-      NetworkTablesJNI.putString(key, "dummy");
+      NetworkTableUtils.getRootTable().putString(key, "dummy");
 
       NetworkTableUtils.delete(key);
-      assertFalse(NetworkTablesJNI.containsKey(key));
+      assertFalse(NetworkTableUtils.getRootTable().containsKey(key));
     }
 
     @Test
@@ -89,14 +88,14 @@ public class NetworkTableUtilsTest {
       String first = "/a/b/c";
       String second = "/a/b/d";
       String third = "/a/c";
-      NetworkTablesJNI.putString(first, "");
-      NetworkTablesJNI.putString(second, "");
-      NetworkTablesJNI.putString(third, "");
+      NetworkTableUtils.getRootTable().putString(first, "");
+      NetworkTableUtils.getRootTable().putString(second, "");
+      NetworkTableUtils.getRootTable().putString(third, "");
 
       NetworkTableUtils.delete("/a/b");
-      assertTrue(!NetworkTablesJNI.containsKey(first)
-          && !NetworkTablesJNI.containsKey(second)
-          && NetworkTablesJNI.containsKey(third));
+      assertTrue(!NetworkTableUtils.getRootTable().containsKey(first)
+          && !NetworkTableUtils.getRootTable().containsKey(second)
+          && NetworkTableUtils.getRootTable().containsKey(third));
     }
   }
 

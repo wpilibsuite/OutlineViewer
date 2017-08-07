@@ -2,7 +2,6 @@ package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
@@ -28,7 +27,8 @@ public class ConnectionIndicatorController {
 
   @FXML
   private void initialize() {
-    NetworkTablesJNI.addConnectionListener((uid, connected, conn) -> updateConnectionLabel(), true);
+    //NetworkTableUtils.getNetworkTableInstance().addConnectionListener((uid, connected, conn)
+    //    -> updateConnectionLabel(), true);
     Preferences.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
       Thread thread = new Thread(r);
@@ -114,7 +114,7 @@ public class ConnectionIndicatorController {
 
   private void serverSuccess() {
     StringBuffer text = new StringBuffer("Running server");
-    int numClients = NetworkTablesJNI.getConnections().length;
+    int numClients = NetworkTableUtils.getNetworkTableInstance().getConnections().length;
     switch (numClients) {
       case 0:
         text.append(" (No clients)");

@@ -2,23 +2,25 @@ package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
+import edu.wpi.first.outlineviewer.model.TableEntry;
 import edu.wpi.first.outlineviewer.view.TableEntryTreeTableCell;
 import edu.wpi.first.outlineviewer.view.NetworkTableTree;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
+import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
-import edu.wpi.first.outlineviewer.model.Entry;
-import edu.wpi.first.outlineviewer.model.TableEntry;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
+import edu.wpi.first.outlineviewer.model.TableValueEntry;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTableType;
+import edu.wpi.first.wpilibj.networktables.NetworkTableValue;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -44,7 +46,6 @@ import java.util.Locale;
 import java.util.function.Predicate;
 
 import static edu.wpi.first.outlineviewer.NetworkTableUtils.concat;
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.isPersistent;
 import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
 
 /**
@@ -57,28 +58,28 @@ public class MainWindowController {
 
   @FXML
   private NetworkTableTree tableView;
-  @FXML
-  private TreeItem<Entry> ntRoot;
 
   @FXML
-  private TreeTableColumn<Entry, String> keyColumn;
+  private TreeTableColumn<TableEntry, String> keyColumn;
   @FXML
-  private TreeTableColumn<Entry, Object> valueColumn;
+  private TreeTableColumn<TableEntry, Object> valueColumn;
   @FXML
-  private TreeTableColumn<Entry, String> typeColumn;
+  private TreeTableColumn<TableEntry, String> typeColumn;
 
   @FXML
   private ToolBar searchBar;
   @FXML
-  private Button closeSearchButton;
-  @FXML
   private TextField searchField;
 
-  private final Predicate<Entry> metadataFilter
-      = x -> Preferences.isShowMetaData() || !x.isMetadata();
+  private final Predicate<TableEntry> metadataFilter
+      = x -> Preferences.isShowMetaData() || !x.getKey().matches(".*~[A-Z]*~");
+
+  private NetworkTable networkTable;
 
   @FXML
   private void initialize() {
+    networkTable = tableView.getNetworkTable();
+
     root.setOnKeyPressed(event -> {
       if (event.isControlDown() && event.getCode() == KeyCode.F) {
         searchBar.setManaged(true);
@@ -100,11 +101,6 @@ public class MainWindowController {
     });
 
     tableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-    NetworkTablesJNI.addEntryListener(
-        "",
-        (uid, key, value, flags) -> tableView.updateFromNetworkTables(key, value, flags),
-        0xFF);
-
 
     keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(
         simpleKey(param.getValue().getValue().getKey())));
@@ -112,11 +108,11 @@ public class MainWindowController {
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
     keyColumn.setCellFactory(param
-        -> new TextFieldTreeTableCell<Entry, String>(new DefaultStringConverter()) {
+        -> new TextFieldTreeTableCell<TableEntry, String>(new DefaultStringConverter()) {
           @Override
           public void startEdit() {
-            Entry existing = getTreeTableRow().getItem();
-            if (existing instanceof TableEntry) {
+            TableEntry existing = getTreeTableRow().getItem();
+            if (!(existing instanceof TableValueEntry)) {
               // Can't edit a table name
               return;
             }
@@ -125,35 +121,40 @@ public class MainWindowController {
 
           @Override
           public void commitEdit(String simpleKey) {
-            Entry existing = getTreeTableRow().getItem();
+            TableEntry existing = getTreeTableRow().getItem();
             String existingKey = existing.getKey();
             String table
                 = existingKey.substring(0, existingKey.lastIndexOf(simpleKey(existingKey)));
             String newKey = concat(table, simpleKey);
-            if (NetworkTablesJNI.containsKey(newKey)) {
+            if (networkTable.containsKey(newKey)) {
               // That key already exists
               cancelEdit();
               return;
             }
             super.commitEdit(simpleKey);
+
             String oldKey = existing.getKey();
-            Entry replacement = Entry.entryFor(newKey, existing.getValue());
-            final int flags = NetworkTablesJNI.getEntryFlags(oldKey);
-            NetworkTablesJNI.deleteEntry(oldKey);
-            NetworkTableUtils.put(newKey, replacement.getValue());
-            NetworkTablesJNI.setEntryFlags(newKey, flags);
+            NetworkTableValue replacement
+                = new NetworkTableValue(networkTable.getValue(oldKey).getType(),
+                existing.getValue());
+
+            final int flags = networkTable.getFlags(oldKey);
+            networkTable.delete(oldKey);
+            networkTable.putValue(newKey, replacement);
+            networkTable.setFlags(newKey, flags);
           }
         });
-    valueColumn.setCellFactory(param -> new TableEntryTreeTableCell());
+    valueColumn.setCellFactory(param -> new TableEntryTreeTableCell<>());
 
     valueColumn.setOnEditCommit(e -> {
-      Entry entry = e.getRowValue().getValue();
+      TableEntry entry = e.getRowValue().getValue();
       String key = entry.getKey(); // entry keys are guaranteed to be normalized
-      NetworkTableUtils.put(key, e.getNewValue());
+      networkTable.putValue(key,
+          new NetworkTableValue(networkTable.getValue(key).getType(), e.getNewValue()));
     });
 
     tableView.setRowFactory(param -> {
-      final TreeTableRow<Entry> row = new TreeTableRow<>();
+      final TreeTableRow<TableEntry> row = new TreeTableRow<>();
       // Clicking on an empty row should clear the selection.
       row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
         if (row.getTreeItem() == null) {
@@ -171,9 +172,9 @@ public class MainWindowController {
         tableView.setFilter(metadataFilter);
       } else {
         String lower = newText.toLowerCase(Locale.getDefault());
-        Predicate<Entry> filter = metadataFilter.and(data
+        Predicate<TableEntry> filter = metadataFilter.and(data
             -> data.getKey().toLowerCase(Locale.getDefault()).contains(lower)
-              || data.getDisplayString().toLowerCase(Locale.getDefault()).contains(lower)
+              || data.getValue().toString().toLowerCase(Locale.getDefault()).contains(lower)
               || data.getType().toLowerCase(Locale.getDefault()).contains(lower));
         tableView.setFilter(filter);
       }
@@ -181,12 +182,12 @@ public class MainWindowController {
 
     tableView.setOnMouseClicked(e -> {
       if (e.getClickCount() == 2) {
-        TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
+        TreeItem<TableEntry> selected = tableView.getSelectionModel().getSelectedItem();
         if (selected == null) {
           return;
         }
-        int row = tableView.getRow(selected);
-        tableView.edit(row, valueColumn);
+
+        tableView.edit(tableView.getRow(selected), valueColumn);
       }
     });
 
@@ -201,15 +202,15 @@ public class MainWindowController {
         tableView.getSelectionModel()
                  .clearAndSelect(tableView.getSelectionModel().getSelectedIndex());
       }
-      TreeItem<Entry> selected = tableView.getSelectionModel().getSelectedItem();
+      TreeItem<TableEntry> selected = tableView.getSelectionModel().getSelectedItem();
       if (selected == null) {
         return;
       }
-      Entry entry = selected.getValue();
+      TableEntry entry = selected.getValue();
       String key = entry.getKey();
       ContextMenu cm = new ContextMenu();
 
-      if (entry instanceof TableEntry) {
+      if (entry instanceof TableValueEntry) {
         // It's a table, add the 'add x' items
         cm.getItems().addAll(createTableMenuItems(entry));
         cm.getItems().add(new SeparatorMenuItem());
@@ -220,8 +221,14 @@ public class MainWindowController {
         cm.getItems().remove(cm.getItems().size() - 1);
       } else {
         MenuItem setPersistent = new MenuItem(
-            String.format("Set %s", isPersistent(key) ? "transient" : "persistent"));
-        setPersistent.setOnAction(__ -> NetworkTableUtils.togglePersistent(key));
+            String.format("Set %s", networkTable.isPersistent(key) ? "transient" : "persistent"));
+        setPersistent.setOnAction(__ -> {
+          if (networkTable.isPersistent(key)) {
+            networkTable.clearPersistent(key);
+          } else {
+            networkTable.setPersistent(key);
+          }
+        });
 
         MenuItem delete = new MenuItem("Delete");
         delete.setOnAction(__ -> deleteSelectedEntries());
@@ -240,57 +247,29 @@ public class MainWindowController {
    *
    * @param tableEntry the entry for the subtable to create the menu items for
    */
-  private List<MenuItem> createTableMenuItems(Entry<?> tableEntry) {
+  private List<MenuItem> createTableMenuItems(TableEntry tableEntry) {
     final String key = tableEntry.getKey();
 
-    MenuItem string = new MenuItem("Add string");
-    string.setOnAction(a
-        -> new AddStringDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putString(fullKey, data.getValue());
-        }));
+    MenuItem string = createContextMenuItem("Add string",
+        new AddStringDialog(), NetworkTableType.kString, key);
 
-    MenuItem number = new MenuItem("Add number");
-    number.setOnAction(a
-        -> new AddNumberDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putDouble(fullKey, data.getValue().doubleValue());
-        }));
+    MenuItem number = createContextMenuItem("Add number",
+        new AddNumberDialog(), NetworkTableType.kDouble, key);
 
-    MenuItem bool = new MenuItem("Add boolean");
-    bool.setOnAction(a
-        -> new AddBooleanDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putBoolean(fullKey, data.getValue());
-        }));
+    MenuItem bool = createContextMenuItem("Add boolean",
+        new AddBooleanDialog(), NetworkTableType.kBoolean, key);
 
-    MenuItem boolArray = new MenuItem("Add boolean array");
-    boolArray.setOnAction(__
-        -> new AddBooleanArrayDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putBooleanArray(fullKey, data.getValue());
-        }));
+    MenuItem boolArray = createContextMenuItem("Add boolean array",
+        new AddBooleanArrayDialog(), NetworkTableType.kBooleanArray, key);
 
-    MenuItem numberArray = new MenuItem("Add number array");
-    numberArray.setOnAction(__
-        -> new AddNumberArrayDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putDoubleArray(fullKey, data.getValue());
-        }));
+    MenuItem numberArray = createContextMenuItem("Add number array",
+        new AddNumberArrayDialog(), NetworkTableType.kDoubleArray, key);
 
-    MenuItem stringArray = new MenuItem("Add string array");
-    stringArray.setOnAction(__
-        -> new AddStringArrayDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putStringArray(fullKey, data.getValue());
-        }));
+    MenuItem stringArray = createContextMenuItem("Add string array",
+        new AddStringArrayDialog(), NetworkTableType.kStringArray, key);
 
-    MenuItem raw = new MenuItem("Add raw bytes");
-    raw.setOnAction(__
-        -> new AddBytesDialog().showAndWait().ifPresent(data -> {
-          String fullKey = concat(key, data.getKey());
-          NetworkTablesJNI.putRaw(fullKey, data.getValue());
-        }));
+    MenuItem raw = createContextMenuItem("Add raw bytes", new AddBytesDialog(),
+        NetworkTableType.kRaw, key);
 
     return Arrays.asList(string, number, bool,
                          new SeparatorMenuItem(),
@@ -307,7 +286,7 @@ public class MainWindowController {
              .getSelectedItems()
              .stream()
              .map(TreeItem::getValue)
-             .map(Entry::getKey)
+             .map(TableEntry::getKey)
              .forEach(NetworkTableUtils::delete);
   }
 
@@ -328,6 +307,15 @@ public class MainWindowController {
     if (dialog.showAndWait().orElse(false)) {
       dialog.getController().save();
     }
+  }
+
+  private MenuItem createContextMenuItem(String text, AddEntryDialog<?> dialog,
+                                                NetworkTableType type, String key) {
+    MenuItem menuItem = new MenuItem(text);
+    menuItem.setOnAction(__ -> dialog.showAndWait().ifPresent(data
+        -> networkTable.putValue(concat(key, data.getKey()),
+        new NetworkTableValue(type, data.valueProperty().get()))));
+    return menuItem;
   }
 
 }

@@ -1,3 +1,5 @@
+import edu.wpi.first.wpilib.versioning.ReleaseType
+
 plugins {
     id 'java'
     id 'application'
@@ -49,7 +51,9 @@ repositories {
 }
 
 dependencies {
-    compile "edu.wpi.first.wpilib.networktables.java:NetworkTables:+:desktop"
+    compile 'edu.wpi.first.ntcore:ntcore-java:+'
+    compile 'edu.wpi.first.ntcore:ntcore-jni:+:osxx86-64'
+    compile 'edu.wpi.first.wpiutil:wpiutil-java:+'
     compile "org.controlsfx:controlsfx:+"
     compile group: 'com.google.guava', name: 'guava', version: '21.0'
 
@@ -85,12 +89,13 @@ if (project.hasProperty('jenkinsBuild') || project.hasProperty('headless')) {
 
 // Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
 // already specified on the command line
-if (!hasProperty('releaseType')) {
-    WPILibVersion {
-        releaseType = 'dev'
+WPILibVersion {
+
+
+    if (!hasProperty('releaseType')) {
+        releaseType = ReleaseType.DEV
     }
 }
-
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.2'
 }
