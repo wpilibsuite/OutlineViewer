@@ -1,13 +1,19 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.model.TableEntry;
 import edu.wpi.first.outlineviewer.model.TableValueEntry;
-import edu.wpi.first.wpilibj.tables.ITable;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
+
+import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -18,12 +24,23 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 public class NetworkTableTreeTest extends ApplicationTest {
 
   private NetworkTableTree tree;
-  private TreeItem<TableValueEntry> root;
+  private TreeItem<TableEntry> root;
+  private NetworkTableInstance networkTableInstance;
+
+  @Before
+  public void before() {
+    networkTableInstance = NetworkTableInstance.create();
+  }
+
+  @After
+  public void after() {
+    networkTableInstance.free();
+  }
 
   @Override
   public void start(Stage stage) throws Exception {
-    tree = new NetworkTableTree();
-    root = new TreeItem<>(new RootTableEntry());
+    tree = new NetworkTableTree(networkTableInstance);
+    root = new TreeItem<>(new TableEntry(""));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -34,10 +51,11 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testAddSimpleEntry() {
     final String key = "/key";
     final String value = "testAddSimpleEntry";
-    tree.updateFromNetworkTables(key, value, 0);
+    tree.getNetworkTable().putString(key, value);
+    waitForNtcoreEvents();
     waitForFxEvents();
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableValueEntry> item = root.getChildren().get(0);
+    TreeItem<TableEntry> item = root.getChildren().get(0);
     assertEquals(key, item.getValue().getKey());
     assertEquals(value, item.getValue().getValue());
   }
@@ -47,18 +65,18 @@ public class NetworkTableTreeTest extends ApplicationTest {
     final String tableName = "/nested";
     final String entryName = "/key";
     final String value = "testAddNested";
-    tree.updateFromNetworkTables(NetworkTableUtils.concat(tableName, entryName), value, 0);
+    tree.getNetworkTable().putString(NetworkTableUtils.concat(tableName, entryName), value);
+    waitForNtcoreEvents();
     waitForFxEvents();
 
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableValueEntry> tableEntry = root.getChildren().get(0);
+    TreeItem<TableEntry> tableEntry = root.getChildren().get(0);
     assertThat(tableEntry.getValue(), instanceOf(TableValueEntry.class));
     assertThat(tableEntry.getValue().getKey(), is(tableName));
     assertEquals(1, tableEntry.getChildren().size());
 
-    TreeItem<TableValueEntry> realEntry = tableEntry.getChildren().get(0);
-    TableValueEntry entry = realEntry.getValue();
-    assertThat(entry, instanceOf(StringEntry.class));
+    TreeItem<TableEntry> realEntry = tableEntry.getChildren().get(0);
+    TableEntry entry = realEntry.getValue();
     assertEquals(NetworkTableUtils.concat(tableName, entryName), entry.getKey());
     assertEquals(value, entry.getValue());
   }
@@ -67,7 +85,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteSimpleEntry() {
     final String key = "/key";
     testAddSimpleEntry();
-    tree.updateFromNetworkTables(key, null, ITable.NOTIFY_DELETE); // value should be irrelevant
+    tree.getNetworkTable().delete(key);
+    waitForNtcoreEvents();
     waitForFxEvents();
     assertEquals(0, root.getChildren().size());
   }
@@ -75,9 +94,11 @@ public class NetworkTableTreeTest extends ApplicationTest {
   @Test
   public void testDeleteNestedEntry() {
     final String key = "/a/very/nested/key";
-    tree.updateFromNetworkTables(key, "", 0);
+    tree.getNetworkTable().putString(key, "");
+    waitForNtcoreEvents();
     waitForFxEvents();
-    tree.updateFromNetworkTables(key, null, ITable.NOTIFY_DELETE); // value should be irrelevant
+    tree.getNetworkTable().delete(key);
+    waitForNtcoreEvents();
     waitForFxEvents();
     root.getChildren().forEach(System.out::println);
     assertEquals(0, root.getChildren().size());
@@ -87,18 +108,47 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteNestedEntryWithSiblings() {
     final String keyToDelete = "/nested/deleteme";
     final String keyToKeep = "/nested/keepme";
-    tree.updateFromNetworkTables(keyToDelete, "", 0);
-    tree.updateFromNetworkTables(keyToKeep, "", 0);
+    tree.getNetworkTable().putString(keyToDelete, "");
+    tree.getNetworkTable().putString(keyToKeep, "");
+    waitForNtcoreEvents();
     waitForFxEvents();
 
-    tree.updateFromNetworkTables(keyToDelete, null, ITable.NOTIFY_DELETE);
+    tree.getNetworkTable().delete(keyToDelete);
+    waitForNtcoreEvents();
     waitForFxEvents();
 
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableValueEntry> tableItem = root.getChildren().get(0);
+    TreeItem<TableEntry> tableItem = root.getChildren().get(0);
     assertEquals(1, tableItem.getChildren().size());
-    TableValueEntry onlyChild = tableItem.getChildren().get(0).getValue();
+    TableEntry onlyChild = tableItem.getChildren().get(0).getValue();
     assertEquals(keyToKeep, onlyChild.getKey());
+  }
+
+  /**
+   * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
+   */
+  private void waitForNtcoreEvents() {
+    CompletableFuture<?> future = new CompletableFuture<>();
+    final String indexKey = "waitForNtcoreEvents";
+
+    int listenerOneHandle = networkTableInstance.addEntryListener(indexKey,
+        (entry, value, flags) -> networkTableInstance.getTable("").delete(indexKey),
+        NetworkTable.NOTIFY_NEW | NetworkTable.NOTIFY_LOCAL);
+    int listenerTwoHandle = networkTableInstance.addEntryListener(indexKey,
+        (entry, value, flags) -> future.complete(null),
+        NetworkTable.NOTIFY_NEW | NetworkTable.NOTIFY_LOCAL);
+
+    networkTableInstance.removeEntryListener(listenerOneHandle);
+    networkTableInstance.removeEntryListener(listenerTwoHandle);
+
+    /*
+     * This works because all notifications are put into a single queue and are processed by a
+     * single thread.
+     *
+     * https://github.com/wpilibsuite/shuffleboard/pull/118#issuecomment-321374691
+     */
+    networkTableInstance.getTable("").putBoolean(indexKey, false);
+    future.join();
   }
 
 }

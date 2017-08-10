@@ -1,11 +1,7 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.wpilibj.networktables.EntryInfo;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
-
-import java.util.stream.Stream;
 
 /**
  * Utility methods for working with network tables.
@@ -42,7 +38,8 @@ public final class NetworkTableUtils {
    * @param key the key to normalize
    */
   public static String normalize(String key) {
-    return ("/" + key).replaceAll("/{2,}", "/");
+    return (NetworkTable.PATH_SEPARATOR + key).replaceAll("/{2,}",
+        String.valueOf(NetworkTable.PATH_SEPARATOR));
   }
 
   /**
@@ -53,9 +50,10 @@ public final class NetworkTableUtils {
    * @param more optional extra keys to concatenate
    */
   public static String concat(String key1, String key2, String... more) {
-    StringBuilder builder = new StringBuilder(key1).append('/').append(key2);
+    StringBuilder builder
+        = new StringBuilder(key1).append(NetworkTable.PATH_SEPARATOR).append(key2);
     for (String s : more) {
-      builder.append('/').append(s);
+      builder.append(NetworkTable.PATH_SEPARATOR).append(s);
     }
     return normalize(builder.toString());
   }
@@ -67,13 +65,13 @@ public final class NetworkTableUtils {
    * @param key the key to get the simple representation of
    */
   public static String simpleKey(String key) {
-    if (key.isEmpty() || "/".equals(key)) {
+    if (key.isEmpty() || String.valueOf(NetworkTable.PATH_SEPARATOR).equals(key)) {
       return "Root";
     }
-    if (!key.contains("/")) {
+    if (!key.contains(String.valueOf(NetworkTable.PATH_SEPARATOR))) {
       return key;
     }
-    return key.substring(key.lastIndexOf('/') + 1);
+    return key.substring(key.lastIndexOf(NetworkTable.PATH_SEPARATOR) + 1);
   }
 
   /**

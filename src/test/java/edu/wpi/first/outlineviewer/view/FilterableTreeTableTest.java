@@ -1,7 +1,6 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.FxHelper;
-import edu.wpi.first.outlineviewer.model.RootTableEntry;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -10,7 +9,6 @@ import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
@@ -64,7 +62,8 @@ public class FilterableTreeTableTest extends ApplicationTest {
     clickOn("B");
     c.setValue("D");
 
-    assertTrue(treeTable.getSelectionModel().getSelectedCells().stream().map(TreeTablePosition::getTreeItem).anyMatch(item -> item.equals(b)));
+    assertTrue(treeTable.getSelectionModel().getSelectedCells().stream()
+    .map(TreeTablePosition::getTreeItem).anyMatch(item -> item.equals(b)));
   }
   */
 

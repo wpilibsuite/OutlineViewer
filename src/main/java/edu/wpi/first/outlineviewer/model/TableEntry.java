@@ -1,8 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
+import com.google.common.base.MoreObjects;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
-import edu.wpi.first.wpilibj.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.networktables.NetworkTableValue;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,7 +22,7 @@ public class TableEntry {
   protected final StringProperty type = new SimpleStringProperty(this, "type", "");
 
   protected TableEntry() {
-
+    // Users must provide a key!
   }
 
   /**
@@ -74,5 +73,14 @@ public class TableEntry {
    */
   public boolean isMetadata() {
     return IS_METADATA.test(NetworkTableUtils.simpleKey(key.get()));
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("Key", key.getValue())
+        .add("Value", value.get())
+        .add("Type", typeProperty().getValue())
+        .toString();
   }
 }

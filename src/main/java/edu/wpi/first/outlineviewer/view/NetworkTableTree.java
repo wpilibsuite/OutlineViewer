@@ -79,6 +79,7 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
   }
 
   @Override
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public void valueChanged(NetworkTableEntry entry, NetworkTableValue value, int flags) {
     if (!Platform.isFxApplicationThread()) {
       Platform.runLater(() -> valueChanged(entry, value, flags));
@@ -97,11 +98,12 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
 
     for (int i = 0; i < pathElements.size(); i++) {
       String pathElement = pathElements.get(i);
-      path.append('/').append(pathElement);
+      path.append(NetworkTable.PATH_SEPARATOR).append(pathElement);
       parent = current;
       current = current.getChildren()
           .stream()
-          .filter(item -> item.getValue().getKey().equals(path.toString()))
+          .filter(item
+              -> NetworkTableUtils.normalize(item.getValue().getKey()).equals(path.toString()))
           .findFirst()
           .orElse(null);
 
@@ -129,7 +131,7 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
     // Remove any empty subtables
     if (deleted) {
       for (TreeItem<TableEntry> item = parent; item != getRealRoot();) {
-        if (item.getValue() instanceof TableValueEntry && item.getChildren().isEmpty()) {
+        if (!(item.getValue() instanceof TableValueEntry) && item.getChildren().isEmpty()) {
           TreeItem<TableEntry> next = item.getParent();
           item.getParent().getChildren().remove(item);
           item = next;

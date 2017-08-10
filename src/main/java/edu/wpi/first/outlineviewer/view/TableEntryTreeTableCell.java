@@ -99,6 +99,7 @@ public class TableEntryTreeTableCell<T extends TableEntry> extends TreeTableCell
       // not editable
       canEdit = false;
     }
+
     setText(entry.getValue().toString());
   }
 

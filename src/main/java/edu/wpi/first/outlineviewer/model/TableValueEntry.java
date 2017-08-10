@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer.model;
 
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.wpilibj.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTableValue;
 import javafx.beans.binding.Bindings;

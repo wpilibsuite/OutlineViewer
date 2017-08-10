@@ -45,9 +45,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.concat;
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
-
 /**
  * Controller for the main window.
  */
@@ -74,11 +71,12 @@ public class MainWindowController {
   private TextField searchField;
 
   private final Predicate<TableEntry> metadataFilter
-      = x -> Preferences.isShowMetaData() || !x.getKey().matches(".*~[A-Z]*~");
+      = x -> Preferences.isShowMetaData() || !x.isMetadata();
 
   private NetworkTable networkTable;
 
   @FXML
+  @SuppressWarnings("PMD.AccessorMethodGeneration")
   private void initialize() {
     networkTable = tableView.getNetworkTable();
 
@@ -127,9 +125,9 @@ public class MainWindowController {
           public void commitEdit(String simpleKey) {
             TableEntry existing = getTreeTableRow().getItem();
             String existingKey = existing.getKey();
-            String table
-                = existingKey.substring(0, existingKey.lastIndexOf(simpleKey(existingKey)));
-            String newKey = concat(table, simpleKey);
+            String table = existingKey.substring(0,
+                existingKey.lastIndexOf(NetworkTableUtils.simpleKey(existingKey)));
+            String newKey = NetworkTableUtils.concat(table, simpleKey);
             if (networkTable.containsKey(newKey)) {
               // That key already exists
               cancelEdit();
@@ -317,7 +315,7 @@ public class MainWindowController {
                                                 NetworkTableType type, String key) {
     MenuItem menuItem = new MenuItem(text);
     menuItem.setOnAction(__ -> dialog.showAndWait().ifPresent(data
-        -> networkTable.putValue(concat(key, data.getKey()),
+        -> networkTable.putValue(NetworkTableUtils.concat(key, data.getKey()),
         new NetworkTableValue(type, data.valueProperty().get()))));
     return menuItem;
   }
