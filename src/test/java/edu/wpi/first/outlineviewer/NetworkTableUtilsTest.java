@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,25 +25,24 @@ public class NetworkTableUtilsTest {
 
     @Before
     @After
-    public void shutdown() {
-      NetworkTableUtils.shutdown();
+    public void createNewInstance() {
+      NetworkTableUtils.createNewNetworkTableInstance();
     }
 
     @Test
     public void isRunningTest() {
-      NetworkTable.initialize();
+      NetworkTableUtils.setServer(9999);
 
       assertTrue(NetworkTableUtils.isRunning());
     }
 
-    /*
     @Test
     public void isNotRunningTest() {
+      NetworkTableUtils.setServer(9999);
       NetworkTableUtils.shutdown();
 
       assertFalse(NetworkTableUtils.isRunning());
     }
-    */
 
     @Test
     public void startingTest() {

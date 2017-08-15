@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import edu.wpi.first.outlineviewer.model.TableValueEntry;
+import edu.wpi.first.outlineviewer.model.TableEntry;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -41,7 +41,7 @@ public class AddEntryDialogAbstractTest extends AddEntryDialogTest {
     clickOn("#keyField").write('a');
     clickOn("Add");
 
-    assertTrue(dialog.getResult() instanceof TableValueEntry);
+    assertTrue(dialog.getResult() instanceof TableEntry);
   }
 
   @Test

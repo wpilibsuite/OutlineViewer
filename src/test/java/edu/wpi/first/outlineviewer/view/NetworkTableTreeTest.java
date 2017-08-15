@@ -4,12 +4,10 @@ import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.model.TableEntry;
 import edu.wpi.first.outlineviewer.model.TableValueEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -25,21 +23,17 @@ public class NetworkTableTreeTest extends ApplicationTest {
 
   private NetworkTableTree tree;
   private TreeItem<TableEntry> root;
-  private NetworkTableInstance networkTableInstance;
-
-  @Before
-  public void before() {
-    networkTableInstance = NetworkTableInstance.create();
-  }
 
   @After
-  public void after() {
-    networkTableInstance.free();
+  public void shutdown() {
+    NetworkTableUtils.shutdown();
   }
 
   @Override
   public void start(Stage stage) throws Exception {
-    tree = new NetworkTableTree(networkTableInstance);
+    NetworkTableUtils.createNewNetworkTableInstance();
+
+    tree = new NetworkTableTree(NetworkTableUtils.getNetworkTableInstance());
     root = new TreeItem<>(new TableEntry(""));
     root.setExpanded(true);
     tree.setRoot(root);
@@ -131,15 +125,12 @@ public class NetworkTableTreeTest extends ApplicationTest {
     CompletableFuture<?> future = new CompletableFuture<>();
     final String indexKey = "waitForNtcoreEvents";
 
-    int listenerOneHandle = networkTableInstance.addEntryListener(indexKey,
-        (entry, value, flags) -> networkTableInstance.getTable("").delete(indexKey),
+    int listenerOneHandle = NetworkTableUtils.getNetworkTableInstance().addEntryListener(indexKey,
+        (entry, value, flags) -> NetworkTableUtils.getRootTable().delete(indexKey),
         NetworkTable.NOTIFY_NEW | NetworkTable.NOTIFY_LOCAL);
-    int listenerTwoHandle = networkTableInstance.addEntryListener(indexKey,
+    int listenerTwoHandle = NetworkTableUtils.getNetworkTableInstance().addEntryListener(indexKey,
         (entry, value, flags) -> future.complete(null),
-        NetworkTable.NOTIFY_NEW | NetworkTable.NOTIFY_LOCAL);
-
-    networkTableInstance.removeEntryListener(listenerOneHandle);
-    networkTableInstance.removeEntryListener(listenerTwoHandle);
+        NetworkTable.NOTIFY_DELETE | NetworkTable.NOTIFY_LOCAL);
 
     /*
      * This works because all notifications are put into a single queue and are processed by a
@@ -147,8 +138,11 @@ public class NetworkTableTreeTest extends ApplicationTest {
      *
      * https://github.com/wpilibsuite/shuffleboard/pull/118#issuecomment-321374691
      */
-    networkTableInstance.getTable("").putBoolean(indexKey, false);
+    NetworkTableUtils.getRootTable().putBoolean(indexKey, false);
     future.join();
+
+    NetworkTableUtils.getNetworkTableInstance().removeEntryListener(listenerOneHandle);
+    NetworkTableUtils.getNetworkTableInstance().removeEntryListener(listenerTwoHandle);
   }
 
 }
