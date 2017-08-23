@@ -11,9 +11,9 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * Represents an model in network tables.
+ * Represents a row in the NetworkTableTree.
  */
-public class TableEntry {
+public abstract class TreeRow {
 
   private static final Predicate<String> IS_METADATA = s -> s.matches(".*~[A-Z]*~");
 
@@ -21,14 +21,14 @@ public class TableEntry {
   protected final ObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value", null);
   protected final StringProperty type = new SimpleStringProperty(this, "type", "");
 
-  protected TableEntry() {
+  protected TreeRow() {
     // Users must provide a key!
   }
 
   /**
    * Creates an entry.
    */
-  public TableEntry(String key) {
+  public TreeRow(String key) {
     Objects.requireNonNull(key);
 
     this.key.setValue(key);
@@ -37,7 +37,7 @@ public class TableEntry {
   /**
    * Creates an entry.
    */
-  public TableEntry(String key, Object value) {
+  public TreeRow(String key, Object value) {
     this(key);
     Objects.requireNonNull(value);
 

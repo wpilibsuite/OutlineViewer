@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 /**
  * A dialog for adding or editing number entries in network tables.
  */
-public class AddNumberDialog extends AddEntryDialog<Number> {
+public class AddNumberDialog extends AddEntryDialog<Double> {
 
   private TextField numberField;
 
@@ -23,7 +23,7 @@ public class AddNumberDialog extends AddEntryDialog<Number> {
   }
 
   @Override
-  protected Number getData() {
+  protected Double getData() {
     try {
       return Double.parseDouble(numberField.getText());
     } catch (NumberFormatException ex) {

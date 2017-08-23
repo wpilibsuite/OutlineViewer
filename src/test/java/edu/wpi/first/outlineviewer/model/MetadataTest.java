@@ -39,7 +39,7 @@ public class MetadataTest {
 
   @Test
   public void testMetadata() {
-    TableEntry entry = new TableEntry(testKey);
+    TreeRow entry = new TreeRow(testKey);
 
     assertEquals(expectedResult, entry.isMetadata());
   }

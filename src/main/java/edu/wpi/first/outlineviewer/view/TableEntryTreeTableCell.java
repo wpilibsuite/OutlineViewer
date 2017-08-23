@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.view;
 
-import edu.wpi.first.outlineviewer.model.TableEntry;
+import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
@@ -17,7 +17,7 @@ import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
  */
-public class TableEntryTreeTableCell<T extends TableEntry> extends TreeTableCell<T, Object> {
+public class TableEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, Object> {
 
   private Control editor;
   private Node graphic;
@@ -37,7 +37,7 @@ public class TableEntryTreeTableCell<T extends TableEntry> extends TreeTableCell
       setGraphic(null);
       return;
     }
-    TableEntry entry = getTreeTableRow()
+    TreeRow entry = getTreeTableRow()
         .getTreeItem()
         .getValue();
     setGraphic(null);
@@ -119,11 +119,10 @@ public class TableEntryTreeTableCell<T extends TableEntry> extends TreeTableCell
     } else {
       arrayEditor.setDisableKey(true);
       arrayEditor.setOnCloseRequest(e -> {
-        TableEntry result = arrayEditor.getResult();
-        if (result == null) {
-          cancelEdit();
+        if (arrayEditor.getResult().isPresent()) {
+          commitEdit(arrayEditor.getResult().get().getValue());
         } else {
-          commitEdit(result.getValue());
+          cancelEdit();
         }
       });
       arrayEditor.show();

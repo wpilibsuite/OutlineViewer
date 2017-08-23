@@ -1,13 +1,14 @@
 package edu.wpi.first.outlineviewer.view;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
-import edu.wpi.first.outlineviewer.model.TableEntry;
-import edu.wpi.first.outlineviewer.model.TableValueEntry;
-import edu.wpi.first.wpilibj.networktables.EntryListener;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.networktables.NetworkTableValue;
+import edu.wpi.first.outlineviewer.model.TreeRow;
+import edu.wpi.first.outlineviewer.model.TreeEntry;
+import edu.wpi.first.networktables.EntryListener;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TreeItem;
@@ -22,12 +23,12 @@ import java.util.stream.Stream;
  * A tree table view specifically for viewing network table entries. This is filterable
  * to allow metadata to be hidden and for entries to be searchable.
  */
-public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements EntryListener {
+public class NetworkTableTree extends FilterableTreeTable<TreeRow> implements EntryListener {
 
   // node comparators
-  private static final Comparator<TreeItem<TableEntry>> BRANCHES_FIRST
+  private static final Comparator<TreeItem<TreeRow>> BRANCHES_FIRST
       = (o1, o2) -> o1.isLeaf() ? (o2.isLeaf() ? 0 : 1) : -1;
-  private static final Comparator<TreeItem<TableEntry>> ALPHABETICAL
+  private static final Comparator<TreeItem<TreeRow>> ALPHABETICAL
       = Comparator.comparing(i -> i.getValue().getKey());
 
   private NetworkTable networkTable;
@@ -86,14 +87,14 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
       return;
     }
 
-    boolean deleted = (flags & NetworkTable.NOTIFY_DELETE) != 0;
+    boolean deleted = (flags & EntryListenerFlags.kDelete) != 0;
     List<String> pathElements
         = Stream.of(entry.getName().split(String.valueOf(NetworkTable.PATH_SEPARATOR)))
         .filter(s -> !s.isEmpty())
         .collect(Collectors.toList());
 
-    TreeItem<TableEntry> current = getRealRoot();
-    TreeItem<TableEntry> parent = current;
+    TreeItem<TreeRow> current = getRealRoot();
+    TreeItem<TreeRow> parent = current;
     StringBuilder path = new StringBuilder();
 
     for (int i = 0; i < pathElements.size(); i++) {
@@ -116,13 +117,13 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
         }
       } else if (i == pathElements.size() - 1) {
         if (current == null) {
-          current = new TreeItem<>(new TableValueEntry(entry, value));
+          current = new TreeItem<>(new TreeEntry(entry, value));
           parent.getChildren().add(current);
         } else {
           current.getValue().valueProperty().setValue(value);
         }
       } else if (current == null) {
-        current = new TreeItem<>(new TableEntry(path.toString()));
+        current = new TreeItem<>(new TreeRow(path.toString()));
         current.setExpanded(true);
         parent.getChildren().add(current);
       }
@@ -130,9 +131,9 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
 
     // Remove any empty subtables
     if (deleted) {
-      for (TreeItem<TableEntry> item = parent; item != getRealRoot();) {
-        if (!(item.getValue() instanceof TableValueEntry) && item.getChildren().isEmpty()) {
-          TreeItem<TableEntry> next = item.getParent();
+      for (TreeItem<TreeRow> item = parent; item != getRealRoot();) {
+        if (!(item.getValue() instanceof TreeEntry) && item.getChildren().isEmpty()) {
+          TreeItem<TreeRow> next = item.getParent();
           item.getParent().getChildren().remove(item);
           item = next;
         } else {
@@ -151,7 +152,7 @@ public class NetworkTableTree extends FilterableTreeTable<TableEntry> implements
    *
    * @param node the root node to sort
    */
-  private void sort(TreeItem<TableEntry> node) {
+  private void sort(TreeItem<TreeRow> node) {
     if (!node.isLeaf()) {
       boolean wasExpanded = node.isExpanded();
       FXCollections.sort(node.getChildren(), BRANCHES_FIRST.thenComparing(ALPHABETICAL));

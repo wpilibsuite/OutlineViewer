@@ -1,8 +1,8 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
-import edu.wpi.first.outlineviewer.model.TableEntry;
-import edu.wpi.first.outlineviewer.model.TableValueEntry;
+import edu.wpi.first.outlineviewer.model.TreeRow;
+import edu.wpi.first.outlineviewer.model.TreeEntry;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
@@ -22,7 +22,7 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 public class NetworkTableTreeTest extends ApplicationTest {
 
   private NetworkTableTree tree;
-  private TreeItem<TableEntry> root;
+  private TreeItem<TreeRow> root;
 
   @After
   public void shutdown() {
@@ -34,7 +34,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
     NetworkTableUtils.createNewNetworkTableInstance();
 
     tree = new NetworkTableTree(NetworkTableUtils.getNetworkTableInstance());
-    root = new TreeItem<>(new TableEntry(""));
+    root = new TreeItem<>(new TreeRow(""));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -49,7 +49,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
     waitForNtcoreEvents();
     waitForFxEvents();
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableEntry> item = root.getChildren().get(0);
+    TreeItem<TreeRow> item = root.getChildren().get(0);
     assertEquals(key, item.getValue().getKey());
     assertEquals(value, item.getValue().getValue());
   }
@@ -64,13 +64,13 @@ public class NetworkTableTreeTest extends ApplicationTest {
     waitForFxEvents();
 
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableEntry> tableEntry = root.getChildren().get(0);
-    assertThat(tableEntry.getValue(), instanceOf(TableValueEntry.class));
+    TreeItem<TreeRow> tableEntry = root.getChildren().get(0);
+    assertThat(tableEntry.getValue(), instanceOf(TreeEntry.class));
     assertThat(tableEntry.getValue().getKey(), is(tableName));
     assertEquals(1, tableEntry.getChildren().size());
 
-    TreeItem<TableEntry> realEntry = tableEntry.getChildren().get(0);
-    TableEntry entry = realEntry.getValue();
+    TreeItem<TreeRow> realEntry = tableEntry.getChildren().get(0);
+    TreeRow entry = realEntry.getValue();
     assertEquals(NetworkTableUtils.concat(tableName, entryName), entry.getKey());
     assertEquals(value, entry.getValue());
   }
@@ -112,9 +112,9 @@ public class NetworkTableTreeTest extends ApplicationTest {
     waitForFxEvents();
 
     assertEquals(1, root.getChildren().size());
-    TreeItem<TableEntry> tableItem = root.getChildren().get(0);
+    TreeItem<TreeRow> tableItem = root.getChildren().get(0);
     assertEquals(1, tableItem.getChildren().size());
-    TableEntry onlyChild = tableItem.getChildren().get(0).getValue();
+    TreeRow onlyChild = tableItem.getChildren().get(0).getValue();
     assertEquals(keyToKeep, onlyChild.getKey());
   }
 
