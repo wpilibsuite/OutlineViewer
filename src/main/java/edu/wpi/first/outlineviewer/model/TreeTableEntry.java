@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.util.Objects;
 
 /**
- * Represents an model in network tables.
+ * Represents a subtable in network tables.
  */
 public class TreeTableEntry extends TreeRow {
 
@@ -21,10 +21,10 @@ public class TreeTableEntry extends TreeRow {
   public TreeTableEntry(NetworkTable table) {
     networkTable.addListener((__, oldValue, newValue) -> Objects.requireNonNull(newValue));
 
-
     networkTable.setValue(table);
 
-    this.key.bind(Bindings.createStringBinding(networkTable::getName, networkTable));
+    this.key.bind(Bindings.createStringBinding(() -> networkTable.getValue().getPath(),
+        networkTable, key));
   }
 
   public final NetworkTable getNetworkTable() {

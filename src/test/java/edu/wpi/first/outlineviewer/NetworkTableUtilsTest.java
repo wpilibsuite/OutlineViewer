@@ -75,7 +75,7 @@ public class NetworkTableUtilsTest {
     @Test
     public void testDeleteKey() {
       final String key = "/NetworkTableUtilsTest::testDeleteKey";
-      NetworkTableUtils.getRootTable().putString(key, "dummy");
+      NetworkTableUtils.getRootTable().getEntry(key).setString("dummy");
 
       NetworkTableUtils.delete(key);
       assertFalse(NetworkTableUtils.getRootTable().containsKey(key));
@@ -86,9 +86,9 @@ public class NetworkTableUtilsTest {
       String first = "/a/b/c";
       String second = "/a/b/d";
       String third = "/a/c";
-      NetworkTableUtils.getRootTable().putString(first, "");
-      NetworkTableUtils.getRootTable().putString(second, "");
-      NetworkTableUtils.getRootTable().putString(third, "");
+      NetworkTableUtils.getRootTable().getEntry(first).setString("");
+      NetworkTableUtils.getRootTable().getEntry(second).setString("");
+      NetworkTableUtils.getRootTable().getEntry(third).setString("");
 
       NetworkTableUtils.delete("/a/b");
       assertTrue(!NetworkTableUtils.getRootTable().containsKey(first)

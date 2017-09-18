@@ -1,9 +1,9 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import edu.wpi.first.outlineviewer.model.TreeRow;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.util.Pair;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,7 +11,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class AddEntryDialogAbstractTest extends AddEntryDialogTest {
+public class AddEntryDialogAbstractTest
+    extends AddEntryDialogTest<AddEntryDialogAbstractTest.MockAddEntryDialog> {
 
   public AddEntryDialogAbstractTest() {
     super(MockAddEntryDialog::new);
@@ -41,7 +42,8 @@ public class AddEntryDialogAbstractTest extends AddEntryDialogTest {
     clickOn("#keyField").write('a');
     clickOn("Add");
 
-    assertTrue(dialog.getResult() instanceof TreeRow);
+    assertTrue("Dialog result was actually: " + dialog.getResult(),
+        dialog.getResult() instanceof Pair);
   }
 
   @Test
@@ -67,7 +69,7 @@ public class AddEntryDialogAbstractTest extends AddEntryDialogTest {
     assertTrue(dialog.disableKeyProperty().get());
   }
 
-  private static class MockAddEntryDialog extends AddEntryDialog {
+  static class MockAddEntryDialog extends AddEntryDialog {
 
     MockAddEntryDialog() {
       super("Mock Dialog");

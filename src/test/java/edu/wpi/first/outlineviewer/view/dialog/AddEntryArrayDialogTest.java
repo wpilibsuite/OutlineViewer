@@ -7,9 +7,10 @@ import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
-public abstract class AddEntryArrayDialogTest extends AddEntryDialogTest {
+public abstract class AddEntryArrayDialogTest<T extends AddEntryDialog>
+    extends AddEntryDialogTest<T> {
 
-  AddEntryArrayDialogTest(Supplier<AddEntryDialog> dialogSupplier) {
+  AddEntryArrayDialogTest(Supplier<T> dialogSupplier) {
     super(dialogSupplier);
   }
 
@@ -18,7 +19,8 @@ public abstract class AddEntryArrayDialogTest extends AddEntryDialogTest {
     final int initialLength = ((ListView) lookup(".list-view").query()).getItems().size();
     clickOn("+");
 
-    assertEquals(initialLength + 1, ((ListView) lookup(".list-view").query()).getItems().size());
+    assertEquals(initialLength + 1,
+        ((ListView) lookup(".list-view").query()).getItems().size());
   }
 
 }

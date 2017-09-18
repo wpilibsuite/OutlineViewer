@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import com.google.common.primitives.Doubles;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.TextFieldListCell;
@@ -10,16 +9,16 @@ import javafx.util.StringConverter;
 /**
  * A dialog for adding or editing arrays of numbers in a network table entry.
  */
-public class AddNumberArrayDialog extends AddEntryArrayDialog<Double, double[]> {
+public class AddNumberArrayDialog extends AddEntryArrayDialog<Number, Number[]> {
 
   public AddNumberArrayDialog() {
     super("Number Array");
   }
 
   @Override
-  public void setInitial(double[] initialValues) {
+  public void setInitial(Number[] initialValues) {
     list.getItems().clear();
-    for (double value : initialValues) {
+    for (Number value : initialValues) {
       list.getItems().add(value);
     }
   }
@@ -30,22 +29,22 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Double, double[]> 
   }
 
   @Override
-  protected Callback<ListView<Double>, ListCell<Double>> getCellFactory() {
+  protected Callback<ListView<Number>, ListCell<Number>> getCellFactory() {
     return __ -> new TextFieldListCell<>(DoubleToStringConverter.INSTANCE);
   }
 
   @Override
-  protected double[] getData() {
-    return Doubles.toArray(list.getItems());
+  protected Number[] getData() {
+    return list.getItems().toArray(new Number[0]);
   }
 
-  private static final class DoubleToStringConverter extends StringConverter<Double> {
+  private static final class DoubleToStringConverter extends StringConverter<Number> {
 
-    static final StringConverter<Double> INSTANCE = new DoubleToStringConverter();
+    static final StringConverter<Number> INSTANCE = new DoubleToStringConverter();
 
     @Override
-    public String toString(Double object) {
-      if (object == object.intValue()) {
+    public String toString(Number object) {
+      if (object.doubleValue() == object.intValue()) {
         return String.valueOf(object.intValue());
       } else {
         return String.valueOf(object.doubleValue());

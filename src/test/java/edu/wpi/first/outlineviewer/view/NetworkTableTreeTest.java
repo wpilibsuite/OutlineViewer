@@ -1,17 +1,16 @@
 package edu.wpi.first.outlineviewer.view;
 
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
-
-import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +33,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
     NetworkTableUtils.createNewNetworkTableInstance();
 
     tree = new NetworkTableTree(NetworkTableUtils.getNetworkTableInstance());
-    root = new TreeItem<>(new TreeRow(""));
+    root = new TreeItem<>(new TreeTableEntry(tree.getNetworkTable()));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -45,7 +44,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testAddSimpleEntry() {
     final String key = "/key";
     final String value = "testAddSimpleEntry";
-    tree.getNetworkTable().putString(key, value);
+    tree.getNetworkTable().getEntry(key).setString(value);
     waitForNtcoreEvents();
     waitForFxEvents();
     assertEquals(1, root.getChildren().size());
@@ -59,7 +58,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
     final String tableName = "/nested";
     final String entryName = "/key";
     final String value = "testAddNested";
-    tree.getNetworkTable().putString(NetworkTableUtils.concat(tableName, entryName), value);
+    tree.getNetworkTable().getEntry(NetworkTableUtils.concat(tableName, entryName))
+        .setString(value);
     waitForNtcoreEvents();
     waitForFxEvents();
 
@@ -88,7 +88,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   @Test
   public void testDeleteNestedEntry() {
     final String key = "/a/very/nested/key";
-    tree.getNetworkTable().putString(key, "");
+    tree.getNetworkTable().getEntry(key).setString("");
     waitForNtcoreEvents();
     waitForFxEvents();
     tree.getNetworkTable().delete(key);
@@ -102,8 +102,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteNestedEntryWithSiblings() {
     final String keyToDelete = "/nested/deleteme";
     final String keyToKeep = "/nested/keepme";
-    tree.getNetworkTable().putString(keyToDelete, "");
-    tree.getNetworkTable().putString(keyToKeep, "");
+    tree.getNetworkTable().getEntry(keyToDelete).setString("");
+    tree.getNetworkTable().getEntry(keyToKeep).setString("");
     waitForNtcoreEvents();
     waitForFxEvents();
 
@@ -122,27 +122,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
    * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
    */
   private void waitForNtcoreEvents() {
-    CompletableFuture<?> future = new CompletableFuture<>();
-    final String indexKey = "waitForNtcoreEvents";
-
-    int listenerOneHandle = NetworkTableUtils.getNetworkTableInstance().addEntryListener(indexKey,
-        (entry, value, flags) -> NetworkTableUtils.getRootTable().delete(indexKey),
-        NetworkTable.NOTIFY_NEW | NetworkTable.NOTIFY_LOCAL);
-    int listenerTwoHandle = NetworkTableUtils.getNetworkTableInstance().addEntryListener(indexKey,
-        (entry, value, flags) -> future.complete(null),
-        NetworkTable.NOTIFY_DELETE | NetworkTable.NOTIFY_LOCAL);
-
-    /*
-     * This works because all notifications are put into a single queue and are processed by a
-     * single thread.
-     *
-     * https://github.com/wpilibsuite/shuffleboard/pull/118#issuecomment-321374691
-     */
-    NetworkTableUtils.getRootTable().putBoolean(indexKey, false);
-    future.join();
-
-    NetworkTableUtils.getNetworkTableInstance().removeEntryListener(listenerOneHandle);
-    NetworkTableUtils.getNetworkTableInstance().removeEntryListener(listenerTwoHandle);
+    NetworkTablesJNI
+        .waitForEntryListenerQueue(NetworkTableUtils.getNetworkTableInstance().getHandle(), -1);
   }
 
 }

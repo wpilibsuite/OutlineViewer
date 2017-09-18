@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
-public class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest {
+public class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayDialog> {
 
   public AddBooleanArrayDialogTest() {
     super(AddBooleanArrayDialog::new);
@@ -16,7 +16,7 @@ public class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testInitialValue() {
     final boolean[] test = new boolean[]{false, true, false, true};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
     assertArrayEquals(test,
         Booleans.toArray(((ListView) lookup(".list-view").query()).getItems()));
@@ -26,9 +26,9 @@ public class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testGetData() {
     final boolean[] test = new boolean[]{false, true, false, true};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
-    assertArrayEquals(test, (boolean[]) dialog.getData());
+    assertArrayEquals(test, dialog.getData());
   }
 
 }

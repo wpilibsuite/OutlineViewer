@@ -1,21 +1,26 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
-import edu.wpi.first.networktables.EntryListener;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableRow;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,7 +28,8 @@ import java.util.stream.Stream;
  * A tree table view specifically for viewing network table entries. This is filterable
  * to allow metadata to be hidden and for entries to be searchable.
  */
-public class NetworkTableTree extends FilterableTreeTable<TreeRow> implements EntryListener {
+public class NetworkTableTree extends FilterableTreeTable<TreeRow>
+    implements Consumer<EntryNotification> {
 
   // node comparators
   private static final Comparator<TreeItem<TreeRow>> BRANCHES_FIRST
@@ -81,67 +87,116 @@ public class NetworkTableTree extends FilterableTreeTable<TreeRow> implements En
 
   @Override
   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-  public void valueChanged(NetworkTableEntry entry, NetworkTableValue value, int flags) {
+  public void accept(EntryNotification entryNotification) {
     if (!Platform.isFxApplicationThread()) {
-      Platform.runLater(() -> valueChanged(entry, value, flags));
+      Platform.runLater(() -> accept(entryNotification));
       return;
     }
 
-    boolean deleted = (flags & EntryListenerFlags.kDelete) != 0;
-    List<String> pathElements
-        = Stream.of(entry.getName().split(String.valueOf(NetworkTable.PATH_SEPARATOR)))
+    //boolean deleted = (entryNotification.flags & EntryListenerFlags.kDelete) != 0;
+    LinkedList<String> pathElements
+        = Stream.of(entryNotification.getEntry().getName()
+        .split(String.valueOf(NetworkTable.PATH_SEPARATOR)))
         .filter(s -> !s.isEmpty())
-        .collect(Collectors.toList());
+        .collect(Collectors.toCollection(LinkedList::new));
+    System.out.println("pathElements: " + Arrays.toString(pathElements.toArray()));
+
+    String finalPathElement = pathElements.pollLast();
 
     TreeItem<TreeRow> current = getRealRoot();
-    TreeItem<TreeRow> parent = current;
     StringBuilder path = new StringBuilder();
 
-    for (int i = 0; i < pathElements.size(); i++) {
-      String pathElement = pathElements.get(i);
-      path.append(NetworkTable.PATH_SEPARATOR).append(pathElement);
-      parent = current;
-      current = current.getChildren()
+    // Loop through every path element of the new value
+    for (String node : pathElements) {
+      // Check to see if the row already exists
+      Optional<TreeItem<TreeRow>> next = current.getChildren()
           .stream()
-          .filter(item
-              -> NetworkTableUtils.normalize(item.getValue().getKey()).equals(path.toString()))
-          .findFirst()
-          .orElse(null);
+          .filter(item -> item.getValue().getKey().equals(node))
+          .findFirst();
+      if (next.isPresent()) {
+        System.out.println("Row exists! Getting row: " + node);
+        // If it does exist, then get that row
+        path.append(node).append(NetworkTable.PATH_SEPARATOR);
+        current = next.get();
+      } else {
+        System.out.println("Creating row: " + node);
 
-      if (deleted) {
-        if (current == null) {
-          break;
-        } else if (i == pathElements.size() - 1) {
-          // last
-          parent.getChildren().remove(current);
-        }
-      } else if (i == pathElements.size() - 1) {
-        if (current == null) {
-          current = new TreeItem<>(new TreeEntry(entry, value));
-          parent.getChildren().add(current);
-        } else {
-          current.getValue().valueProperty().setValue(value);
-        }
-      } else if (current == null) {
-        current = new TreeItem<>(new TreeRow(path.toString()));
-        current.setExpanded(true);
-        parent.getChildren().add(current);
+        // Otherwise, create a new row and add it to the tree.
+        path.append(node).append(NetworkTable.PATH_SEPARATOR);
+        TreeItem<TreeRow> newTable = new TreeItem<>(
+            new TreeTableEntry(NetworkTableUtils.getRootTable().getSubTable(path.toString())));
+        newTable.setExpanded(true);
+        current.getChildren().add(newTable);
+        current = newTable;
       }
     }
+
+    Optional<TreeItem<TreeRow>> row = current.getChildren()
+        .stream()
+        .filter(item -> item.getValue().getKey().equals(finalPathElement))
+        .findFirst();
+    if ((entryNotification.flags & EntryListenerFlags.kDelete) != 0) {
+      // Delete the value
+      row.ifPresent(current.getChildren()::remove);
+    } else if (row.isPresent()) {
+      // Value already exists; update the value
+      row.get().getValue().valueProperty().setValue(entryNotification.value);
+    } else {
+      System.out.println("New value: " + entryNotification.getEntry().getName());
+      // New value
+      current.getChildren().add(new TreeItem<>(new TreeEntry(entryNotification.getEntry())));
+    }
+
+//    TreeItem<TreeRow> current = getRealRoot();
+//    TreeItem<TreeRow> parent = current;
+//    StringBuilder path = new StringBuilder();
+//
+//    System.out.println("New element: " + Arrays.toString(pathElements.toArray()));
+//    for (int i = 0; i < pathElements.size(); i++) {
+//      String pathElement = pathElements.get(i);
+//      path.append(NetworkTable.PATH_SEPARATOR).append(pathElement);
+//      parent = current;
+//      current = current.getChildren()
+//          .stream()
+//          .filter(item
+//              -> NetworkTableUtils.normalize(item.getValue().getKey()).equals(path.toString()))
+//          .findFirst()
+//          .orElse(null);
+//
+//      if (deleted) {
+//        if (current == null) {
+//          break;
+//        } else if (i == pathElements.size() - 1) {
+//          // last
+//          parent.getChildren().remove(current);
+//        }
+//      } else if (i == pathElements.size() - 1) {
+//        if (current == null) {
+//          current = new TreeItem<>(new TreeEntry(entryNotification.getEntry()));
+//          parent.getChildren().add(current);
+//        } else {
+//          current.getValue().valueProperty().setValue(entryNotification.value);
+//        }
+//      } else if (current == null) {
+//        current = new TreeItem<>(new TreeTableEntry(networkTable.getSubTable(path.toString())));
+//        current.setExpanded(true);
+//        parent.getChildren().add(current);
+//      }
+//    }
 
     // Remove any empty subtables
-    if (deleted) {
-      for (TreeItem<TreeRow> item = parent; item != getRealRoot();) {
-        if (!(item.getValue() instanceof TreeEntry) && item.getChildren().isEmpty()) {
-          TreeItem<TreeRow> next = item.getParent();
-          item.getParent().getChildren().remove(item);
-          item = next;
-        } else {
-          // No more empty tables, bail
-          break;
-        }
-      }
-    }
+//    if (deleted) {
+//      for (TreeItem<TreeRow> item = parent; item != getRealRoot();) {
+//        if (!(item.getValue() instanceof TreeEntry) && item.getChildren().isEmpty()) {
+//          TreeItem<TreeRow> next = item.getParent();
+//          item.getParent().getChildren().remove(item);
+//          item = next;
+//        } else {
+//          // No more empty tables, bail
+//          break;
+//        }
+//      }
+//    }
 
     sort();
     updateItemsFromFilter();

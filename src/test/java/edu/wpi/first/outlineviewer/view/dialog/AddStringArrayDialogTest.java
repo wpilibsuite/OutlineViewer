@@ -9,7 +9,7 @@ import org.testfx.matcher.control.ListViewMatchers;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class AddStringArrayDialogTest extends AddEntryArrayDialogTest {
+public class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDialog> {
 
   public AddStringArrayDialogTest() {
     super(AddStringArrayDialog::new);
@@ -19,7 +19,7 @@ public class AddStringArrayDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testInitialValue() {
     final String[] test = new String[]{"", "A String", "And another!"};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
     assertArrayEquals(test, ((ListView) lookup(".list-view").query()).getItems().toArray());
   }
@@ -28,9 +28,9 @@ public class AddStringArrayDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testGetData() {
     final String[] test = new String[]{"", "A String", "And another!"};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
-    assertArrayEquals(test, (String[]) dialog.getData());
+    assertArrayEquals(test, dialog.getData());
   }
 
   @Test

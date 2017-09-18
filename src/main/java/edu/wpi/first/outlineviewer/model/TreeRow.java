@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 /**
  * Represents a row in the NetworkTableTree.
  */
-public abstract class TreeRow {
+public class TreeRow {
 
   private static final Predicate<String> IS_METADATA = s -> s.matches(".*~[A-Z]*~");
 

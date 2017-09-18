@@ -14,7 +14,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AddBytesDialogTest extends AddEntryArrayDialogTest {
+public class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -27,7 +27,7 @@ public class AddBytesDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testInitialValue() {
     final byte[] test = new byte[]{0, 1, 2, 127, (byte) 255};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
     assertArrayEquals(test,
         Bytes.toArray(((ListView) lookup(".list-view").query()).getItems()));
@@ -37,9 +37,9 @@ public class AddBytesDialogTest extends AddEntryArrayDialogTest {
   @SuppressWarnings("unchecked")
   public void testGetData() {
     final byte[] test = new byte[]{0, 1, 2, 127, (byte) 255};
-    ((AddEntryArrayDialog) dialog).setInitial(test);
+    dialog.setInitial(test);
 
-    assertArrayEquals(test, (byte[]) dialog.getData());
+    assertArrayEquals(test, dialog.getData());
   }
 
   @Test

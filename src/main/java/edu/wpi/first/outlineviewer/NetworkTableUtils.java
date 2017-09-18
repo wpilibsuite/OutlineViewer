@@ -21,6 +21,9 @@ public final class NetworkTableUtils {
     return networkTableInstance.getTable("");
   }
 
+  /**
+   * Create a new instance of NetworkTables.  Kills the old instance.
+   */
   public static void createNewNetworkTableInstance() {
     if (networkTableInstance != null) {
       networkTableInstance.stopClient();
@@ -74,7 +77,8 @@ public final class NetworkTableUtils {
     if (!key.contains(String.valueOf(NetworkTable.PATH_SEPARATOR))) {
       return key;
     }
-    return key.substring(key.lastIndexOf(NetworkTable.PATH_SEPARATOR) + 1);
+    String[] values = key.split(String.valueOf(NetworkTable.PATH_SEPARATOR));
+    return values[values.length - 1];
   }
 
   /**

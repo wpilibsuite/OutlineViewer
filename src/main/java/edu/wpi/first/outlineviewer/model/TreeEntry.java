@@ -24,7 +24,7 @@ public class TreeEntry extends TreeRow {
     networkTableEntry.setValue(entry);
 
     this.key.bind(Bindings.createStringBinding(
-        () -> networkTableEntry.get().getName(), networkTableEntry));
+        () -> networkTableEntry.get().getName(), networkTableEntry, key));
     this.value.bind(Bindings.createObjectBinding(
         () -> networkTableEntry.get().getValue().getValue(), networkTableEntry));
     this.type.bind(Bindings.createObjectBinding(

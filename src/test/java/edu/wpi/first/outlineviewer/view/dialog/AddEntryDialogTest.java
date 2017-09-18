@@ -5,12 +5,12 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.function.Supplier;
 
-public abstract class AddEntryDialogTest extends ApplicationTest {
+public abstract class AddEntryDialogTest<T extends AddEntryDialog> extends ApplicationTest {
 
-  AddEntryDialog dialog;
-  private final Supplier<AddEntryDialog> dialogSupplier;
+  T dialog;
+  private final Supplier<T> dialogSupplier;
 
-  AddEntryDialogTest(Supplier<AddEntryDialog> dialogSupplier) {
+  AddEntryDialogTest(Supplier<T> dialogSupplier) {
     this.dialogSupplier = dialogSupplier;
   }
 

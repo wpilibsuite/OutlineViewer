@@ -1,10 +1,11 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeTableEntry;
-import edu.wpi.first.outlineviewer.view.TableEntryTreeTableCell;
+import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
 import edu.wpi.first.outlineviewer.view.NetworkTableTree;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanDialog;
@@ -109,51 +110,31 @@ public class MainWindowController {
         NetworkTableUtils.simpleKey(param.getValue().getValue().getKey())));
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
+    valueColumn.setCellFactory(param -> new TreeEntryTreeTableCell<>());
 
-    keyColumn.setCellFactory(param
-        -> new TextFieldTreeTableCell<TreeRow, String>(new DefaultStringConverter()) {
-          @Override
-          public void startEdit() {
-            TreeRow existing = getTreeTableRow().getItem();
-            if (!(existing instanceof TreeEntry)) {
-              // Can't edit a table name
-              return;
-            }
-            super.startEdit();
-          }
+    valueColumn.setOnEditCommit(event -> {
+      TreeRow entry = event.getRowValue().getValue();
 
-          @Override
-          public void commitEdit(String simpleKey) {
-            TreeRow existing = getTreeTableRow().getItem();
-            String existingKey = existing.getKey();
-            String table = existingKey.substring(0,
-                existingKey.lastIndexOf(NetworkTableUtils.simpleKey(existingKey)));
-            String newKey = NetworkTableUtils.concat(table, simpleKey);
-            if (networkTable.containsKey(newKey)) {
-              // That key already exists
-              cancelEdit();
-              return;
-            }
-            super.commitEdit(simpleKey);
-
-            String oldKey = existing.getKey();
-            NetworkTableValue replacement
-                = new NetworkTableValue(networkTable.getEntry(oldKey).getType(),
-                existing.getValue());
-
-            final int flags = networkTable.getFlags(oldKey);
-            networkTable.delete(oldKey);
-            networkTable.putValue(newKey, replacement);
-            networkTable.setFlags(newKey, flags);
-          }
-        });
-    valueColumn.setCellFactory(param -> new TableEntryTreeTableCell<>());
-
-    valueColumn.setOnEditCommit(e -> {
-      TreeRow entry = e.getRowValue().getValue();
-      String key = entry.getKey(); // entry keys are guaranteed to be normalized
-      networkTable.putValue(key,
-          new NetworkTableValue(networkTable.getValue(key).getType(), e.getNewValue()));
+      // Users can only modify the value of TreeEntries
+      if (entry instanceof TreeEntry) {
+        TreeEntry treeEntry = (TreeEntry) entry;
+        NetworkTableValue newValue;
+        switch (treeEntry.getNetworkTableEntry().getType()) {
+          case kDouble:
+            newValue = NetworkTableValue.makeDouble((Double) event.getNewValue());
+            break;
+          case kString:
+            newValue = NetworkTableValue.makeString((String) event.getNewValue());
+            break;
+          case kBoolean:
+            newValue = NetworkTableValue.makeBoolean((Boolean) event.getNewValue());
+            break;
+          default:
+            newValue = NetworkTableValue.makeString(event.getNewValue().toString());
+            break;
+        }
+        treeEntry.getNetworkTableEntry().setValue(newValue);
+      }
     });
 
     tableView.setRowFactory(param -> {
@@ -194,7 +175,7 @@ public class MainWindowController {
       }
     });
 
-    tableView.setOnContextMenuRequested(e -> {
+    tableView.setOnContextMenuRequested(contextMenuEvent -> {
       if (tableView.getContextMenu() != null) {
         // Close previous context menu
         tableView.getContextMenu().hide();
@@ -219,31 +200,27 @@ public class MainWindowController {
       if (entry instanceof TreeTableEntry) {
         cm.getItems().addAll(createTableMenuItems((TreeTableEntry) entry));
         cm.getItems().add(new SeparatorMenuItem());
-      }
+      } else if (entry instanceof TreeEntry) {
+        NetworkTableEntry networkTableEntry = ((TreeEntry) entry).getNetworkTableEntry();
 
-
-      if (key.isEmpty() && entry.getValue() == null) {
-        // Remove the separator
-        cm.getItems().remove(cm.getItems().size() - 1);
-      } else {
         MenuItem setPersistent = new MenuItem(
-            String.format("Set %s", networkTable.getEntry(key).isPersistent() ? "transient" : "persistent"));
-        setPersistent.setOnAction(__ -> {
-          if (networkTable.isPersistent(key)) {
-            networkTable.clearPersistent(key);
+            String.format("Set %s", networkTableEntry.isPersistent() ? "transient" : "persistent"));
+        setPersistent.setOnAction(event -> {
+          if (networkTableEntry.isPersistent()) {
+            networkTableEntry.clearPersistent();
           } else {
-            networkTable.setPersistent(key);
+            networkTableEntry.setPersistent();
           }
         });
 
         MenuItem delete = new MenuItem("Delete");
-        delete.setOnAction(__ -> deleteSelectedEntries());
+        delete.setOnAction(event -> deleteSelectedEntries());
 
         cm.getItems().addAll(setPersistent, delete);
       }
 
       tableView.setContextMenu(cm);
-      cm.show(tableView, e.getScreenX(), e.getScreenY());
+      cm.show(tableView, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
     });
     Preferences.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
   }
@@ -254,28 +231,39 @@ public class MainWindowController {
    * @param treeTableEntry the entry for the subtable to create the menu items for
    */
   private List<MenuItem> createTableMenuItems(TreeTableEntry treeTableEntry) {
-    MenuItem string = createContextMenuItem("Add string", treeTableEntry.getKey(),
-        new AddStringDialog(), (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setString(value));
+    MenuItem string = createContextMenuItem("Add string",
+        treeTableEntry.getKey(),
+        new AddStringDialog(),
+        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setString(value));
 
-    MenuItem number = createContextMenuItem("Add number", treeTableEntry.getKey(),
-        new AddNumberDialog(), (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setNumber(value));
+    MenuItem number = createContextMenuItem("Add number",
+        treeTableEntry.getKey(),
+        new AddNumberDialog(),
+        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setNumber(value));
 
-    MenuItem bool = createContextMenuItem("Add boolean", treeTableEntry.getKey(),
-        new AddBooleanDialog(), (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setBoolean(value));
+    MenuItem bool = createContextMenuItem("Add boolean",
+        treeTableEntry.getKey(),
+        new AddBooleanDialog(),
+        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setBoolean(value));
 
-    MenuItem stringArray = createContextMenuItem("Add string array", treeTableEntry.getKey(),
+    MenuItem stringArray = createContextMenuItem("Add string array",
+        treeTableEntry.getKey(),
         new AddStringArrayDialog(),
         (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setStringArray(value));
 
-    MenuItem numberArray = createContextMenuItem("Add number array", treeTableEntry.getKey(),
+    MenuItem numberArray = createContextMenuItem("Add number array",
+        treeTableEntry.getKey(),
         new AddNumberArrayDialog(),
         (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setNumberArray(value));
 
-    MenuItem boolArray = createContextMenuItem("Add boolean array", treeTableEntry.getKey(),
+    MenuItem boolArray = createContextMenuItem("Add boolean array",
+        treeTableEntry.getKey(),
         new AddBooleanArrayDialog(),
         (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setBooleanArray(value));
 
-    MenuItem raw = createContextMenuItem("Add raw bytes", treeTableEntry.getKey(), new AddBytesDialog(),
+    MenuItem raw = createContextMenuItem("Add raw bytes",
+        treeTableEntry.getKey(),
+        new AddBytesDialog(),
         (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setRaw(value));
 
     return Arrays.asList(string, number, bool,
@@ -316,11 +304,13 @@ public class MainWindowController {
     }
   }
 
-  private static <T> MenuItem createContextMenuItem(String text, String key, AddEntryDialog<T> dialog,
-                                         BiConsumer<String, T> resultConsumer) {
+  private static <T> MenuItem createContextMenuItem(String text, String key,
+                                                    AddEntryDialog<T> dialog,
+                                                    BiConsumer<String, T> resultConsumer) {
     MenuItem menuItem = new MenuItem(text);
     menuItem.setOnAction(event -> dialog.showAndWait().ifPresent(result
-        -> resultConsumer.accept(NetworkTableUtils.concat(key, result.getKey()), result.getValue())));
+        -> resultConsumer.accept(NetworkTableUtils
+        .concat(key, result.getKey()), result.getValue())));
     return menuItem;
   }
 

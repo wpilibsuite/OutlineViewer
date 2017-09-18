@@ -17,7 +17,7 @@ import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
  */
-public class TableEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, Object> {
+public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, Object> {
 
   private Control editor;
   private Node graphic;
@@ -25,7 +25,7 @@ public class TableEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T,
   private boolean canEdit;
   private AddEntryDialog<?> arrayEditor;
 
-  public TableEntryTreeTableCell() {
+  public TreeEntryTreeTableCell() {
     setEditable(true);
   }
 
@@ -77,9 +77,9 @@ public class TableEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T,
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-    } else if (item instanceof double[]) {
+    } else if (item instanceof Number[]) {
       AddNumberArrayDialog dialog = new AddNumberArrayDialog();
-      dialog.setInitial((double[]) item);
+      dialog.setInitial((Number[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
@@ -118,15 +118,13 @@ public class TableEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T,
       }
     } else {
       arrayEditor.setDisableKey(true);
-      arrayEditor.setOnCloseRequest(e -> {
-        if (arrayEditor.getResult().isPresent()) {
-          commitEdit(arrayEditor.getResult().get().getValue());
-        } else {
-          cancelEdit();
-        }
-      });
-      arrayEditor.show();
-      arrayEditor.getDialogPane().getScene().getWindow().requestFocus();
+      arrayEditor.onShownProperty().setValue(event
+          -> arrayEditor.getDialogPane().getScene().getWindow().requestFocus());
+      if (arrayEditor.showAndWait().isPresent()) {
+        commitEdit(arrayEditor.getResult().getValue());
+      } else {
+        cancelEdit();
+      }
     }
   }
 
