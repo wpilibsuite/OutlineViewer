@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Represents a subtable in network tables.
  */
-public class TreeTableEntry extends TreeRow {
+public class NetworkTableTreeRow extends TreeRow {
 
   private final ObjectProperty<NetworkTable> networkTable
       = new SimpleObjectProperty<>(this, "table", null);
@@ -18,7 +18,7 @@ public class TreeTableEntry extends TreeRow {
   /**
    * Creates an entry.
    */
-  public TreeTableEntry(NetworkTable table) {
+  public NetworkTableTreeRow(NetworkTable table) {
     networkTable.addListener((__, oldValue, newValue) -> Objects.requireNonNull(newValue));
 
     networkTable.setValue(table);

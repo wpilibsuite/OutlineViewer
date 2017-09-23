@@ -3,7 +3,7 @@ package edu.wpi.first.outlineviewer.controller;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
-import edu.wpi.first.outlineviewer.model.TreeTableEntry;
+import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
 import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
 import edu.wpi.first.outlineviewer.view.NetworkTableTree;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
@@ -49,7 +49,7 @@ public class MainWindowController {
   @FXML
   private NetworkTableTree tableView;
   @FXML
-  private TreeItem<TreeTableEntry> ntRoot;
+  private TreeItem<NetworkTableTreeRow> ntRoot;
 
   @FXML
   private TreeTableColumn<TreeRow, String> keyColumn;
@@ -61,7 +61,7 @@ public class MainWindowController {
   @FXML
   @SuppressWarnings("PMD.AccessorMethodGeneration")
   private void initialize() {
-    ntRoot.setValue(new TreeTableEntry(NetworkTableUtilities
+    ntRoot.setValue(new NetworkTableTreeRow(NetworkTableUtilities
         .getNetworkTableInstance().getTable("")));
 
     tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -150,8 +150,8 @@ public class MainWindowController {
       ContextMenu cm = new ContextMenu();
 
       // If the row is a table, add the 'add x' items
-      if (entry instanceof TreeTableEntry) {
-        cm.getItems().addAll(createTableMenuItems((TreeTableEntry) entry));
+      if (entry instanceof NetworkTableTreeRow) {
+        cm.getItems().addAll(createTableMenuItems((NetworkTableTreeRow) entry));
         cm.getItems().add(new SeparatorMenuItem());
       } else if (entry instanceof TreeEntry) {
         NetworkTableEntry networkTableEntry = ((TreeEntry) entry).getNetworkTableEntry();
@@ -180,43 +180,43 @@ public class MainWindowController {
   /**
    * Creates all the menu items for a context menu for the given table entry.
    *
-   * @param treeTableEntry the entry for the subtable to create the menu items for
+   * @param networkTableTreeRow the entry for the subtable to create the menu items for
    */
-  private List<MenuItem> createTableMenuItems(TreeTableEntry treeTableEntry) {
+  private List<MenuItem> createTableMenuItems(NetworkTableTreeRow networkTableTreeRow) {
     MenuItem string = createContextMenuItem("Add string",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddStringDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setString(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setString(value));
 
     MenuItem number = createContextMenuItem("Add number",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddNumberDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setNumber(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setNumber(value));
 
     MenuItem bool = createContextMenuItem("Add boolean",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddBooleanDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setBoolean(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setBoolean(value));
 
     MenuItem stringArray = createContextMenuItem("Add string array",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddStringArrayDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setStringArray(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setStringArray(value));
 
     MenuItem numberArray = createContextMenuItem("Add number array",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddNumberArrayDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setNumberArray(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setNumberArray(value));
 
     MenuItem boolArray = createContextMenuItem("Add boolean array",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddBooleanArrayDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setBooleanArray(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setBooleanArray(value));
 
     MenuItem raw = createContextMenuItem("Add raw bytes",
-        treeTableEntry.getKey(),
+        networkTableTreeRow.getKey(),
         new AddBytesDialog(),
-        (key, value) -> treeTableEntry.getNetworkTable().getEntry(key).setRaw(value));
+        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setRaw(value));
 
     return Arrays.asList(string, number, bool,
                          new SeparatorMenuItem(),

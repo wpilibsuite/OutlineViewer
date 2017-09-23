@@ -4,7 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
-import edu.wpi.first.outlineviewer.model.TreeTableEntry;
+import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
@@ -32,7 +32,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
 
     NetworkTableTree tree = new NetworkTableTree(NetworkTableUtilities.getNetworkTableInstance());
     root = new TreeItem<>(
-        new TreeTableEntry(NetworkTableUtilities.getNetworkTableInstance().getTable("")));
+        new NetworkTableTreeRow(NetworkTableUtilities.getNetworkTableInstance().getTable("")));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -69,7 +69,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
 
     assertEquals(1, root.getChildren().size());
     TreeItem<TreeRow> tableEntry = root.getChildren().get(0);
-    assertThat(tableEntry.getValue(), instanceOf(TreeTableEntry.class));
+    assertThat(tableEntry.getValue(), instanceOf(NetworkTableTreeRow.class));
     //assertThat(tableEntry.getValue().getKey(), is(tableName));
     assertEquals(1, tableEntry.getChildren().size());
 

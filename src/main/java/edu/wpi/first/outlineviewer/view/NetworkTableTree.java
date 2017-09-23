@@ -8,7 +8,7 @@ import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.outlineviewer.model.TreeTableEntry;
+import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
 import javafx.application.Platform;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
@@ -97,7 +97,7 @@ public class NetworkTableTree extends TreeTableView<TreeRow>
       } else {
         // Otherwise, create a new row and add it to the tree.
         TreeItem<TreeRow> newTable = new TreeItem<>(
-            new TreeTableEntry(NetworkTableUtilities.getNetworkTableInstance()
+            new NetworkTableTreeRow(NetworkTableUtilities.getNetworkTableInstance()
                 .getTable(path.toString())));
         newTable.setExpanded(true);
         current.getChildren().add(newTable);
