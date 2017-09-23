@@ -1,14 +1,12 @@
 package edu.wpi.first.outlineviewer.model;
 
 import com.google.common.base.MoreObjects;
-import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * Represents a row in the NetworkTableTree.

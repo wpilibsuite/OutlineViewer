@@ -9,9 +9,7 @@ class TreeRowTest {
 
   @Test
   void keyConstructorTest() {
-    TreeRow treeRow = new TreeRow("Key");
-
-    assertEquals("Key", treeRow.getKey());
+    assertEquals("Key", new TreeRow("Key").getKey());
   }
 
   @Test
@@ -34,23 +32,23 @@ class TreeRowTest {
 
   @Test
   void keyPropertyTest() {
-    assertEquals("Key", (new TreeRow("Key")).keyProperty().get());
+    assertEquals("Key", new TreeRow("Key").keyProperty().get());
   }
 
   @Test
   void valuePropertyTest() {
     Object object = new Object();
-    assertEquals(object, (new TreeRow("Key", object)).valueProperty().get());
+    assertEquals(object, new TreeRow("Key", object).valueProperty().get());
   }
 
   @Test
   void getTypeTest() {
-    assertEquals("MyType", (new FakeTreeRow("MyType")).getType());
+    assertEquals("MyType", new FakeTreeRow("MyType").getType());
   }
 
   @Test
   void toStringTest() {
-    assertEquals("TreeRow{Key=key, Value=value, Type=}", (new TreeRow("key", "value")).toString());
+    assertEquals("TreeRow{Key=key, Value=value, Type=}", new TreeRow("key", "value").toString());
   }
 
   private static class FakeTreeRow extends TreeRow {
