@@ -15,8 +15,6 @@ import java.util.function.Predicate;
  */
 public class TreeRow {
 
-  private static final Predicate<String> IS_METADATA = s -> s.matches(".*~[A-Z]*~");
-
   protected final StringProperty key = new SimpleStringProperty(this, "key", "");
   protected final ObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value", null);
   protected final StringProperty type = new SimpleStringProperty(this, "type", "");
@@ -66,13 +64,6 @@ public class TreeRow {
 
   public StringProperty typeProperty() {
     return type;
-  }
-
-  /**
-   * Checks if this entry is metadata.
-   */
-  public boolean isMetadata() {
-    return IS_METADATA.test(NetworkTableUtilities.simpleKey(key.get()));
   }
 
   @Override

@@ -163,6 +163,19 @@ if (project.hasProperty("jenkinsBuild") || project.hasProperty("headless")) {
     }
 }
 
+//publishing {
+//    publications {
+//        create<MavenPublication>("OutlineViewer") {
+//            groupId = "edu.wpi.first.wpilib"
+//            artifactId = "OutlineViewer"
+//            getWPILibVersion()?.let { version = it }
+//            shadow.component(this)
+//            from(components["java"])
+//            //artifact(sourceJar)
+//        }
+//    }
+//}
+
 // Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
 // already specified on the command line
 if (!hasProperty("releaseType")) {
