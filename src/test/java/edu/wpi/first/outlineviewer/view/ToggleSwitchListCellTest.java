@@ -5,8 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import org.controlsfx.control.ToggleSwitch;
-import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,35 +27,35 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
   }
 
   @Test
-  public void testTextFalse() {
+  void testTextFalse() {
     FxHelper.runAndWait(() -> getToggleSwitch().setSelected(false));
 
     assertEquals("False", getToggleSwitchListCell().getText());
   }
 
   @Test
-  public void testTextTrue() {
+  void testTextTrue() {
     FxHelper.runAndWait(() -> getToggleSwitch().setSelected(true));
 
     assertEquals("True", getToggleSwitchListCell().getText());
   }
 
   @Test
-  public void testUpdateItemTrue() {
+  void testUpdateItemTrue() {
     FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(true, false));
 
     assertTrue(getToggleSwitch().isSelected());
   }
 
   @Test
-  public void testUpdateItemFalse() {
+  void testUpdateItemFalse() {
     FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(false, false));
 
     assertFalse(getToggleSwitch().isSelected());
   }
 
   @Test
-  public void testUpdateItemEmpty() {
+  void testUpdateItemEmpty() {
     FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(false, true));
 
     assertNull(getToggleSwitch());

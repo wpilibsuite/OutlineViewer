@@ -1,20 +1,20 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class AddBooleanDialogTest extends AddEntryDialogTest {
+class AddBooleanDialogTest extends AddEntryDialogTest<AddBooleanDialog> {
 
-  public AddBooleanDialogTest() {
+  AddBooleanDialogTest() {
     super(AddBooleanDialog::new);
   }
 
   @Test
-  public void testGetData() {
+  void testGetData() {
     clickOn(".toggle-switch");
 
-    assertTrue((boolean) dialog.getData());
+    assertTrue(dialog.getData());
   }
 
 }

@@ -1,8 +1,8 @@
 package edu.wpi.first.outlineviewer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
@@ -13,10 +13,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class OutlineViewerTest extends FxRobot {
+class OutlineViewerTest extends FxRobot {
 
-  @Before
-  public void before() throws Exception {
+  @BeforeEach
+  void before() throws Exception {
     FxToolkit.registerPrimaryStage();
     Thread fxThread = new Thread(() -> {
       try {
@@ -29,20 +29,20 @@ public class OutlineViewerTest extends FxRobot {
     WaitForAsyncUtils.waitForFxEvents();
   }
 
-  @After
-  public void after() {
+  @AfterEach
+  void after() {
     NetworkTableUtilities.shutdown();
   }
 
   @Test
-  public void preferencesContinueToViewTest() {
+  void preferencesContinueToViewTest() {
     clickOn("Start");
 
     assertTrue(lookup("#root").tryQuery().isPresent());
   }
 
   @Test
-  public void preferencesExit() {
+  void preferencesExit() {
     clickOn("Quit");
 
     assertFalse(lookup("#root").tryQuery().isPresent());

@@ -19,11 +19,9 @@ public final class NetworkTableUtilities {
    * Create a new instance of NetworkTables.  Kills the old instance.
    */
   public static void createNewNetworkTableInstance() {
-    if (networkTableInstance != null) {
-      networkTableInstance.stopClient();
-      networkTableInstance.stopServer();
-      networkTableInstance.stopDSClient();
-    }
+    networkTableInstance.stopClient();
+    networkTableInstance.stopServer();
+    networkTableInstance.stopDSClient();
     networkTableInstance = NetworkTableInstance.create();
   }
 

@@ -3,21 +3,21 @@ package edu.wpi.first.outlineviewer.view.dialog;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDialog> {
+class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDialog> {
 
-  public AddStringArrayDialogTest() {
+  AddStringArrayDialogTest() {
     super(AddStringArrayDialog::new);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testInitialValue() {
+  void testInitialValue() {
     final String[] test = new String[]{"", "A String", "And another!"};
     dialog.setInitial(test);
 
@@ -26,7 +26,7 @@ public class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringA
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testGetData() {
+  void testGetData() {
     final String[] test = new String[]{"", "A String", "And another!"};
     dialog.setInitial(test);
 
@@ -34,7 +34,7 @@ public class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringA
   }
 
   @Test
-  public void testToStringConverter() {
+  void testToStringConverter() {
     final String test = "A String!";
     ListView listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");

@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertThat;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
@@ -24,7 +24,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
-  public void testShowPrefsDialog() {
+  void testShowPrefsDialog() {
     clickOn("#fileMenu", MouseButton.PRIMARY);
     waitForFxEvents();
 

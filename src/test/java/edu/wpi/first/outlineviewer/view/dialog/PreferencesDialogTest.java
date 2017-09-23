@@ -2,8 +2,8 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -21,21 +21,21 @@ public class PreferencesDialogTest extends ApplicationTest {
   }
 
   @Test
-  public void testResultConverterFalse() {
+  void testResultConverterFalse() {
     clickOn("Cancel");
 
     assertFalse(dialog.getResult());
   }
 
   @Test
-  public void testResultConverterTrue() {
+  void testResultConverterTrue() {
     clickOn("OK");
 
     assertTrue(dialog.getResult());
   }
 
   @Test
-  public void getControllerTest() {
+  void getControllerTest() {
     assertNotNull(dialog.getController());
   }
 

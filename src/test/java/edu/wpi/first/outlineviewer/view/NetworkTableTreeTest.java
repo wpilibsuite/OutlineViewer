@@ -8,9 +8,9 @@ import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -21,8 +21,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
 
   private TreeItem<TreeRow> root;
 
-  @After
-  public void shutdown() {
+  @AfterEach
+  void shutdown() {
     NetworkTableUtilities.shutdown();
   }
 
@@ -40,7 +40,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   }
 
   @Test
-  public void testAddSimpleEntry() {
+  void testAddSimpleEntry() {
     final String key = "/key";
     final String value = "testAddSimpleEntry";
     NetworkTableUtilities.getNetworkTableInstance().getEntry(key).setString(value);
@@ -56,7 +56,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   }
 
   @Test
-  public void testAddNested() {
+  void testAddNested() {
     final String tableName = "/nested";
     final String entryName = "/key";
     final String value = "testAddNested";
@@ -80,7 +80,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   }
 
   @Test
-  public void testDeleteSimpleEntry() {
+  void testDeleteSimpleEntry() {
     final String key = "/key";
     testAddSimpleEntry();
     NetworkTableUtilities.getNetworkTableInstance().getEntry(key).delete();
@@ -91,7 +91,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   }
 
   @Test
-  public void testDeleteNestedEntryWithSiblings() {
+  void testDeleteNestedEntryWithSiblings() {
     final String keyToDelete = "/nested/deleteme";
     final String keyToKeep = "/nested/keepme";
     NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry(keyToDelete);

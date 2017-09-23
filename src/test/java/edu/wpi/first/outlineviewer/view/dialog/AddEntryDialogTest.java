@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.stage.Stage;
-import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.util.function.Supplier;
 

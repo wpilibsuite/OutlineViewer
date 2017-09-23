@@ -18,7 +18,6 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File" id="fileMenu">
-                <MenuItem mnemonicParsing="false" onAction="#close" id="closeMenu" text="Close"/>
                 <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
             </Menu>
         </MenuBar>

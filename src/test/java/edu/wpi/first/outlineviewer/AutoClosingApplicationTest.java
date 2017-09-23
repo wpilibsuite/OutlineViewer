@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer;
 
-import org.junit.After;
-import org.testfx.framework.junit.ApplicationTest;
+import org.junit.jupiter.api.AfterEach;
+import org.testfx.framework.junit5.ApplicationTest;
 
 /**
  * A helpful version of {@link ApplicationTest} that automatically cleans up windows after it
@@ -9,7 +9,7 @@ import org.testfx.framework.junit.ApplicationTest;
  */
 public abstract class AutoClosingApplicationTest extends ApplicationTest {
 
-  @After
+  @AfterEach
   public void closeAllStages() {
     listWindows().forEach(window -> FxHelper.runAndWait(window::hide));
   }

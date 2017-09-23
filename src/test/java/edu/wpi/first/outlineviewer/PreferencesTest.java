@@ -1,18 +1,18 @@
 package edu.wpi.first.outlineviewer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class PreferencesTest extends UtilityClassTest {
+class PreferencesTest extends UtilityClassTest {
 
-  public PreferencesTest() {
+  PreferencesTest() {
     super(Preferences.class);
   }
 
   @Test
-  public void isServerPropertyTest() {
+  void isServerPropertyTest() {
     Preferences.setServer(false);
     Preferences.setServer(true);
 
@@ -20,7 +20,7 @@ public class PreferencesTest extends UtilityClassTest {
   }
 
   @Test
-  public void ipPropertyTest() {
+  void ipPropertyTest() {
     final String test = "190";
     Preferences.setIp("");
     Preferences.setIp(test);
@@ -29,7 +29,7 @@ public class PreferencesTest extends UtilityClassTest {
   }
 
   @Test
-  public void portPropertyTest() {
+  void portPropertyTest() {
     final int test = 9999;
     Preferences.setPort(1735);
     Preferences.setPort(test);

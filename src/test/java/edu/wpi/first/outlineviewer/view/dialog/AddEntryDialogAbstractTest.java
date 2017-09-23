@@ -4,41 +4,41 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class AddEntryDialogAbstractTest
+class AddEntryDialogAbstractTest
     extends AddEntryDialogTest<AddEntryDialogAbstractTest.MockAddEntryDialog> {
 
-  public AddEntryDialogAbstractTest() {
+  AddEntryDialogAbstractTest() {
     super(MockAddEntryDialog::new);
   }
 
   @Test
-  public void testAddDisabled() {
+  void testAddDisabled() {
     assertTrue(lookup("Add").query().isDisabled());
   }
 
   @Test
-  public void testAddEnabled() {
+  void testAddEnabled() {
     clickOn("#keyField").write('a');
 
     assertFalse(lookup("Add").query().isDisabled());
   }
 
   @Test
-  public void testCancel() {
+  void testCancel() {
     clickOn("Cancel");
 
     assertNull(dialog.getResult());
   }
 
   @Test
-  public void testAdd() {
+  void testAdd() {
     clickOn("#keyField").write('a');
     clickOn("Add");
 
@@ -47,7 +47,7 @@ public class AddEntryDialogAbstractTest
   }
 
   @Test
-  public void testSetKey() {
+  void testSetKey() {
     final String test = "someKey";
     dialog.setKey(test);
 
@@ -55,7 +55,7 @@ public class AddEntryDialogAbstractTest
   }
 
   @Test
-  public void testSetDisableProperty() {
+  void testSetDisableProperty() {
     dialog.setDisableKey(true);
 
     assertTrue(lookup("#keyField").query().isDisabled());
@@ -63,7 +63,7 @@ public class AddEntryDialogAbstractTest
 
 
   @Test
-  public void testDisableProperty() {
+  void testDisableProperty() {
     dialog.setDisableKey(true);
 
     assertTrue(dialog.disableKeyProperty().get());

@@ -1,27 +1,27 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.TextField;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class AddNumberDialogTest extends AddEntryDialogTest {
+class AddNumberDialogTest extends AddEntryDialogTest<AddNumberDialog> {
 
-  public AddNumberDialogTest() {
+  AddNumberDialogTest() {
     super(AddNumberDialog::new);
   }
 
   @Test
-  public void testGetData() {
+  void testGetData() {
     ((TextField) lookup("#numberField").query()).clear();
     clickOn("#numberField").write("123.456");
 
-    assertEquals(123.456, (double) dialog.getData(), 0.0);
+    assertEquals(123.456, dialog.getData(), 0.0);
   }
 
   @Test
-  public void testGetDataInvalid() {
+  void testGetDataInvalid() {
     ((TextField) lookup("#numberField").query()).clear();
     clickOn("#numberField").write("Test");
 

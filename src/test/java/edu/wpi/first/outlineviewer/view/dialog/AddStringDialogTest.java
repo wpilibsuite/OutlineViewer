@@ -1,17 +1,17 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class AddStringDialogTest extends AddEntryDialogTest {
+class AddStringDialogTest extends AddEntryDialogTest<AddStringDialog> {
 
-  public AddStringDialogTest() {
+  AddStringDialogTest() {
     super(AddStringDialog::new);
   }
 
   @Test
-  public void testStringValue() {
+  void testStringValue() {
     final String test = "The quick brown fox jumps over the lazy dog";
     clickOn("#valueField").write(test);
 
