@@ -32,7 +32,9 @@
             </columns>
         </NetworkTableTree>
     </center>
-    <bottom/>
+    <bottom>
+        <fx:include source="ConnectionIndicator.fxml" id="connectionIndicator"/>
+    </bottom>
     <stylesheets>
         <URL value="@styles.css"/>
     </stylesheets>

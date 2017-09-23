@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
@@ -33,6 +34,11 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
     assertThat(lookup("#preferencesPaneRoot").query(), isVisible());
     targetWindow("Preferences").closeCurrentWindow();
+  }
+
+  @Test
+  void connectionIndicatorVisibleTest() {
+    assertTrue(lookup("#connectionLabel").tryQuery().isPresent());
   }
 
 }
