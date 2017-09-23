@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.Preferences;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
@@ -27,7 +27,7 @@ public class ConnectionIndicatorController {
 
   @FXML
   private void initialize() {
-    NetworkTableUtils.getNetworkTableInstance().addConnectionListener(listener
+    NetworkTableUtilities.getNetworkTableInstance().addConnectionListener(listener
         -> updateConnectionLabel(), true);
     Preferences.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
@@ -45,19 +45,19 @@ public class ConnectionIndicatorController {
       Platform.runLater(this::updateConnectionLabel);
       return;
     }
-    if (NetworkTableUtils.isRunning()) {
-      if (NetworkTableUtils.isServer()) {
-        if (NetworkTableUtils.failed()) {
+    if (NetworkTableUtilities.isRunning()) {
+      if (NetworkTableUtilities.isServer()) {
+        if (NetworkTableUtilities.failed()) {
           serverFail();
-        } else if (NetworkTableUtils.starting()) {
+        } else if (NetworkTableUtilities.starting()) {
           serverStarting();
         } else { // success
           serverSuccess();
         }
-      } else if (NetworkTableUtils.isClient()) {
-        if (NetworkTableUtils.failed()) {
+      } else if (NetworkTableUtilities.isClient()) {
+        if (NetworkTableUtilities.failed()) {
           clientFail();
-        } else if (NetworkTableUtils.starting()) {
+        } else if (NetworkTableUtilities.starting()) {
           clientStarting();
         } else { // success
           clientSuccess();
@@ -114,7 +114,7 @@ public class ConnectionIndicatorController {
 
   private void serverSuccess() {
     StringBuffer text = new StringBuffer("Running server");
-    int numClients = NetworkTableUtils.getNetworkTableInstance().getConnections().length;
+    int numClients = NetworkTableUtilities.getNetworkTableInstance().getConnections().length;
     switch (numClients) {
       case 0:
         text.append(" (No clients)");

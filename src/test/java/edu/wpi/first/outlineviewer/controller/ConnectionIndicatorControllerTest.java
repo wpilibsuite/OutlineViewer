@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.FxHelper;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.OutlineViewer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import javafx.fxml.FXMLLoader;
@@ -31,7 +31,7 @@ public class ConnectionIndicatorControllerTest extends ApplicationTest {
 
   @Test
   public void testLabelInServerMode() {
-    NetworkTableUtils.setServer(12345);
+    NetworkTableUtilities.setServer(12345);
     sleep(200); // wait for server to start
     FxHelper.runAndWait(() -> controller.updateConnectionLabel());
     assertEquals("Running server (No clients)", getConnectionLabel().getText());

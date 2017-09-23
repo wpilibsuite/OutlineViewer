@@ -1,20 +1,15 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
-import edu.wpi.first.outlineviewer.FxHelper;
 import edu.wpi.first.outlineviewer.OutlineViewer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ToolBar;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 

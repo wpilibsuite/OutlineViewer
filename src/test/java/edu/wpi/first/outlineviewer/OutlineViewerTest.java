@@ -31,7 +31,7 @@ public class OutlineViewerTest extends FxRobot {
 
   @After
   public void after() {
-    NetworkTableUtils.shutdown();
+    NetworkTableUtilities.shutdown();
   }
 
   @Test

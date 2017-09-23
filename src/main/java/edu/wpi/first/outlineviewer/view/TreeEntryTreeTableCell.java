@@ -12,7 +12,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
 
-import static edu.wpi.first.outlineviewer.NetworkTableUtils.simpleKey;
+import static edu.wpi.first.outlineviewer.NetworkTableUtilities.simpleKey;
 
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.

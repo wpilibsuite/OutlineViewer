@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.outlineviewer.FxHelper;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -37,7 +37,7 @@ public class PreferencesControllerTest extends ApplicationTest {
 
   @After
   public void after() {
-    NetworkTableUtils.shutdown();
+    NetworkTableUtilities.shutdown();
   }
 
   @Test

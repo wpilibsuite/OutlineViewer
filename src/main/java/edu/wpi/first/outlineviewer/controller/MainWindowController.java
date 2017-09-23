@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
@@ -61,7 +61,8 @@ public class MainWindowController {
   @FXML
   @SuppressWarnings("PMD.AccessorMethodGeneration")
   private void initialize() {
-    ntRoot.setValue(new TreeTableEntry(NetworkTableUtils.getNetworkTableInstance().getTable("")));
+    ntRoot.setValue(new TreeTableEntry(NetworkTableUtilities
+        .getNetworkTableInstance().getTable("")));
 
     tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -74,7 +75,7 @@ public class MainWindowController {
     tableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
     keyColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(
-        NetworkTableUtils.simpleKey(param.getValue().getValue().getKey())));
+        NetworkTableUtilities.simpleKey(param.getValue().getValue().getKey())));
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
     valueColumn.setCellFactory(param -> new TreeEntryTreeTableCell<>());
@@ -233,7 +234,7 @@ public class MainWindowController {
              .stream()
              .map(TreeItem::getValue)
              .map(TreeRow::getKey)
-             .forEach(NetworkTableUtils::delete);
+             .forEach(NetworkTableUtilities::delete);
   }
 
   @FXML
@@ -254,7 +255,7 @@ public class MainWindowController {
                                                     BiConsumer<String, T> resultConsumer) {
     MenuItem menuItem = new MenuItem(text);
     menuItem.setOnAction(event -> dialog.showAndWait().ifPresent(result
-        -> resultConsumer.accept(NetworkTableUtils
+        -> resultConsumer.accept(NetworkTableUtilities
         .concat(key, result.getKey()), result.getValue())));
     return menuItem;
   }

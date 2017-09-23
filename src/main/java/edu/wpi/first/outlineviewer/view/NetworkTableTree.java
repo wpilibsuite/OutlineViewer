@@ -2,7 +2,7 @@ package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.TypeUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
@@ -34,7 +34,7 @@ public class NetworkTableTree extends TreeTableView<TreeRow>
    * in real time.
    */
   public NetworkTableTree() {
-    this(NetworkTableUtils.getNetworkTableInstance());
+    this(NetworkTableUtilities.getNetworkTableInstance());
   }
 
   /**
@@ -88,7 +88,7 @@ public class NetworkTableTree extends TreeTableView<TreeRow>
       // Check to see if the row already exists
       Optional<TreeItem<TreeRow>> next = current.getChildren()
           .stream()
-          .filter(item -> NetworkTableUtils.normalize(item.getValue().getKey())
+          .filter(item -> NetworkTableUtilities.normalize(item.getValue().getKey())
               .equals(path.toString()))
           .findFirst();
       if (next.isPresent()) {
@@ -97,7 +97,7 @@ public class NetworkTableTree extends TreeTableView<TreeRow>
       } else {
         // Otherwise, create a new row and add it to the tree.
         TreeItem<TreeRow> newTable = new TreeItem<>(
-            new TreeTableEntry(NetworkTableUtils.getNetworkTableInstance()
+            new TreeTableEntry(NetworkTableUtilities.getNetworkTableInstance()
                 .getTable(path.toString())));
         newTable.setExpanded(true);
         current.getChildren().add(newTable);
@@ -108,7 +108,7 @@ public class NetworkTableTree extends TreeTableView<TreeRow>
     path.append(finalPathElement);
     Optional<TreeItem<TreeRow>> row = current.getChildren().stream()
         .filter(item -> path.toString()
-            .equals(NetworkTableUtils.normalize(item.getValue().getKey())))
+            .equals(NetworkTableUtilities.normalize(item.getValue().getKey())))
         .findFirst();
     if ((entryNotification.flags & EntryListenerFlags.kDelete) != 0) {
       // Delete the value

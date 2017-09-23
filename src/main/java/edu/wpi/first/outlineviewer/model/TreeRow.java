@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.model;
 
 import com.google.common.base.MoreObjects;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -72,7 +72,7 @@ public class TreeRow {
    * Checks if this entry is metadata.
    */
   public boolean isMetadata() {
-    return IS_METADATA.test(NetworkTableUtils.simpleKey(key.get()));
+    return IS_METADATA.test(NetworkTableUtilities.simpleKey(key.get()));
   }
 
   @Override

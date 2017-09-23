@@ -4,13 +4,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 /**
  * Utility methods for working with network tables.
  */
-public final class NetworkTableUtils {
+public final class NetworkTableUtilities {
 
   private static NetworkTableInstance networkTableInstance = NetworkTableInstance.create();
 
@@ -30,7 +27,7 @@ public final class NetworkTableUtils {
     networkTableInstance = NetworkTableInstance.create();
   }
 
-  private NetworkTableUtils() {
+  private NetworkTableUtilities() {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
@@ -84,7 +81,7 @@ public final class NetworkTableUtils {
    */
   public static void delete(String key) {
     NetworkTableEntry[] entries = networkTableInstance.getEntries(key, 0xFF);
-//    System.out.println(Arrays.toString(entries));
+
     for (NetworkTableEntry entry : entries) {
       entry.delete();
     }

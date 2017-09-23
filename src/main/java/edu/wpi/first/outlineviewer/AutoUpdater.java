@@ -22,9 +22,9 @@ public class AutoUpdater {
    */
   public void update() {
     if (Preferences.isServer()) {
-      NetworkTableUtils.setServer(Preferences.getPort());
+      NetworkTableUtilities.setServer(Preferences.getPort());
     } else {
-      NetworkTableUtils.setClient(Preferences.getIp(), Preferences.getPort());
+      NetworkTableUtilities.setClient(Preferences.getIp(), Preferences.getPort());
     }
   }
 

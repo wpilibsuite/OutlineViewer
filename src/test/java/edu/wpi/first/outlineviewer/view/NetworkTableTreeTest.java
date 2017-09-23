@@ -2,7 +2,7 @@ package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTablesJNI;
-import edu.wpi.first.outlineviewer.NetworkTableUtils;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import javafx.scene.Scene;
@@ -19,21 +19,20 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class NetworkTableTreeTest extends ApplicationTest {
 
-  private NetworkTableTree tree;
   private TreeItem<TreeRow> root;
 
   @After
   public void shutdown() {
-    NetworkTableUtils.shutdown();
+    NetworkTableUtilities.shutdown();
   }
 
   @Override
   public void start(Stage stage) throws Exception {
-    NetworkTableUtils.createNewNetworkTableInstance();
+    NetworkTableUtilities.createNewNetworkTableInstance();
 
-    tree = new NetworkTableTree(NetworkTableUtils.getNetworkTableInstance());
+    NetworkTableTree tree = new NetworkTableTree(NetworkTableUtilities.getNetworkTableInstance());
     root = new TreeItem<>(
-        new TreeTableEntry(NetworkTableUtils.getNetworkTableInstance().getTable("")));
+        new TreeTableEntry(NetworkTableUtilities.getNetworkTableInstance().getTable("")));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -44,7 +43,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testAddSimpleEntry() {
     final String key = "/key";
     final String value = "testAddSimpleEntry";
-    NetworkTableUtils.getNetworkTableInstance().getEntry(key).setString(value);
+    NetworkTableUtilities.getNetworkTableInstance().getEntry(key).setString(value);
 
     waitForNtcoreEvents();
     waitForFxEvents();
@@ -61,7 +60,9 @@ public class NetworkTableTreeTest extends ApplicationTest {
     final String tableName = "/nested";
     final String entryName = "/key";
     final String value = "testAddNested";
-    NetworkTableUtils.getNetworkTableInstance().getEntry(NetworkTableUtils.concat(tableName, entryName)).setString(value);
+    NetworkTableUtilities.getNetworkTableInstance()
+        .getEntry(NetworkTableUtilities.concat(tableName, entryName))
+        .setString(value);
 
     waitForNtcoreEvents();
     waitForFxEvents();
@@ -74,7 +75,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
 
     TreeItem<TreeRow> realEntry = tableEntry.getChildren().get(0);
     TreeRow entry = realEntry.getValue();
-    assertEquals(NetworkTableUtils.concat(tableName, entryName), entry.getKey());
+    assertEquals(NetworkTableUtilities.concat(tableName, entryName), entry.getKey());
     assertEquals(value, entry.getValue());
   }
 
@@ -82,7 +83,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteSimpleEntry() {
     final String key = "/key";
     testAddSimpleEntry();
-    NetworkTableUtils.getNetworkTableInstance().getEntry(key).delete();
+    NetworkTableUtilities.getNetworkTableInstance().getEntry(key).delete();
 
     waitForNtcoreEvents();
     waitForFxEvents();
@@ -93,9 +94,9 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteNestedEntryWithSiblings() {
     final String keyToDelete = "/nested/deleteme";
     final String keyToKeep = "/nested/keepme";
-    NetworkTableEntry entry = NetworkTableUtils.getNetworkTableInstance().getEntry(keyToDelete);
+    NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry(keyToDelete);
     entry.setString("");
-    NetworkTableUtils.getNetworkTableInstance().getEntry(keyToKeep).setString("");
+    NetworkTableUtilities.getNetworkTableInstance().getEntry(keyToKeep).setString("");
 
     waitForNtcoreEvents();
     waitForFxEvents();
@@ -116,7 +117,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
    */
   private void waitForNtcoreEvents() {
     NetworkTablesJNI
-        .waitForEntryListenerQueue(NetworkTableUtils.getNetworkTableInstance().getHandle(), -1);
+        .waitForEntryListenerQueue(NetworkTableUtilities.getNetworkTableInstance().getHandle(), -1);
   }
 
 }
