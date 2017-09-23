@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -15,10 +16,6 @@ public final class NetworkTableUtils {
 
   public static NetworkTableInstance getNetworkTableInstance() {
     return networkTableInstance;
-  }
-
-  public static NetworkTable getRootTable() {
-    return networkTableInstance.getTable("");
   }
 
   /**
@@ -86,16 +83,10 @@ public final class NetworkTableUtils {
    * subtable will be deleted.
    */
   public static void delete(String key) {
-    String normalKey = normalize(key);
-    //System.out.println(normalKey);
-
-    if (getRootTable().containsKey(normalKey)) {
-      getRootTable().delete(normalKey);
-    } else {
-      // subtable
-      NetworkTableEntry[] entries = networkTableInstance.getEntries(normalKey, 0xFF);
-      //System.out.println(Arrays.toString(entries));
-      Stream.of(entries).map(NetworkTableEntry::getName).forEach(NetworkTableUtils::delete);
+    NetworkTableEntry[] entries = networkTableInstance.getEntries(key, 0xFF);
+//    System.out.println(Arrays.toString(entries));
+    for (NetworkTableEntry entry : entries) {
+      entry.delete();
     }
   }
 

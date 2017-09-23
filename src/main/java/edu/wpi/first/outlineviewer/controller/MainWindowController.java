@@ -2,7 +2,6 @@ package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
-import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
@@ -17,9 +16,7 @@ import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableValue;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
@@ -27,25 +24,19 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.util.converter.DefaultStringConverter;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 /**
  * Controller for the main window.
@@ -68,33 +59,9 @@ public class MainWindowController {
   private TreeTableColumn<TreeRow, String> typeColumn;
 
   @FXML
-  private ToolBar searchBar;
-  @FXML
-  private TextField searchField;
-
-  private final Predicate<TreeRow> metadataFilter
-      = x -> Preferences.isShowMetaData() || !x.isMetadata();
-
-  private NetworkTable networkTable;
-
-  @FXML
   @SuppressWarnings("PMD.AccessorMethodGeneration")
   private void initialize() {
-    networkTable = tableView.getNetworkTable();
-
-    root.setOnKeyPressed(event -> {
-      if (event.isControlDown() && event.getCode() == KeyCode.F) {
-        searchBar.setManaged(true);
-        Platform.runLater(searchField::requestFocus);
-        searchField.selectAll();
-      }
-      if (event.getCode() == KeyCode.ESCAPE) {
-        searchField.setText("");
-        searchBar.setManaged(false);
-      }
-    });
-
-    ntRoot.setValue(new TreeTableEntry(NetworkTableUtils.getRootTable()));
+    ntRoot.setValue(new TreeTableEntry(NetworkTableUtils.getNetworkTableInstance().getTable("")));
 
     tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -147,21 +114,6 @@ public class MainWindowController {
         }
       });
       return row;
-    });
-
-    tableView.setFilter(metadataFilter);
-
-    searchField.textProperty().addListener((__, oldText, newText) -> {
-      if (newText.isEmpty()) {
-        tableView.setFilter(metadataFilter);
-      } else {
-        String lower = newText.toLowerCase(Locale.getDefault());
-        Predicate<TreeRow> filter = metadataFilter.and(data
-            -> data.getKey().toLowerCase(Locale.getDefault()).contains(lower)
-              || data.getValue().toString().toLowerCase(Locale.getDefault()).contains(lower)
-              || data.getType().toLowerCase(Locale.getDefault()).contains(lower));
-        tableView.setFilter(filter);
-      }
     });
 
     tableView.setOnMouseClicked(e -> {
@@ -222,7 +174,6 @@ public class MainWindowController {
       tableView.setContextMenu(cm);
       cm.show(tableView, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
     });
-    Preferences.showMetaDataProperty().addListener(__ -> tableView.updateItemsFromFilter());
   }
 
   /**
@@ -288,12 +239,6 @@ public class MainWindowController {
   @FXML
   private void close() {
     System.exit(0);
-  }
-
-  @FXML
-  private void clearSearch() {
-    searchField.setText("");
-    searchField.requestFocus();
   }
 
   @FXML

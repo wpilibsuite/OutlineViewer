@@ -1,9 +1,9 @@
 package edu.wpi.first.outlineviewer.view;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.NetworkTableUtils;
 import edu.wpi.first.outlineviewer.model.TreeRow;
-import edu.wpi.first.outlineviewer.model.TreeEntry;
 import edu.wpi.first.outlineviewer.model.TreeTableEntry;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
@@ -33,7 +32,8 @@ public class NetworkTableTreeTest extends ApplicationTest {
     NetworkTableUtils.createNewNetworkTableInstance();
 
     tree = new NetworkTableTree(NetworkTableUtils.getNetworkTableInstance());
-    root = new TreeItem<>(new TreeTableEntry(tree.getNetworkTable()));
+    root = new TreeItem<>(
+        new TreeTableEntry(NetworkTableUtils.getNetworkTableInstance().getTable("")));
     root.setExpanded(true);
     tree.setRoot(root);
     stage.setScene(new Scene(tree));
@@ -44,11 +44,14 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testAddSimpleEntry() {
     final String key = "/key";
     final String value = "testAddSimpleEntry";
-    tree.getNetworkTable().getEntry(key).setString(value);
+    NetworkTableUtils.getNetworkTableInstance().getEntry(key).setString(value);
+
     waitForNtcoreEvents();
     waitForFxEvents();
+
     assertEquals(1, root.getChildren().size());
     TreeItem<TreeRow> item = root.getChildren().get(0);
+
     assertEquals(key, item.getValue().getKey());
     assertEquals(value, item.getValue().getValue());
   }
@@ -58,15 +61,15 @@ public class NetworkTableTreeTest extends ApplicationTest {
     final String tableName = "/nested";
     final String entryName = "/key";
     final String value = "testAddNested";
-    tree.getNetworkTable().getEntry(NetworkTableUtils.concat(tableName, entryName))
-        .setString(value);
+    NetworkTableUtils.getNetworkTableInstance().getEntry(NetworkTableUtils.concat(tableName, entryName)).setString(value);
+
     waitForNtcoreEvents();
     waitForFxEvents();
 
     assertEquals(1, root.getChildren().size());
     TreeItem<TreeRow> tableEntry = root.getChildren().get(0);
-    assertThat(tableEntry.getValue(), instanceOf(TreeEntry.class));
-    assertThat(tableEntry.getValue().getKey(), is(tableName));
+    assertThat(tableEntry.getValue(), instanceOf(TreeTableEntry.class));
+    //assertThat(tableEntry.getValue().getKey(), is(tableName));
     assertEquals(1, tableEntry.getChildren().size());
 
     TreeItem<TreeRow> realEntry = tableEntry.getChildren().get(0);
@@ -79,22 +82,10 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteSimpleEntry() {
     final String key = "/key";
     testAddSimpleEntry();
-    tree.getNetworkTable().delete(key);
-    waitForNtcoreEvents();
-    waitForFxEvents();
-    assertEquals(0, root.getChildren().size());
-  }
+    NetworkTableUtils.getNetworkTableInstance().getEntry(key).delete();
 
-  @Test
-  public void testDeleteNestedEntry() {
-    final String key = "/a/very/nested/key";
-    tree.getNetworkTable().getEntry(key).setString("");
     waitForNtcoreEvents();
     waitForFxEvents();
-    tree.getNetworkTable().delete(key);
-    waitForNtcoreEvents();
-    waitForFxEvents();
-    root.getChildren().forEach(System.out::println);
     assertEquals(0, root.getChildren().size());
   }
 
@@ -102,12 +93,14 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void testDeleteNestedEntryWithSiblings() {
     final String keyToDelete = "/nested/deleteme";
     final String keyToKeep = "/nested/keepme";
-    tree.getNetworkTable().getEntry(keyToDelete).setString("");
-    tree.getNetworkTable().getEntry(keyToKeep).setString("");
+    NetworkTableEntry entry = NetworkTableUtils.getNetworkTableInstance().getEntry(keyToDelete);
+    entry.setString("");
+    NetworkTableUtils.getNetworkTableInstance().getEntry(keyToKeep).setString("");
+
     waitForNtcoreEvents();
     waitForFxEvents();
 
-    tree.getNetworkTable().delete(keyToDelete);
+    entry.delete();
     waitForNtcoreEvents();
     waitForFxEvents();
 

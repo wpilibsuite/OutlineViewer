@@ -12,14 +12,6 @@ public class PreferencesTest extends UtilityClassTest {
   }
 
   @Test
-  public void metadataPropertyTest() {
-    Preferences.setShowMetaData(false);
-    Preferences.setShowMetaData(true);
-
-    assertTrue(Preferences.isShowMetaData());
-  }
-
-  @Test
   public void isServerPropertyTest() {
     Preferences.setServer(false);
     Preferences.setServer(true);

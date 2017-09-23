@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,19 +13,12 @@ import javafx.beans.property.StringProperty;
  */
 public final class Preferences {
 
-  private static final String SHOW_METADATA = "show_metadata";
   private static final String SERVER = "serverMode";
   private static final String IP = "ip";
   private static final String PORT = "port";
 
   private static final java.util.prefs.Preferences preferences
       = java.util.prefs.Preferences.userNodeForPackage(OutlineViewer.class);
-
-  /**
-   * Whether or not metadata should be visible in the tree. Defaults to true.
-   */
-  private static final BooleanProperty showMetaData
-      = new SimpleBooleanProperty(Preferences.class, SHOW_METADATA, true);
 
   /**
    * Whether or not the app should be running in server mode. Defaults to false (client mode).
@@ -40,17 +33,14 @@ public final class Preferences {
       = new SimpleStringProperty(Preferences.class, IP, "localhost");
 
   private static IntegerProperty port = new SimpleIntegerProperty(Preferences.class, "port",
-      NetworkTable.DEFAULT_PORT);
+      NetworkTableInstance.kDefaultPort);
 
   // Load saved preferences and set up listeners to automatically save changes
   static {
-    setShowMetaData(preferences.getBoolean(SHOW_METADATA, false));
     setServer(preferences.getBoolean(SERVER, false));
     setIp(preferences.get(IP, "localhost"));
-    setPort(preferences.getInt(PORT, NetworkTable.DEFAULT_PORT));
+    setPort(preferences.getInt(PORT, NetworkTableInstance.kDefaultPort));
 
-    showMetaDataProperty().addListener(
-        (__, oldValue, newValue) -> preferences.putBoolean(SHOW_METADATA, newValue));
     serverProperty().addListener(
         (__, oldValue, newValue) -> preferences.putBoolean(SERVER, newValue));
     ipProperty().addListener(
@@ -67,22 +57,9 @@ public final class Preferences {
    * Resets all preferences to their defaults.
    */
   public static void reset() {
-    setShowMetaData(false);
     setServer(false);
     setIp("localhost");
-    setPort(NetworkTable.DEFAULT_PORT);
-  }
-
-  public static boolean isShowMetaData() {
-    return showMetaData.get();
-  }
-
-  public static BooleanProperty showMetaDataProperty() {
-    return showMetaData;
-  }
-
-  public static void setShowMetaData(boolean showMetaData) {
-    Preferences.showMetaData.set(showMetaData);
+    setPort(NetworkTableInstance.kDefaultPort);
   }
 
   public static boolean isServer() {

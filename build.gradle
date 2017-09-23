@@ -55,14 +55,14 @@ dependencies {
     compile 'edu.wpi.first.ntcore:ntcore-java:+'
     compile 'edu.wpi.first.wpiutil:wpiutil-java:+'
     compile "org.controlsfx:controlsfx:+"
-    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+    compile group: 'com.google.guava', name: 'guava', version: '23.0'
 
     runtime 'edu.wpi.first.ntcore:ntcore-jni:+:all'
 
     testCompile "junit:junit:+"
     testCompile "org.testfx:testfx-core:4.0.+"
     testCompile "org.testfx:testfx-junit:4.0.+"
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '21.0'
+    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '23.0'
 
     testRuntime group: 'org.testfx', name: 'openjfx-monocle', version: '8u76-b04'
 }

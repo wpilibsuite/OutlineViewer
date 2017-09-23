@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +38,6 @@ public class NetworkTableUtilsTest {
     }
 
     @Test
-    public void isNotRunningTest() {
-      NetworkTableUtils.setServer(9999);
-      NetworkTableUtils.shutdown();
-
-      assertFalse(NetworkTableUtils.isRunning());
-    }
-
-    @Test
     public void startingTest() {
       NetworkTableUtils.setClient("localhost", 9999); // Should never connect
       assertTrue(NetworkTableUtils.starting());
@@ -75,25 +68,26 @@ public class NetworkTableUtilsTest {
     @Test
     public void testDeleteKey() {
       final String key = "/NetworkTableUtilsTest::testDeleteKey";
-      NetworkTableUtils.getRootTable().getEntry(key).setString("dummy");
+      NetworkTableEntry entry = NetworkTableUtils.getNetworkTableInstance()
+          .getEntry(key);
+      entry.setString("dummy");
 
       NetworkTableUtils.delete(key);
-      assertFalse(NetworkTableUtils.getRootTable().containsKey(key));
+      assertFalse(entry.exists());
     }
 
     @Test
     public void testDeleteSubtable() {
-      String first = "/a/b/c";
-      String second = "/a/b/d";
-      String third = "/a/c";
-      NetworkTableUtils.getRootTable().getEntry(first).setString("");
-      NetworkTableUtils.getRootTable().getEntry(second).setString("");
-      NetworkTableUtils.getRootTable().getEntry(third).setString("");
+      NetworkTableEntry first = NetworkTableUtils.getNetworkTableInstance().getEntry("/a/b/c");
+      NetworkTableEntry second = NetworkTableUtils.getNetworkTableInstance().getEntry("/a/b/d");
+      NetworkTableEntry  third = NetworkTableUtils.getNetworkTableInstance().getEntry("/a/c");
+      first.setString("");
+      second.setString("");
+      third.setString("");
 
       NetworkTableUtils.delete("/a/b");
-      assertTrue(!NetworkTableUtils.getRootTable().containsKey(first)
-          && !NetworkTableUtils.getRootTable().containsKey(second)
-          && NetworkTableUtils.getRootTable().containsKey(third));
+
+      assertTrue(!first.exists() && !second.exists() && third.exists());
     }
   }
 

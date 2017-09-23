@@ -20,13 +20,10 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
-  private Stage stage;
-
   @Override
   public void start(Stage stage) throws Exception {
     FXMLLoader loader = new FXMLLoader(OutlineViewer.class.getResource("MainWindow.fxml"));
     Pane rootPane = loader.load();
-    this.stage = stage;
     stage.setScene(new Scene(rootPane));
     stage.show();
   }
@@ -41,28 +38,6 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
     assertThat(lookup("#preferencesPaneRoot").query(), isVisible());
     targetWindow("Preferences").closeCurrentWindow();
-  }
-
-  // Tests for the search bar
-
-  @Test
-  public void testSearchAppears() {
-    clickOn(stage, MouseButton.SECONDARY);
-
-    FxHelper.runAndWait(() -> stage.getScene().getRoot().requestFocus());
-
-    press(KeyCode.CONTROL, KeyCode.F);
-
-    ToolBar searchBar = lookup("#searchBar").query();
-    assertTrue(searchBar.isManaged());
-  }
-
-  @Test
-  public void testSearchDisappears() {
-    testSearchAppears();
-    press(KeyCode.ESCAPE);
-    waitForFxEvents();
-    assertFalse(lookup("#searchBar").query().isManaged());
   }
 
 }
