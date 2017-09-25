@@ -17,23 +17,22 @@ plugins {
     application
     `maven-publish`
     jacoco
+    java
+    checkstyle
+    pmd
     id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "1.6"
     id("com.github.johnrengelman.shadow") version "2.0.1"
     id("com.diffplug.gradle.spotless") version "3.5.1"
 }
 
 apply {
-    plugin("com.diffplug.gradle.spotless")
-    plugin("java")
-    plugin("checkstyle")
     plugin("pmd")
     plugin("findbugs")
     plugin("jacoco")
-    plugin("maven-publish")
     plugin("org.junit.platform.gradle.plugin")
-    plugin("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin")
-    plugin("com.github.johnrengelman.shadow")
 }
+
+group = "edu.wpi.first.wpilib"
 
 // Spotless is used to lint and reformat source files.
 spotless {
@@ -163,18 +162,15 @@ if (project.hasProperty("jenkinsBuild") || project.hasProperty("headless")) {
     }
 }
 
-//publishing {
-//    publications {
-//        create<MavenPublication>("OutlineViewer") {
-//            groupId = "edu.wpi.first.wpilib"
-//            artifactId = "OutlineViewer"
-//            getWPILibVersion()?.let { version = it }
-//            shadow.component(this)
-//            from(components["java"])
-//            //artifact(sourceJar)
-//        }
-//    }
-//}
+publishing {
+    publications {
+        create<MavenPublication>("OutlineViewer") {
+            artifactId = "OutlineViewer"
+            getWPILibVersion()?.let { version = it }
+            shadow.component(this)
+        }
+    }
+}
 
 // Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
 // already specified on the command line
