@@ -186,37 +186,44 @@ public class MainWindowController {
     MenuItem string = createContextMenuItem("Add string",
         networkTableTreeRow.getKey(),
         new AddStringDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setString(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setString(value));
 
     MenuItem number = createContextMenuItem("Add number",
         networkTableTreeRow.getKey(),
         new AddNumberDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setNumber(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setNumber(value));
 
     MenuItem bool = createContextMenuItem("Add boolean",
         networkTableTreeRow.getKey(),
         new AddBooleanDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setBoolean(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setBoolean(value));
 
     MenuItem stringArray = createContextMenuItem("Add string array",
         networkTableTreeRow.getKey(),
         new AddStringArrayDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setStringArray(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setStringArray(value));
 
     MenuItem numberArray = createContextMenuItem("Add number array",
         networkTableTreeRow.getKey(),
         new AddNumberArrayDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setNumberArray(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setNumberArray(value));
 
     MenuItem boolArray = createContextMenuItem("Add boolean array",
         networkTableTreeRow.getKey(),
         new AddBooleanArrayDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setBooleanArray(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setBooleanArray(value));
 
     MenuItem raw = createContextMenuItem("Add raw bytes",
         networkTableTreeRow.getKey(),
         new AddBytesDialog(),
-        (key, value) -> networkTableTreeRow.getNetworkTable().getEntry(key).setRaw(value));
+        (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry(key).setRaw(value));
 
     return Arrays.asList(string, number, bool,
                          new SeparatorMenuItem(),
@@ -251,7 +258,7 @@ public class MainWindowController {
     MenuItem menuItem = new MenuItem(text);
     menuItem.setOnAction(event -> dialog.showAndWait().ifPresent(result
         -> resultConsumer.accept(NetworkTableUtilities
-        .concat(key, result.getKey()), result.getValue())));
+          .concat(key, result.getKey()), result.getValue())));
     return menuItem;
   }
 
