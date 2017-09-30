@@ -1,8 +1,8 @@
-# Outline Viewer Project
+# OutlineViewer
 
-[![Build Status](https://travis-ci.org/wpilibsuite/OutlineViewer.svg?branch=master)](https://travis-ci.org/wpilibsuite/OutlineViewer)
+[![Build Status](https://travis-ci.org/wpilibsuite/OutlineViewer.svg?branch=master)](https://travis-ci.org/wpilibsuite/OutlineViewer) [![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/JavaFX/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
 
-Welcome to the WPILib project. This repository contains the Outline Viewer project.
+Welcome to the WPILib project. This repository contains OutlineViewer.
 
 - [WPILib Mission](#wpilib-mission)
 - [Building Robot Builder](#building-outline-viewer)
@@ -16,14 +16,14 @@ The WPILib Mission is to enable FIRST teams to focus on writing game-specific so
 
 # Building OutlineViewer
 
-Building Outline Viewer is very straightforward. Outline Viewer uses Gradle to compile.
+Building OutlineViewer is very straightforward. OutlineViewer uses Gradle to compile.
 
 ## Requirements
 - [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
 ## Running
 
-To run Outline Viewer use the command `./gradlew run`.
+To run OutlineViewer use the command `./gradlew run`.
 
 # Contributing to WPILib
 

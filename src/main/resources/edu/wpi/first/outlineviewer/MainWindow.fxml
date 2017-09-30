@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import edu.wpi.first.outlineviewer.view.NetworkTableTree?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TreeItem?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.layout.BorderPane?>
+<?import java.net.URL?>
+<BorderPane maxHeight="16000" maxWidth="16000"
+            minHeight="400" minWidth="600"
+            prefHeight="400.0" prefWidth="600.0"
+            fx:id="root"
+            id="root"
+            xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="edu.wpi.first.outlineviewer.controller.MainWindowController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="File" id="fileMenu">
+                <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <NetworkTableTree fx:id="tableView" editable="true" BorderPane.alignment="CENTER" id="tableView">
+            <TreeItem fx:id="ntRoot" expanded="true"/>
+            <columns>
+                <TreeTableColumn fx:id="keyColumn" minWidth="200" prefWidth="200" sortable="false" text="Key" id="keyColumn"/>
+                <TreeTableColumn fx:id="valueColumn" minWidth="200" prefWidth="200" sortable="false" text="Value" id="valueColumn"/>
+                <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type" id="typeColumn"/>
+            </columns>
+        </NetworkTableTree>
+    </center>
+    <bottom>
+        <fx:include source="ConnectionIndicator.fxml" id="connectionIndicator"/>
+    </bottom>
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+</BorderPane>
