@@ -106,8 +106,8 @@ public final class NetworkTableUtilities {
   public static void setServer(int port) {
     shutdown();
 
-    networkTableInstance.setServer("OutlineViewer", port);
-    networkTableInstance.startServer();
+    networkTableInstance.setNetworkIdentity("OutlineViewer");
+    networkTableInstance.startServer("networktables.ini", "", port);
   }
 
   /**
@@ -119,6 +119,7 @@ public final class NetworkTableUtilities {
   public static void setClient(String serverId, int serverPort) {
     shutdown();
 
+    networkTableInstance.setNetworkIdentity("OutlineViewer");
     if (serverId.matches("[1-9](\\d{1,3})?")) {
       networkTableInstance.startClientTeam(Integer.parseInt(serverId), serverPort);
     } else {
