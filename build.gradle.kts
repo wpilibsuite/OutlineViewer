@@ -20,7 +20,7 @@ plugins {
     java
     checkstyle
     pmd
-    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "1.6"
+    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.0"
     id("com.github.johnrengelman.shadow") version "2.0.1"
     id("com.diffplug.gradle.spotless") version "3.5.1"
 }
@@ -48,12 +48,12 @@ repositories {
 }
 
 dependencies {
-    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "+")
-    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "+")
+    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "4.+")
+    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "3.+")
     compile(group = "org.controlsfx", name = "controlsfx", version = "8.40.14")
     compile(group = "com.google.guava", name = "guava", version = "23.0")
 
-    runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "+", classifier = "all")
+    runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "4.+", classifier = "all")
 
     fun junitJupiter(name: String, version: String = "5.0.0") =
             create(group = "org.junit.jupiter", name = name, version = version)
