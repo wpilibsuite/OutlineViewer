@@ -255,7 +255,7 @@ public class MainWindowController {
 
   @FXML
   private void exitProgram() {
-    Platform.exit();
+    System.exit(0);
   }
 
   private static <T> MenuItem createContextMenuItem(String text, String key,
