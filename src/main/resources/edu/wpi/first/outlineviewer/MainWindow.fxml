@@ -19,7 +19,7 @@
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File" id="fileMenu">
                 <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
-                <MenuItem onAction="#exitProgram" text="Exit" id="exitMenuButton" accelerator="SHORTCUT+x"/>
+                <MenuItem onAction="#exitProgram" text="Exit" id="exitMenuButton" accelerator="SHORTCUT+q"/>
             </Menu>
         </MenuBar>
     </top>

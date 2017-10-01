@@ -17,6 +17,7 @@ import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
 import edu.wpi.first.outlineviewer.model.TreeEntry;
 import edu.wpi.first.networktables.NetworkTableValue;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
@@ -254,7 +255,7 @@ public class MainWindowController {
 
   @FXML
   private void exitProgram() {
-    System.exit(1);
+    Platform.exit();
   }
 
   private static <T> MenuItem createContextMenuItem(String text, String key,
