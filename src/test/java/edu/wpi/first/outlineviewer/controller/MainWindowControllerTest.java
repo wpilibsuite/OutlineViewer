@@ -41,4 +41,14 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
     assertTrue(lookup("#connectionLabel").tryQuery().isPresent());
   }
 
+  @Test
+  void exitMenuTest() {
+    clickOn("#fileMenu", MouseButton.PRIMARY);
+    waitForFxEvents();
+
+    clickOn("#exitMenuButton", MouseButton.PRIMARY);
+    waitForFxEvents();
+
+    assertTrue(listWindows().isEmpty());
+  }
 }

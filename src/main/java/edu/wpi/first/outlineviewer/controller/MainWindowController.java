@@ -252,6 +252,11 @@ public class MainWindowController {
     }
   }
 
+  @FXML
+  private void exitProgram() {
+    root.getScene().getWindow().hide();
+  }
+
   private static <T> MenuItem createContextMenuItem(String text, String key,
                                                     AddEntryDialog<T> dialog,
                                                     BiConsumer<String, T> resultConsumer) {
