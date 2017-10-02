@@ -38,7 +38,7 @@ group = "edu.wpi.first.wpilib"
 spotless {
     kotlinGradle {
         // Configure the formatting of the Gradle Kotlin DSL files (*.gradle.kts)
-        ktlint("0.9.1")
+        ktlint("0.9.2")
         endWithNewline()
     }
 }
@@ -51,11 +51,11 @@ dependencies {
     compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "4.+")
     compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "3.+")
     compile(group = "org.controlsfx", name = "controlsfx", version = "8.40.14")
-    compile(group = "com.google.guava", name = "guava", version = "23.0")
+    compile(group = "com.google.guava", name = "guava", version = "23.1-jre")
 
     runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "4.+", classifier = "all")
 
-    fun junitJupiter(name: String, version: String = "5.0.0") =
+    fun junitJupiter(name: String, version: String = "5.0.1") =
             create(group = "org.junit.jupiter", name = name, version = version)
     fun testFx(name: String, version: String = "4.0.+") =
             create(group = "org.testfx", name = name, version = version)
@@ -65,10 +65,10 @@ dependencies {
     testCompile(junitJupiter(name = "junit-jupiter-params"))
     testCompile(testFx(name = "testfx-core", version = "4.0.7-alpha"))
     testCompile(testFx(name = "testfx-junit5", version = "4.0.6-alpha"))
-    testCompile(group = "com.google.guava", name = "guava-testlib", version = "23.0")
+    testCompile(group = "com.google.guava", name = "guava-testlib", version = "23.1-jre")
 
     testRuntime(testFx(name = "openjfx-monocle", version = "8u76-b04"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
+    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.1")
 
 }
 
@@ -78,7 +78,7 @@ application {
 
 checkstyle {
     configFile = file("$rootDir/checkstyle.xml")
-    toolVersion = "8.1"
+    toolVersion = "8.3"
 }
 
 pmd {
@@ -187,38 +187,8 @@ if (!hasProperty("releaseType")) {
 fun getWPILibVersion(): String? = if (WPILibVersion.version != "") WPILibVersion.version else null
 
 task<Wrapper>("wrapper") {
-    gradleVersion = "4.1"
+    gradleVersion = "4.2.1"
 }
-
-/**
- * Retrieves the [java][org.gradle.api.plugins.JavaPluginConvention] project convention.
- */
-val Project.`java`: org.gradle.api.plugins.JavaPluginConvention get() =
-    convention.getPluginByName("java")
-
-/**
- * Retrieves the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-val Project.`checkstyle`: org.gradle.api.plugins.quality.CheckstyleExtension get() =
-    extensions.getByName("checkstyle") as org.gradle.api.plugins.quality.CheckstyleExtension
-
-/**
- * Configures the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-fun Project.`checkstyle`(configure: org.gradle.api.plugins.quality.CheckstyleExtension.() -> Unit) =
-        extensions.configure("checkstyle", configure)
-
-/**
- * Retrieves the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-val Project.`pmd`: org.gradle.api.plugins.quality.PmdExtension get() =
-    extensions.getByName("pmd") as org.gradle.api.plugins.quality.PmdExtension
-
-/**
- * Configures the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-fun Project.`pmd`(configure: org.gradle.api.plugins.quality.PmdExtension.() -> Unit) =
-        extensions.configure("pmd", configure)
 
 /**
  * Retrieves the [findbugs][org.gradle.api.plugins.quality.FindBugsExtension] project extension.
