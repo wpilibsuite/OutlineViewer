@@ -95,6 +95,7 @@ public class MainWindowController {
             newValue = NetworkTableValue.makeString((String) event.getNewValue());
             break;
           case kBoolean:
+
             newValue = NetworkTableValue.makeBoolean((Boolean) event.getNewValue());
             break;
           default:
@@ -254,7 +255,7 @@ public class MainWindowController {
 
   @FXML
   private void exitProgram() {
-    System.exit(0);
+    root.getScene().getWindow().hide();
   }
 
   private static <T> MenuItem createContextMenuItem(String text, String key,
