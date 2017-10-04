@@ -1,11 +1,14 @@
 package edu.wpi.first.outlineviewer.controller;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.networktables.PersistentException;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
-import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
-import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
+import edu.wpi.first.outlineviewer.model.TreeEntry;
+import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.view.NetworkTableTree;
+import edu.wpi.first.outlineviewer.view.TreeEntryTreeTableCell;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
@@ -15,24 +18,25 @@ import edu.wpi.first.outlineviewer.view.dialog.AddNumberDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
-import edu.wpi.first.outlineviewer.model.TreeEntry;
-import edu.wpi.first.networktables.NetworkTableValue;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableRow;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.TreeTableRow;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -249,6 +253,47 @@ public class MainWindowController {
     PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
     if (dialog.showAndWait().orElse(false)) {
       dialog.getController().save();
+    }
+  }
+
+  @FXML
+  private void loadState() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("NetworkTables save file");
+    fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("NT State", "*.ini"),
+            new FileChooser.ExtensionFilter("All Files", "*", "*.*")
+    );
+    File file = fileChooser.showOpenDialog(root.getScene().getWindow());
+    if (file != null) {
+      try {
+        String nameString = file.getAbsolutePath();
+        NetworkTableUtilities.getNetworkTableInstance().loadEntries(nameString, "");
+      } catch (PersistentException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("NetworkTables error");
+        alert.setHeaderText("Unable to load saved entries");
+        alert.setContentText("Check save file to make sure it's correct");
+        alert.showAndWait();
+      }
+    }
+  }
+
+  @FXML
+  private void saveState()  {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("NetworkTables save file");
+    File saveFile = fileChooser.showSaveDialog(root.getScene().getWindow());
+    if (saveFile != null) {
+      try {
+        NetworkTableUtilities.getNetworkTableInstance().saveEntries(saveFile.getAbsolutePath(), "");
+      } catch (PersistentException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("NetworkTables error");
+        alert.setHeaderText("Unable to save NetworkTable entries");
+        alert.setContentText("Check save file to make sure it's correct");
+        alert.showAndWait();
+      }
     }
   }
 

@@ -19,6 +19,8 @@
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File" id="fileMenu">
                 <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
+                <MenuItem onAction="#loadState" text="Load state" id="loadStateButton" accelerator="SHORTCUT+O"/>
+                <MenuItem onAction="#saveState" text="Save state" id="saveStateButton" accelerator="SHORTCUT+S"/>
                 <MenuItem onAction="#exitProgram" text="Exit" id="exitMenuButton" accelerator="SHORTCUT+q"/>
             </Menu>
         </MenuBar>
