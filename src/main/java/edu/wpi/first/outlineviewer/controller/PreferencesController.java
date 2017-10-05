@@ -33,10 +33,9 @@ public class PreferencesController {
 
     //When the user selects default port from non-default port we need to update the port number
     //and port text field to the default port number
-    defaultPortSwitch.setOnMouseClicked(event -> {
+    defaultPortSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
       if (defaultPortSwitch.selectedProperty().get()) {
-        Preferences.setPort(NetworkTableInstance.kDefaultPort);
-        portField.setText(String.valueOf(Preferences.getPort()));
+        portField.setText(String.valueOf(NetworkTableInstance.kDefaultPort));
       }
     });
 
