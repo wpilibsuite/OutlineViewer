@@ -3,6 +3,8 @@ package edu.wpi.first.outlineviewer.controller;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.ToggleSwitch;
@@ -24,6 +26,12 @@ public class PreferencesController {
   private ToggleSwitch defaultPortSwitch;
   @FXML
   private TextField portField;
+
+  private BooleanProperty validPortProperty;
+
+  public PreferencesController() {
+    validPortProperty = new SimpleBooleanProperty(false);
+  }
 
   @FXML
   private void initialize() {
@@ -48,11 +56,20 @@ public class PreferencesController {
     ValidationSupport validationSupport = new ValidationSupport();
     validationSupport.registerValidator(portField, false, ((control, value) -> {
       if (value instanceof String) {
-        return ValidationResult.fromMessageIf(control, "Invalid port number", Severity.ERROR, !validatePortNumber((String)value).isPresent());
+        return ValidationResult.fromMessageIf(control,
+                                              "Invalid port number",
+                                              Severity.ERROR,
+                                              !validatePortNumber((String)value).isPresent());
       }
 
-      return ValidationResult.fromMessageIf(control, "Invalid port number", Severity.ERROR, false);
+      return ValidationResult.fromMessageIf(control,
+                                            "Invalid port number",
+                                            Severity.ERROR,
+                                            false);
     }));
+
+    //Link the outward-facing valid port property to the validation code
+    validPortProperty.bind(validationSupport.invalidProperty());
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
@@ -95,5 +112,13 @@ public class PreferencesController {
     } catch (Exception ignored) {}
 
     return portNum;
+  }
+
+  public boolean isValidPortProperty() {
+    return validPortProperty.get();
+  }
+
+  public BooleanProperty validPortProperty() {
+    return validPortProperty;
   }
 }
