@@ -82,7 +82,7 @@ public class PreferencesControllerTest extends ApplicationTest {
       ((TextField) lookup("#portField").query()).setText("1234");
       ((ToggleSwitch) lookup("#defaultPortSwitch").query()).selectedProperty().set(true);
     });
-    assertEquals(Integer.valueOf(NetworkTableInstance.kDefaultPort),
-                 Integer.valueOf(((TextField) lookup("#portField").query()).getText()));
+    assertEquals(NetworkTableInstance.kDefaultPort,
+                 Integer.parseInt(((TextField) lookup("#portField").query()).getText()));
   }
 }
