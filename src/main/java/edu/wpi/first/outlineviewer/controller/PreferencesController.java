@@ -4,7 +4,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.controlsfx.control.ToggleSwitch;
 
 import java.util.Optional;
@@ -22,6 +25,8 @@ public class PreferencesController {
   private ToggleSwitch defaultPortSwitch;
   @FXML
   private TextField portField;
+  @FXML
+  private VBox mainVBox;
 
   @FXML
   private void initialize() {
@@ -42,6 +47,21 @@ public class PreferencesController {
       }
     });
 
+    //Normally hidden error message for a bad port number
+    Label errorMsg = new Label("Invalid port number");
+    errorMsg.setTextFill(Color.RED);
+    errorMsg.setVisible(false);
+    mainVBox.getChildren().add(0, errorMsg);
+
+    //Display error message when the current port number is invalid
+    portField.setOnKeyReleased(event -> {
+      if (!validatePortNumber(portField.getText()).isPresent()) {
+        errorMsg.setVisible(true);
+      } else {
+        errorMsg.setVisible(false);
+      }
+    });
+
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
       // focus.
@@ -54,16 +74,7 @@ public class PreferencesController {
    * Starts running ntcore in the selected mode.
    */
   public void save() {
-    Optional<Integer> portNum = Optional.empty();
-
-    try {
-      //Try to convert the port number into an Integer to validate
-      Integer val = Integer.valueOf(portField.getText());
-      if (val > 0 && val <= 65535)
-        portNum = Optional.of(val);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    Optional<Integer> portNum = validatePortNumber(portField.getText());
 
     if (portNum.isPresent()) {
       Preferences.setPort(portNum.get());
@@ -81,4 +92,16 @@ public class PreferencesController {
     Preferences.setServer(serverModeSwitch.isSelected());
   }
 
+  private Optional<Integer> validatePortNumber(String rawPortNumber) {
+    Optional<Integer> portNum = Optional.empty();
+
+    try {
+      //Try to convert the port number into an Integer to validate
+      Integer val = Integer.valueOf(rawPortNumber);
+      if (val > 0 && val <= 65535)
+        portNum = Optional.of(val);
+    } catch (Exception ignored) {}
+
+    return portNum;
+  }
 }
