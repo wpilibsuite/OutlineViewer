@@ -74,4 +74,14 @@ public class PreferencesControllerTest extends ApplicationTest {
     controller.save();
     assertEquals("localhost", Preferences.getIp());
   }
+
+  @Test
+  void testDefaultPortButton() {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).selectedProperty().set(false);
+      ((TextField) lookup("#portField").query()).setText("1234");
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).selectedProperty().set(true);
+    });
+    assertEquals(NetworkTableInstance.kDefaultPort, (int)Integer.valueOf(((TextField) lookup("#portField").query()).getText()));
+  }
 }
