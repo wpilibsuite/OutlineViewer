@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.ToggleSwitch;
 
+import java.util.Optional;
+
 /**
  * Controller for the app preferences pane.
  */
@@ -52,8 +54,19 @@ public class PreferencesController {
    * Starts running ntcore in the selected mode.
    */
   public void save() {
-    if (portField.getText().matches("[0-9]+")) {
-      Preferences.setPort(Integer.parseInt(portField.getText()));
+    Optional<Integer> portNum = Optional.empty();
+
+    try {
+      //Try to convert the port number into an Integer to validate
+      Integer val = Integer.valueOf(portField.getText());
+      if (val > 0 && val <= 65535)
+        portNum = Optional.of(val);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    if (portNum.isPresent()) {
+      Preferences.setPort(portNum.get());
     } else {
       Preferences.setPort(NetworkTableInstance.kDefaultPort);
     }
