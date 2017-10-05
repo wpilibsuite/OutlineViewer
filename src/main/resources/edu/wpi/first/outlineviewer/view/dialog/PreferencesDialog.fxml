@@ -10,38 +10,39 @@
 <?import org.controlsfx.control.ToggleSwitch?>
 
 
-<AnchorPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.first.outlineviewer.controller.PreferencesController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.wpi.first.outlineviewer.controller.PreferencesController">
    <children>
       <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <HBox alignment="CENTER_LEFT">
                <children>
                    <Label id="modeLabel" text="Server Mode" />
-                  <Pane maxWidth="10.0" HBox.hgrow="ALWAYS" />
-                   <ToggleSwitch id="modeSwitch" fx:id="modeSwitch" />
+                  <Pane maxWidth="5.0" HBox.hgrow="ALWAYS" />
+                   <ToggleSwitch id="modeSwitch" fx:id="serverModeSwitch" maxWidth="32.0" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
-                   <Label id="idLabel" text="Server Location">
+                   <Label id="idLabel" text="Server ID">
                        <tooltip>
                            <Tooltip text="URL, IP address, or team number" />
                        </tooltip>
                    </Label>
+                  <Pane maxWidth="15.0" HBox.hgrow="ALWAYS" />
                    <TextField id="idField" fx:id="idField" promptText="URL, IP address, or team" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
                <children>
-                   <Label id="portLabel" text="Default Port" />
-                  <Pane maxWidth="15.0" HBox.hgrow="ALWAYS" />
-                   <ToggleSwitch id="portSwitch" fx:id="portSwitch" selected="true" />
+                  <Label id="modeLabel" text="Default Port" />
+                  <Pane maxWidth="6.0" HBox.hgrow="ALWAYS" />
+                  <ToggleSwitch id="modeSwitch" fx:id="defaultPortSwitch" maxWidth="32.0" selected="true" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
                    <Label id="portLabel" text="Server Port" />
-                  <Pane HBox.hgrow="ALWAYS" />
+                  <Pane maxWidth="15.0" HBox.hgrow="ALWAYS" />
                    <TextField id="portField" fx:id="portField" promptText="1735" />
                </children>
             </HBox>
