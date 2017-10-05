@@ -4,11 +4,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import org.controlsfx.control.ToggleSwitch;
+import org.controlsfx.validation.Severity;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
 
 import java.util.Optional;
 
@@ -16,7 +16,6 @@ import java.util.Optional;
  * Controller for the app preferences pane.
  */
 public class PreferencesController {
-
   @FXML
   private ToggleSwitch serverModeSwitch;
   @FXML
@@ -25,8 +24,6 @@ public class PreferencesController {
   private ToggleSwitch defaultPortSwitch;
   @FXML
   private TextField portField;
-  @FXML
-  private VBox mainVBox;
 
   @FXML
   private void initialize() {
@@ -47,20 +44,15 @@ public class PreferencesController {
       }
     });
 
-    //Normally hidden error message for a bad port number
-    Label errorMsg = new Label("Invalid port number");
-    errorMsg.setTextFill(Color.RED);
-    errorMsg.setVisible(false);
-    mainVBox.getChildren().add(0, errorMsg);
-
     //Display error message when the current port number is invalid
-    portField.setOnKeyReleased(event -> {
-      if (!validatePortNumber(portField.getText()).isPresent()) {
-        errorMsg.setVisible(true);
-      } else {
-        errorMsg.setVisible(false);
+    ValidationSupport validationSupport = new ValidationSupport();
+    validationSupport.registerValidator(portField, false, ((control, value) -> {
+      if (value instanceof String) {
+        return ValidationResult.fromMessageIf(control, "Invalid port number", Severity.ERROR, !validatePortNumber((String)value).isPresent());
       }
-    });
+
+      return ValidationResult.fromMessageIf(control, "Invalid port number", Severity.ERROR, false);
+    }));
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
