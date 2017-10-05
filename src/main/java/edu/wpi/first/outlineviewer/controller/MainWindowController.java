@@ -259,7 +259,7 @@ public class MainWindowController {
   @FXML
   private void loadState() {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("NetworkTables save file");
+    fileChooser.setTitle("Load NetworkTables State");
     fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("NT State", "*.ini"),
             new FileChooser.ExtensionFilter("All Files", "*", "*.*")
@@ -282,7 +282,7 @@ public class MainWindowController {
   @FXML
   private void saveState()  {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("NetworkTables save file");
+    fileChooser.setTitle("Save NetworkTables State");
     fileChooser.setInitialFileName("networktables.ini");
     File saveFile = fileChooser.showSaveDialog(root.getScene().getWindow());
     if (saveFile != null) {
@@ -291,7 +291,6 @@ public class MainWindowController {
       } catch (PersistentException e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("NetworkTables error");
-        alert.setHeaderText("Unable to save NetworkTable entries");
         alert.setContentText(e.getMessage());
         alert.showAndWait();
       }
