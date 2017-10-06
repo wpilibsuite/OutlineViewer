@@ -5,6 +5,7 @@ import org.gradle.api.plugins.quality.FindBugs
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.junit.platform.console.options.Details
 
 buildscript {
     repositories {
@@ -153,6 +154,7 @@ afterEvaluate {
 if (project.hasProperty("jenkinsBuild") || project.hasProperty("headless")) {
     println("Running UI Tests Headless")
     junitPlatform {
+        details = Details.VERBOSE
         filters {
             tags {
                 /*
