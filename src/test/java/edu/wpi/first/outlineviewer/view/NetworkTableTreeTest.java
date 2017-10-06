@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
+@Tag("NonWindowsTest")
 public class NetworkTableTreeTest extends ApplicationTest {
 
   private TreeItem<TreeRow> root;
@@ -117,7 +119,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
    */
   private void waitForNtcoreEvents() {
     NetworkTablesJNI
-        .waitForEntryListenerQueue(NetworkTableUtilities.getNetworkTableInstance().getHandle(), -1);
+        .waitForEntryListenerQueue(NetworkTableUtilities.getNetworkTableInstance().getHandle(), 3);
   }
 
 }
