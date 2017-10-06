@@ -11,6 +11,7 @@ import org.controlsfx.control.ToggleSwitch;
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.decoration.StyleClassValidationDecoration;
 
 import java.util.Optional;
 
@@ -53,23 +54,26 @@ public class PreferencesController {
     });
 
     //Display error message when the current port number is invalid
-    ValidationSupport validationSupport = new ValidationSupport();
-    validationSupport.registerValidator(portField, false, ((control, value) -> {
+    ValidationSupport validator = new ValidationSupport();
+    validator.setValidationDecorator(
+        new StyleClassValidationDecoration("text-field-error",
+            "text-field-warning"));
+    validator.registerValidator(portField, false, ((control, value) -> {
       if (value instanceof String) {
         return ValidationResult.fromMessageIf(control,
-                                              "Invalid port number",
-                                              Severity.ERROR,
-                                              !validatePortNumber((String)value).isPresent());
+            "Invalid port number",
+            Severity.ERROR,
+            !validatePortNumber((String) value).isPresent());
       }
 
       return ValidationResult.fromMessageIf(control,
-                                            "Invalid port number",
-                                            Severity.ERROR,
-                                            false);
+          "Invalid port number",
+          Severity.ERROR,
+          false);
     }));
 
     //Link the outward-facing valid port property to the validation code
-    validPortProperty.bind(validationSupport.invalidProperty());
+    validPortProperty.bind(validator.invalidProperty());
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
@@ -107,15 +111,13 @@ public class PreferencesController {
     try {
       //Try to convert the port number into an Integer to validate
       Integer val = Integer.valueOf(rawPortNumber);
-      if (val > 0 && val <= 65535)
+      if (val > 0 && val <= 65535) {
         portNum = Optional.of(val);
-    } catch (Exception ignored) {}
+      }
+    } catch (Exception ignored) {
+    }
 
     return portNum;
-  }
-
-  public boolean isValidPortProperty() {
-    return validPortProperty.get();
   }
 
   public BooleanProperty validPortProperty() {

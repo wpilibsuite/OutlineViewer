@@ -34,9 +34,9 @@ public class PreferencesDialog extends Dialog<Boolean> {
     //Bind the disabled property of each button to the valid port property of the controller
     //so user can't save with an invalid port
     Arrays.stream(buttonTypes)
-          .forEach(btn -> getDialogPane()
-                  .lookupButton(btn)
-                  .disableProperty().bind(controller.validPortProperty()));
+        .filter(btn -> btn.getButtonData().isDefaultButton())
+        .map(btn -> getDialogPane().lookupButton(btn))
+        .forEach(btn -> btn.disableProperty().bind(controller.validPortProperty()));
   }
 
   public PreferencesController getController() {
