@@ -1,7 +1,6 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
@@ -118,8 +117,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
    * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
    */
   private void waitForNtcoreEvents() {
-    NetworkTablesJNI
-        .waitForEntryListenerQueue(NetworkTableUtilities.getNetworkTableInstance().getHandle(), 3);
+    NetworkTableUtilities.getNetworkTableInstance().waitForEntryListenerQueue(3);
   }
 
 }
