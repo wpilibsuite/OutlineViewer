@@ -35,7 +35,7 @@
                <children>
                   <Label id="modeLabel" text="Default Port" />
                   <Pane maxWidth="6.0" HBox.hgrow="ALWAYS" />
-                  <ToggleSwitch id="modeSwitch" fx:id="defaultPortSwitch" maxWidth="32.0" selected="true" />
+                  <ToggleSwitch id="defaultPortSwitch" fx:id="defaultPortSwitch" maxWidth="32.0" selected="true" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="5.0">
