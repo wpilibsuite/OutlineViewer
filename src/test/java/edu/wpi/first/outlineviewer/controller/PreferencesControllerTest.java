@@ -79,11 +79,20 @@ public class PreferencesControllerTest extends ApplicationTest {
   }
 
   @Test
-  void testPortValidation() {
+  void testPortValidationTextField() {
     FxHelper.runAndWait(() -> {
       ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
       ((TextField) lookup("#portField").query()).setText("0");
-      assertTrue(!lookup("OK").query().disableProperty().get());
+      assertFalse(controller.validPortProperty().get());
+    });
+  }
+
+  @Test
+  void testPortValidationButton() {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
+      ((TextField) lookup("#portField").query()).setText("0");
+      assertFalse(lookup("OK").query().disableProperty().get());
     });
   }
 }
