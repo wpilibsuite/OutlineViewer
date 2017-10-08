@@ -41,6 +41,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 
 /**
  * Controller for the main window.
@@ -251,6 +253,10 @@ public class MainWindowController {
   @FXML
   private void showPreferences() throws IOException {
     PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
+    dialog.initOwner(root.getScene().getWindow());
+    dialog.initModality(Modality.APPLICATION_MODAL);
+    dialog.initStyle(StageStyle.UTILITY);
+
     if (dialog.showAndWait().orElse(false)) {
       dialog.getController().save();
     }
