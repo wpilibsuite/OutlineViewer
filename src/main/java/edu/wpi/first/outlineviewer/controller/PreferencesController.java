@@ -1,7 +1,9 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.primitives.Ints;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
+import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,8 +14,6 @@ import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.decoration.StyleClassValidationDecoration;
-
-import java.util.Optional;
 
 /**
  * Controller for the app preferences pane.
@@ -28,10 +28,10 @@ public class PreferencesController {
   @FXML
   private TextField portField;
 
-  private BooleanProperty validPortProperty;
+  private final BooleanProperty invalidPortProperty;
 
   public PreferencesController() {
-    validPortProperty = new SimpleBooleanProperty(false);
+    invalidPortProperty = new SimpleBooleanProperty(false);
   }
 
   @FXML
@@ -58,7 +58,7 @@ public class PreferencesController {
     validator.setValidationDecorator(
         new StyleClassValidationDecoration("text-field-error",
             "text-field-warning"));
-    validator.registerValidator(portField, false, ((control, value) -> {
+    validator.registerValidator(portField, false, (control, value) -> {
       if (value instanceof String) {
         return ValidationResult.fromMessageIf(control,
             "Invalid port number",
@@ -70,10 +70,10 @@ public class PreferencesController {
           "Invalid port number",
           Severity.ERROR,
           false);
-    }));
+    });
 
     //Link the outward-facing valid port property to the validation code
-    validPortProperty.bind(validator.invalidProperty());
+    invalidPortProperty.bind(validator.invalidProperty());
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
@@ -108,19 +108,19 @@ public class PreferencesController {
   private Optional<Integer> validatePortNumber(String rawPortNumber) {
     Optional<Integer> portNum = Optional.empty();
 
-    try {
-      //Try to convert the port number into an Integer to validate
-      Integer val = Integer.valueOf(rawPortNumber);
-      if (val > 0 && val <= 65535) {
-        portNum = Optional.of(val);
-      }
-    } catch (Exception ignored) {
+    Integer val = Ints.tryParse(rawPortNumber);
+    if (val != null && val > 0 && val <= 65535) {
+      portNum = Optional.of(val);
     }
 
     return portNum;
   }
 
-  public BooleanProperty validPortProperty() {
-    return validPortProperty;
+  public boolean isInvalidPort() {
+    return invalidPortProperty.get();
+  }
+
+  public BooleanProperty invalidPortProperty() {
+    return invalidPortProperty;
   }
 }

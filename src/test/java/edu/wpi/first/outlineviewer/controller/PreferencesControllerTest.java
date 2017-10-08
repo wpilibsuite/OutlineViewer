@@ -76,16 +76,24 @@ public class PreferencesControllerTest extends ApplicationTest {
     FxHelper.runAndWait(() -> {
       ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
       ((TextField) lookup("#portField").query()).setText("0");
-      assertFalse(controller.validPortProperty().get());
     });
-  }
+    assertTrue(controller.isInvalidPort());
+    assertTrue(lookup("OK").query().isDisabled());
 
-  @Test
-  void testPortValidationButton() {
-    FxHelper.runAndWait(() -> {
-      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
-      ((TextField) lookup("#portField").query()).setText("0");
-      assertFalse(lookup("OK").query().disableProperty().get());
-    });
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("65535"));
+    assertFalse(controller.isInvalidPort());
+    assertFalse(lookup("OK").query().isDisabled());
+
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("65536"));
+    assertTrue(controller.isInvalidPort());
+    assertTrue(lookup("OK").query().isDisabled());
+
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("-1"));
+    assertTrue(controller.isInvalidPort());
+    assertTrue(lookup("OK").query().isDisabled());
+
+    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("+1"));
+    assertTrue(controller.isInvalidPort());
+    assertTrue(lookup("OK").query().isDisabled());
   }
 }

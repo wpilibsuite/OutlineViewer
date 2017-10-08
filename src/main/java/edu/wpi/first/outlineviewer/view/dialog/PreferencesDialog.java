@@ -36,7 +36,7 @@ public class PreferencesDialog extends Dialog<Boolean> {
     Arrays.stream(buttonTypes)
         .filter(btn -> btn.getButtonData().isDefaultButton())
         .map(btn -> getDialogPane().lookupButton(btn))
-        .forEach(btn -> btn.disableProperty().bind(controller.validPortProperty()));
+        .forEach(btn -> btn.disableProperty().bind(controller.invalidPortProperty()));
   }
 
   public PreferencesController getController() {
