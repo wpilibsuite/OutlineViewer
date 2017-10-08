@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.ToggleSwitch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.testfx.framework.junit5.ApplicationTest;
 
 public class PreferencesControllerTest extends ApplicationTest {
@@ -71,29 +73,23 @@ public class PreferencesControllerTest extends ApplicationTest {
     assertEquals("localhost", Preferences.getIp());
   }
 
-  @Test
-  void testPortValidationTextField() {
+  @ParameterizedTest
+  @CsvSource({"true, 0", "false, 65535", "true, 65536", "true, -1", "true, +1"})
+  void testPortValidationTextField(boolean result, String port) {
     FxHelper.runAndWait(() -> {
       ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
-      ((TextField) lookup("#portField").query()).setText("0");
+      ((TextField) lookup("#portField").query()).setText(port);
     });
-    assertTrue(controller.isInvalidPort());
-    assertTrue(lookup("OK").query().isDisabled());
+    assertEquals(result, controller.isInvalidPort());
+  }
 
-    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("65535"));
-    assertFalse(controller.isInvalidPort());
-    assertFalse(lookup("OK").query().isDisabled());
-
-    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("65536"));
-    assertTrue(controller.isInvalidPort());
-    assertTrue(lookup("OK").query().isDisabled());
-
-    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("-1"));
-    assertTrue(controller.isInvalidPort());
-    assertTrue(lookup("OK").query().isDisabled());
-
-    FxHelper.runAndWait(() -> ((TextField) lookup("#portField").query()).setText("+1"));
-    assertTrue(controller.isInvalidPort());
-    assertTrue(lookup("OK").query().isDisabled());
+  @ParameterizedTest
+  @CsvSource({"true, 0", "false, 65535", "true, 65536", "true, -1", "true, +1"})
+  void testPortValidationButton(boolean result, String port) {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
+      ((TextField) lookup("#portField").query()).setText(port);
+    });
+    assertEquals(result, lookup("OK").query().isDisabled());
   }
 }
