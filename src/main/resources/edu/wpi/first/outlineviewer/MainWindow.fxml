@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.layout.BorderPane?>
 <?import java.net.URL?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <BorderPane maxHeight="16000" maxWidth="16000"
             minHeight="400" minWidth="600"
             prefHeight="400.0" prefWidth="600.0"
@@ -18,6 +19,9 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File" id="fileMenu">
+                <MenuItem onAction="#loadState" text="Load state" id="loadStateButton" accelerator="SHORTCUT+O"/>
+                <MenuItem onAction="#saveState" text="Save state" id="saveStateButton" accelerator="SHORTCUT+S"/>
+                <SeparatorMenuItem />
                 <MenuItem onAction="#showPreferences" text="Preferences" id="preferencesMenuButton" accelerator="SHORTCUT+,"/>
                 <MenuItem onAction="#exitProgram" text="Exit" id="exitMenuButton" accelerator="SHORTCUT+q"/>
             </Menu>
