@@ -25,13 +25,6 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void start(Stage stage) throws Exception {
     Preferences.reset();
 
-    //    FXMLLoader loader
-    //        = new FXMLLoader(PreferencesDialog.class.getResource("PreferencesDialog.fxml"));
-    //    Pane pane = loader.load();
-    //    controller = loader.getController();
-    //    stage.setScene(new Scene(pane));
-    //    stage.show();
-
     PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
     controller = dialog.getController();
     stage.setScene(dialog.getDialogPane().getScene());
