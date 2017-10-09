@@ -22,6 +22,8 @@ public class PreferencesController {
   @FXML
   private ToggleSwitch serverModeSwitch;
   @FXML
+  private ToggleSwitch serverModeSwitch;
+  @FXML
   private TextField idField;
   @FXML
   private ToggleSwitch defaultPortSwitch;
@@ -46,6 +48,7 @@ public class PreferencesController {
 
     //When the user selects default port from non-default port we need to update the port number
     //and port text field to the default port number
+
     defaultPortSwitch.setOnMouseClicked(event -> {
       if (defaultPortSwitch.selectedProperty().get()) {
         Preferences.setPort(NetworkTableInstance.kDefaultPort);
@@ -74,6 +77,12 @@ public class PreferencesController {
 
     //Link the outward-facing valid port property to the validation code
     invalidPortProperty.bind(validator.invalidProperty());
+
+    defaultPortSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      if (defaultPortSwitch.selectedProperty().get()) {
+        portField.setText(String.valueOf(NetworkTableInstance.kDefaultPort));
+      }
+    });
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request

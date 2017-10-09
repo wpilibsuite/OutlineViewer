@@ -92,4 +92,15 @@ public class PreferencesControllerTest extends ApplicationTest {
     });
     assertEquals(result, lookup("OK").query().isDisabled());
   }
+
+  @Test
+  void testDefaultPortButton() {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).selectedProperty().set(false);
+      ((TextField) lookup("#portField").query()).setText("1234");
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).selectedProperty().set(true);
+    });
+    assertEquals(NetworkTableInstance.kDefaultPort,
+                 Integer.parseInt(((TextField) lookup("#portField").query()).getText()));
+  }
 }
