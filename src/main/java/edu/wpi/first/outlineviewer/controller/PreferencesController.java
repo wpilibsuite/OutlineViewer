@@ -13,19 +13,31 @@ import org.controlsfx.control.ToggleSwitch;
 public class PreferencesController {
 
   @FXML
+  private ToggleSwitch serverModeSwitch;
+  @FXML
   private TextField idField;
   @FXML
-  private TextField portField;
+  private ToggleSwitch defaultPortSwitch;
   @FXML
-  private ToggleSwitch serverModeSwitch;
+  private TextField portField;
 
   @FXML
   private void initialize() {
     idField.disableProperty().bind(serverModeSwitch.selectedProperty());
+    portField.disableProperty().bind(defaultPortSwitch.selectedProperty());
 
     idField.setText(Preferences.getIp());
     portField.setText(String.valueOf(Preferences.getPort()));
     serverModeSwitch.setSelected(Preferences.isServer());
+    defaultPortSwitch.setSelected(Preferences.getPort() == NetworkTableInstance.kDefaultPort);
+
+    //When the user selects default port from non-default port we need to update the port number
+    //and port text field to the default port number
+    defaultPortSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      if (defaultPortSwitch.selectedProperty().get()) {
+        portField.setText(String.valueOf(NetworkTableInstance.kDefaultPort));
+      }
+    });
 
     Platform.runLater(() -> {
       // If the id field is not disabled, request focus.  Otherwise, the port field should request
