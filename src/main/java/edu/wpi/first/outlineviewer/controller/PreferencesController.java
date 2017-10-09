@@ -22,8 +22,6 @@ public class PreferencesController {
   @FXML
   private ToggleSwitch serverModeSwitch;
   @FXML
-  private ToggleSwitch serverModeSwitch;
-  @FXML
   private TextField idField;
   @FXML
   private ToggleSwitch defaultPortSwitch;
