@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * A dialog for changing the app preferences.
@@ -29,6 +30,13 @@ public class PreferencesDialog extends Dialog<Boolean> {
     getDialogPane().getButtonTypes().addAll(buttonTypes);
     setResultConverter(buttonType -> !buttonType.getButtonData().isCancelButton());
     controller = loader.getController();
+
+    //Bind the disabled property of each button to the valid port property of the controller
+    //so user can't save with an invalid port
+    Arrays.stream(buttonTypes)
+        .filter(btn -> btn.getButtonData().isDefaultButton())
+        .map(btn -> getDialogPane().lookupButton(btn))
+        .forEach(btn -> btn.disableProperty().bind(controller.invalidPortProperty()));
   }
 
   public PreferencesController getController() {

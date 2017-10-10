@@ -1,23 +1,23 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.FxHelper;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.Preferences;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.controlsfx.control.ToggleSwitch;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.testfx.framework.junit5.ApplicationTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class PreferencesControllerTest extends ApplicationTest {
 
@@ -27,11 +27,9 @@ public class PreferencesControllerTest extends ApplicationTest {
   public void start(Stage stage) throws Exception {
     Preferences.reset();
 
-    FXMLLoader loader
-        = new FXMLLoader(PreferencesDialog.class.getResource("PreferencesDialog.fxml"));
-    Pane pane = loader.load();
-    controller = loader.getController();
-    stage.setScene(new Scene(pane));
+    PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
+    controller = dialog.getController();
+    stage.setScene(dialog.getDialogPane().getScene());
     stage.show();
   }
 
@@ -73,6 +71,26 @@ public class PreferencesControllerTest extends ApplicationTest {
     FxHelper.runAndWait(() -> ((TextField) lookup("#idField").query()).clear());
     controller.save();
     assertEquals("localhost", Preferences.getIp());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"true, 0", "false, 65535", "true, 65536", "true, -1", "true, +1"})
+  void testPortValidationTextField(boolean result, String port) {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
+      ((TextField) lookup("#portField").query()).setText(port);
+    });
+    assertEquals(result, controller.isInvalidPort());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"true, 0", "false, 65535", "true, 65536", "true, -1", "true, +1"})
+  void testPortValidationButton(boolean result, String port) {
+    FxHelper.runAndWait(() -> {
+      ((ToggleSwitch) lookup("#defaultPortSwitch").query()).setSelected(false);
+      ((TextField) lookup("#portField").query()).setText(port);
+    });
+    assertEquals(result, lookup("OK").query().isDisabled());
   }
 
   @Test

@@ -1,17 +1,24 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.primitives.Ints;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
+import java.util.Optional;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.ToggleSwitch;
+import org.controlsfx.validation.Severity;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.decoration.StyleClassValidationDecoration;
 
 /**
  * Controller for the app preferences pane.
  */
 public class PreferencesController {
-
   @FXML
   private ToggleSwitch serverModeSwitch;
   @FXML
@@ -20,6 +27,12 @@ public class PreferencesController {
   private ToggleSwitch defaultPortSwitch;
   @FXML
   private TextField portField;
+
+  private final BooleanProperty invalidPortProperty;
+
+  public PreferencesController() {
+    invalidPortProperty = new SimpleBooleanProperty(false);
+  }
 
   @FXML
   private void initialize() {
@@ -33,6 +46,36 @@ public class PreferencesController {
 
     //When the user selects default port from non-default port we need to update the port number
     //and port text field to the default port number
+
+    defaultPortSwitch.selectedProperty().addListener((observable, newValue, oldValue) -> {
+      if (defaultPortSwitch.selectedProperty().get()) {
+        Preferences.setPort(NetworkTableInstance.kDefaultPort);
+        portField.setText(String.valueOf(Preferences.getPort()));
+      }
+    });
+
+    //Display error message when the current port number is invalid
+    ValidationSupport validator = new ValidationSupport();
+    validator.setValidationDecorator(
+        new StyleClassValidationDecoration("text-field-error",
+            "text-field-warning"));
+    validator.registerValidator(portField, false, (control, value) -> {
+      if (value instanceof String) {
+        return ValidationResult.fromMessageIf(control,
+            "Invalid port number",
+            Severity.ERROR,
+            !validatePortNumber((String) value).isPresent());
+      }
+
+      return ValidationResult.fromMessageIf(control,
+          "Invalid port number",
+          Severity.ERROR,
+          false);
+    });
+
+    //Link the outward-facing valid port property to the validation code
+    invalidPortProperty.bind(validator.invalidProperty());
+
     defaultPortSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
       if (defaultPortSwitch.selectedProperty().get()) {
         portField.setText(String.valueOf(NetworkTableInstance.kDefaultPort));
@@ -51,8 +94,10 @@ public class PreferencesController {
    * Starts running ntcore in the selected mode.
    */
   public void save() {
-    if (portField.getText().matches("[0-9]+")) {
-      Preferences.setPort(Integer.parseInt(portField.getText()));
+    Optional<Integer> portNum = validatePortNumber(portField.getText());
+
+    if (portNum.isPresent()) {
+      Preferences.setPort(portNum.get());
     } else {
       Preferences.setPort(NetworkTableInstance.kDefaultPort);
     }
@@ -67,4 +112,22 @@ public class PreferencesController {
     Preferences.setServer(serverModeSwitch.isSelected());
   }
 
+  private Optional<Integer> validatePortNumber(String rawPortNumber) {
+    Optional<Integer> portNum = Optional.empty();
+
+    Integer val = Ints.tryParse(rawPortNumber);
+    if (val != null && val > 0 && val <= 65535) {
+      portNum = Optional.of(val);
+    }
+
+    return portNum;
+  }
+
+  public boolean isInvalidPort() {
+    return invalidPortProperty.get();
+  }
+
+  public BooleanProperty invalidPortProperty() {
+    return invalidPortProperty;
+  }
 }

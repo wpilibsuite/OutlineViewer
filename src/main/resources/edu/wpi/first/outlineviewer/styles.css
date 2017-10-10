@@ -49,3 +49,14 @@
 .list-cell:even:selected, .list-cell:odd:selected {
     -fx-background-color: #2196F3;
 }
+
+.text-field-error {
+    -fx-text-box-border: rgba(255, 0, 0, 0.6);
+    -fx-focus-color: rgba(255, 0, 0, 0.6);
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field-warning {
+    -fx-text-box-border: yellow;
+    -fx-focus-color: yellow;
+}
