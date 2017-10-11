@@ -24,9 +24,9 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 public class TreeEntryTreeTableCellTest extends ApplicationTest {
 
-  private TreeItem<TreeRow> root;
-  private TreeTableColumn<TreeRow, Object> valueColumn;
-  private TreeTableView<TreeRow> treeTableView;
+  TreeItem<TreeRow> root;
+  TreeTableColumn<TreeRow, Object> valueColumn;
+  TreeTableView<TreeRow> treeTableView;
 
   @Override
   public void start(Stage stage) throws Exception {

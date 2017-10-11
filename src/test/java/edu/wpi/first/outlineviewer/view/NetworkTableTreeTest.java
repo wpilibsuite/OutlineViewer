@@ -18,8 +18,8 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class NetworkTableTreeTest extends ApplicationTest {
 
-  private NetworkTableTree tree;
-  private TreeItem<TreeRow> root;
+  NetworkTableTree tree;
+  TreeItem<TreeRow> root;
 
   @AfterEach
   void shutdown() {
@@ -150,7 +150,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   /**
    * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
    */
-  private static void waitForNtcoreEvents() {
+  static void waitForNtcoreEvents() {
     NetworkTableUtilities.getNetworkTableInstance().waitForEntryListenerQueue(3);
   }
 
