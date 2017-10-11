@@ -22,7 +22,6 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
   private Control editor;
   private Node graphic;
   private String text;
-  private boolean canEdit;
   private AddEntryDialog<?> arrayEditor;
 
   public TreeEntryTreeTableCell() {
@@ -43,7 +42,6 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
     setGraphic(null);
     setText(null);
 
-    canEdit = true; // assume it's editable; if it's not, we'll set it later
     arrayEditor = null; // will get set later if item is an array
     if (item instanceof Boolean) {
       CheckBox checkBox = new CheckBox();
@@ -95,9 +93,6 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-    } else {
-      // not editable
-      canEdit = false;
     }
 
     setText(entry.getValue().toString());
@@ -105,9 +100,6 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
 
   @Override
   public void startEdit() {
-    if (!canEdit) {
-      return;
-    }
     super.startEdit();
     if (arrayEditor == null) {
       graphic = getGraphic();
