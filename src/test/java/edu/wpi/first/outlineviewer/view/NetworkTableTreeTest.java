@@ -1,7 +1,6 @@
 package edu.wpi.first.outlineviewer.view;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.model.NetworkTableTreeRow;
@@ -9,16 +8,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class NetworkTableTreeTest extends ApplicationTest {
 
+  private NetworkTableTree tree;
   private TreeItem<TreeRow> root;
 
   @AfterEach
@@ -30,7 +30,7 @@ public class NetworkTableTreeTest extends ApplicationTest {
   public void start(Stage stage) throws Exception {
     NetworkTableUtilities.createNewNetworkTableInstance();
 
-    NetworkTableTree tree = new NetworkTableTree(NetworkTableUtilities.getNetworkTableInstance());
+    tree = new NetworkTableTree(NetworkTableUtilities.getNetworkTableInstance());
     root = new TreeItem<>(
         new NetworkTableTreeRow(NetworkTableUtilities.getNetworkTableInstance().getTable("")));
     root.setExpanded(true);
@@ -40,84 +40,118 @@ public class NetworkTableTreeTest extends ApplicationTest {
   }
 
   @Test
-  void testAddSimpleEntry() {
-    final String key = "/key";
-    final String value = "testAddSimpleEntry";
-    NetworkTableUtilities.getNetworkTableInstance().getEntry(key).setString(value);
+  void testsetNetworkTableInstance() {
+    NetworkTableUtilities.createNewNetworkTableInstance();
 
-    waitForNtcoreEvents();
-    waitForFxEvents();
-
-    assertEquals(1, root.getChildren().size());
-    TreeItem<TreeRow> item = root.getChildren().get(0);
-
-    assertEquals(key, item.getValue().getKey());
-    assertEquals(value, item.getValue().getValue());
+    tree.setNetworkTableInstance(NetworkTableUtilities.getNetworkTableInstance());
   }
 
-  @Test
-  void testAddNested() {
-    final String tableName = "/nested";
-    final String entryName = "/key";
-    final String value = "testAddNested";
-    NetworkTableUtilities.getNetworkTableInstance()
-        .getEntry(NetworkTableUtilities.concat(tableName, entryName))
-        .setString(value);
+  @Nested
+  class SimpleEntryTests {
 
-    waitForNtcoreEvents();
-    waitForFxEvents();
+    @Test
+    void testAddEntryKey() {
+      NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry("key");
+      entry.setString("testAddEntryKey");
 
-    assertEquals(1, root.getChildren().size());
-    TreeItem<TreeRow> tableEntry = root.getChildren().get(0);
-    assertThat(tableEntry.getValue(), instanceOf(NetworkTableTreeRow.class));
-    //assertThat(tableEntry.getValue().getKey(), is(tableName));
-    assertEquals(1, tableEntry.getChildren().size());
+      waitForNtcoreEvents();
+      waitForFxEvents();
 
-    TreeItem<TreeRow> realEntry = tableEntry.getChildren().get(0);
-    TreeRow entry = realEntry.getValue();
-    assertEquals(NetworkTableUtilities.concat(tableName, entryName), entry.getKey());
-    assertEquals(value, entry.getValue());
+      assertEquals(entry.getName(), root.getChildren().get(0).getValue().getKey());
+    }
+
+    @Test
+    void testAddEntryValue() {
+      NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry("key");
+      entry.setString("testAddEntryValue");
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      assertEquals(entry.getValue().getString(), root.getChildren().get(0).getValue().getValue());
+    }
+
+    @Test
+    void testUpdateEntryValue() {
+      NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry("key");
+      entry.setString("testAddEntryValue");
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      entry.setString("updatedValue");
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      assertEquals(entry.getValue().getString(), root.getChildren().get(0).getValue().getValue());
+    }
+
+    @Test
+    void testDeleteEntry() {
+      NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry("key");
+      entry.setString("testDeleteEntry");
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      entry.delete();
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      assertEquals(0, root.getChildren().size());
+    }
   }
 
-  @Test
-  void testDeleteSimpleEntry() {
-    final String key = "/key";
-    testAddSimpleEntry();
-    NetworkTableUtilities.getNetworkTableInstance().getEntry(key).delete();
+  @Nested
+  class NestedEntryTests {
 
-    waitForNtcoreEvents();
-    waitForFxEvents();
-    assertEquals(0, root.getChildren().size());
-  }
+    @Test
+    void testAddNested() {
+      NetworkTableEntry entry
+          = NetworkTableUtilities.getNetworkTableInstance().getEntry("nested/key");
+      entry.setString("some value");
 
-  @Test
-  void testDeleteNestedEntryWithSiblings() {
-    final String keyToDelete = "/nested/deleteme";
-    final String keyToKeep = "/nested/keepme";
-    NetworkTableEntry entry = NetworkTableUtilities.getNetworkTableInstance().getEntry(keyToDelete);
-    entry.setString("");
-    NetworkTableUtilities.getNetworkTableInstance().getEntry(keyToKeep).setString("");
+      waitForNtcoreEvents();
+      waitForFxEvents();
 
-    waitForNtcoreEvents();
-    waitForFxEvents();
+      assertAll(
+          () -> assertEquals(1, root.getChildren().size()),
+          () -> assertEquals("/nested/", root.getChildren().get(0).getValue().getKey()),
+          () -> assertEquals(1, root.getChildren().get(0).getChildren().size()),
+          () -> assertEquals("nested/key",
+              root.getChildren().get(0).getChildren().get(0).getValue().getKey())
+      );
+    }
 
-    entry.delete();
-    waitForNtcoreEvents();
-    waitForFxEvents();
+    @Test
+    void testDeleteNested() {
+      NetworkTableEntry entry
+          = NetworkTableUtilities.getNetworkTableInstance().getEntry("nested/key");
+      entry.setString("some value");
 
-    assertEquals(1, root.getChildren().size());
-    TreeItem<TreeRow> tableItem = root.getChildren().get(0);
-    assertEquals(1, tableItem.getChildren().size());
-    TreeRow onlyChild = tableItem.getChildren().get(0).getValue();
-    assertEquals(keyToKeep, onlyChild.getKey());
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      entry.delete();
+
+      waitForNtcoreEvents();
+      waitForFxEvents();
+
+      assertAll(
+          () -> assertEquals(1, root.getChildren().size()),
+          () -> assertEquals("/nested/", root.getChildren().get(0).getValue().getKey()),
+          () -> assertEquals(0, root.getChildren().get(0).getChildren().size())
+      );
+    }
   }
 
   /**
    * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
    */
-  private void waitForNtcoreEvents() {
-    NetworkTablesJNI
-        .waitForEntryListenerQueue(NetworkTableUtilities.getNetworkTableInstance().getHandle(), -1);
+  private static void waitForNtcoreEvents() {
+    NetworkTableUtilities.getNetworkTableInstance().waitForEntryListenerQueue(3);
   }
 
 }
