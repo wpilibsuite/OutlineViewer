@@ -5,6 +5,7 @@ import org.gradle.api.plugins.quality.FindBugs
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.junit.platform.console.options.Details
 
 buildscript {
     repositories {
@@ -148,11 +149,11 @@ afterEvaluate {
 }
 
 /*
-     * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless argument
-     */
+ * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless argument
+ */
 if (project.hasProperty("jenkinsBuild") || project.hasProperty("headless")) {
-    println("Running UI Tests Headless")
     junitPlatform {
+        details = Details.VERBOSE
         filters {
             tags {
                 /*
