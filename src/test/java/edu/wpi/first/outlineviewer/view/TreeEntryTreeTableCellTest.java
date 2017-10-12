@@ -17,7 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -47,8 +46,7 @@ public class TreeEntryTreeTableCellTest extends ApplicationTest {
   }
 
   @Test
-  @Disabled
-  void invalidTest() throws Exception {
+  void invalidTest() {
     TreeRow row = new TreeRow("", new Object());
     TreeItem<TreeRow> item = new TreeItem<>(row);
     root.getChildren().add(new TreeItem<>(row));
@@ -56,8 +54,6 @@ public class TreeEntryTreeTableCellTest extends ApplicationTest {
     waitForFxEvents();
 
     FxHelper.runAndWait(() -> treeTableView.edit(treeTableView.getRow(item), valueColumn));
-
-    Thread.sleep(5000);
   }
 
   @Nested
