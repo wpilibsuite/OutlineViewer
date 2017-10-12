@@ -39,6 +39,19 @@ spotless {
     kotlinGradle {
         // Configure the formatting of the Gradle Kotlin DSL files (*.gradle.kts)
         ktlint("0.9.1")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    freshmark {
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    format("extraneous") {
+        target("src/**/*.fxml", "src/**/*.css", "*.xml", "*.yml")
+        trimTrailingWhitespace()
+        indentWithSpaces()
         endWithNewline()
     }
 }
