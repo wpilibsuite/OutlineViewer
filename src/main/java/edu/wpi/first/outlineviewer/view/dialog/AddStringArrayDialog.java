@@ -1,8 +1,8 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
+import edu.wpi.first.outlineviewer.model.EditableTextFieldListCell;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -17,12 +17,12 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<String, String[]> 
 
   @Override
   protected String getDefaultItem() {
-    return "change me!";
+    return "String Array";
   }
 
   @Override
   protected Callback<ListView<String>, ListCell<String>> getCellFactory() {
-    return __ -> new TextFieldListCell<>(StringToStringConverter.INSTANCE);
+    return __ -> new EditableTextFieldListCell<>(StringToStringConverter.INSTANCE);
   }
 
   @Override

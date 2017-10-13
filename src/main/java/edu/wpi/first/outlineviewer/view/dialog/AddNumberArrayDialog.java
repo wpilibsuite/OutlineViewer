@@ -1,8 +1,8 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
+import edu.wpi.first.outlineviewer.model.EditableTextFieldListCell;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -30,7 +30,7 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Number, Number[]> 
 
   @Override
   protected Callback<ListView<Number>, ListCell<Number>> getCellFactory() {
-    return __ -> new TextFieldListCell<>(DoubleToStringConverter.INSTANCE);
+    return __ -> new EditableTextFieldListCell<>(DoubleToStringConverter.INSTANCE);
   }
 
   @Override
@@ -44,7 +44,9 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Number, Number[]> 
 
     @Override
     public String toString(Number object) {
-      if (object.doubleValue() == object.intValue()) {
+      if (object == null) {
+        return null;
+      } else if (object.doubleValue() == object.intValue()) {
         return String.valueOf(object.intValue());
       } else {
         return String.valueOf(object.doubleValue());
