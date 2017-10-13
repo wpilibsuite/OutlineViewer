@@ -82,13 +82,13 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
       setText(Arrays.toString((String[]) entry.getValue()));
-    } else if (item instanceof Number[]) {
+    } else if (item instanceof double[]) {
       AddNumberArrayDialog dialog = new AddNumberArrayDialog();
-      dialog.setInitial((Number[]) item);
+      dialog.setInitial((double[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-      setText(Arrays.toString((Number[]) entry.getValue()));
+      setText(Arrays.toString((double[]) item));
     } else if (item instanceof boolean[]) {
       AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
       dialog.setInitial((boolean[]) item);

@@ -9,16 +9,16 @@ import javafx.util.StringConverter;
 /**
  * A dialog for adding or editing arrays of numbers in a network table entry.
  */
-public class AddNumberArrayDialog extends AddEntryArrayDialog<Number, Number[]> {
+public class AddNumberArrayDialog extends AddEntryArrayDialog<Double, double[]> {
 
   public AddNumberArrayDialog() {
     super("Number Array");
   }
 
   @Override
-  public void setInitial(Number[] initialValues) {
+  public void setInitial(double[] initialValues) {
     list.getItems().clear();
-    for (Number value : initialValues) {
+    for (Double value : initialValues) {
       list.getItems().add(value);
     }
   }
@@ -29,22 +29,22 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Number, Number[]> 
   }
 
   @Override
-  protected Callback<ListView<Number>, ListCell<Number>> getCellFactory() {
+  protected Callback<ListView<Double>, ListCell<Double>> getCellFactory() {
     return __ -> new TextFieldListCell<>(DoubleToStringConverter.INSTANCE);
   }
 
   @Override
-  protected Number[] getData() {
-    return list.getItems().toArray(new Number[0]);
+  protected double[] getData() {
+    return list.getItems().stream().mapToDouble(Double::doubleValue).toArray();
   }
 
-  private static final class DoubleToStringConverter extends StringConverter<Number> {
+  private static final class DoubleToStringConverter extends StringConverter<Double> {
 
-    static final StringConverter<Number> INSTANCE = new DoubleToStringConverter();
+    static final StringConverter<Double> INSTANCE = new DoubleToStringConverter();
 
     @Override
-    public String toString(Number object) {
-      if (object.doubleValue() == object.intValue()) {
+    public String toString(Double object) {
+      if (object == object.intValue()) {
         return String.valueOf(object.intValue());
       } else {
         return String.valueOf(object.doubleValue());
