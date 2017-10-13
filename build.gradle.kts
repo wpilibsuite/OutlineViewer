@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.quality.FindBugs
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 buildscript {
     repositories {
@@ -180,7 +181,10 @@ publishing {
         create<MavenPublication>("OutlineViewer") {
             artifactId = "OutlineViewer"
             getWPILibVersion()?.let { version = it }
-            shadow.component(this)
+            val shadowJar: ShadowJar by tasks
+            artifact (shadowJar) {
+                classifier = null
+            }
         }
     }
 }
