@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.Preferences;
 import javafx.application.Platform;
@@ -25,9 +26,19 @@ public class ConnectionIndicatorController {
   @FXML
   private Label connectionLabel;
 
+  private NetworkTableInstance networkTableInstance;
+
+  public ConnectionIndicatorController() {
+    this(NetworkTableUtilities.getNetworkTableInstance());
+  }
+
+  public ConnectionIndicatorController(NetworkTableInstance networkTableInstance) {
+    this.networkTableInstance = networkTableInstance;
+  }
+
   @FXML
   private void initialize() {
-    NetworkTableUtilities.getNetworkTableInstance().addConnectionListener(listener
+    networkTableInstance.addConnectionListener(listener
         -> updateConnectionLabel(), true);
     Preferences.serverProperty().addListener(__ -> updateConnectionLabel());
     Executors.newSingleThreadScheduledExecutor(r -> {
@@ -45,19 +56,19 @@ public class ConnectionIndicatorController {
       Platform.runLater(this::updateConnectionLabel);
       return;
     }
-    if (NetworkTableUtilities.isRunning()) {
-      if (NetworkTableUtilities.isServer()) {
-        if (NetworkTableUtilities.failed()) {
+    if (NetworkTableUtilities.isRunning(networkTableInstance)) {
+      if (NetworkTableUtilities.isServer(networkTableInstance)) {
+        if (NetworkTableUtilities.failed(networkTableInstance)) {
           serverFail();
-        } else if (NetworkTableUtilities.starting()) {
+        } else if (NetworkTableUtilities.starting(networkTableInstance)) {
           serverStarting();
         } else { // success
           serverSuccess();
         }
-      } else if (NetworkTableUtilities.isClient()) {
-        if (NetworkTableUtilities.failed()) {
+      } else if (NetworkTableUtilities.isClient(networkTableInstance)) {
+        if (NetworkTableUtilities.failed(networkTableInstance)) {
           clientFail();
-        } else if (NetworkTableUtilities.starting()) {
+        } else if (NetworkTableUtilities.starting(networkTableInstance)) {
           clientStarting();
         } else { // success
           clientSuccess();

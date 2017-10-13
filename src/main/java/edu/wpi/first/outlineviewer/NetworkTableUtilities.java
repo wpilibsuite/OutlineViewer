@@ -3,6 +3,7 @@ package edu.wpi.first.outlineviewer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableType;
 
 /**
  * Utility methods for working with network tables.
@@ -130,7 +131,7 @@ public final class NetworkTableUtilities {
   /**
    * Checks if ntcore is currently running.
    */
-  public static boolean isRunning() {
+  public static boolean isRunning(NetworkTableInstance networkTableInstance) {
     return networkTableInstance.getNetworkMode() != 0;
   }
 
@@ -139,28 +140,28 @@ public final class NetworkTableUtilities {
    * requested server port is already in use (server mode) or if the app can't find a server
    * at the requested address (client mode).
    */
-  public static boolean failed() {
+  public static boolean failed(NetworkTableInstance networkTableInstance) {
     return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeFailure);
   }
 
   /**
    * Checks if ntcore is currently starting up the client or server.
    */
-  public static boolean starting() {
+  public static boolean starting(NetworkTableInstance networkTableInstance) {
     return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeStarting);
   }
 
   /**
    * Checks if ntcore is currently running in server mode.
    */
-  public static boolean isServer() {
+  public static boolean isServer(NetworkTableInstance networkTableInstance) {
     return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeServer);
   }
 
   /**
    * Checks if ntcore is currently running in client mode.
    */
-  public static boolean isClient() {
+  public static boolean isClient(NetworkTableInstance networkTableInstance) {
     return hasFlag(networkTableInstance.getNetworkMode(), NetworkTableInstance.kNetModeClient);
   }
 

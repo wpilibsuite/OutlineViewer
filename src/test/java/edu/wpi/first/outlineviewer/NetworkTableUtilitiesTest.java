@@ -28,27 +28,27 @@ class NetworkTableUtilitiesTest extends UtilityClassTest {
   void isRunningTest() {
     NetworkTableUtilities.setServer(9999);
 
-    assertTrue(NetworkTableUtilities.isRunning());
+    assertTrue(NetworkTableUtilities.isRunning(NetworkTableUtilities.getNetworkTableInstance()));
   }
 
   @Test
   void startingTest() {
     NetworkTableUtilities.setClient("localhost", 9999); // Should never connect
-    assertTrue(NetworkTableUtilities.starting());
+    assertTrue(NetworkTableUtilities.starting(NetworkTableUtilities.getNetworkTableInstance()));
   }
 
   @Test
   void testServer() {
     NetworkTableUtilities.setServer(9999);
 
-    assertTrue(NetworkTableUtilities.isServer());
+    assertTrue(NetworkTableUtilities.isServer(NetworkTableUtilities.getNetworkTableInstance()));
   }
 
   @Test
   void testClient() {
     NetworkTableUtilities.setClient("localhost", 9999);
 
-    assertTrue(NetworkTableUtilities.isClient());
+    assertTrue(NetworkTableUtilities.isClient(NetworkTableUtilities.getNetworkTableInstance()));
   }
 
   @Test
@@ -56,7 +56,7 @@ class NetworkTableUtilitiesTest extends UtilityClassTest {
     // TODO: This could be a better test if ntcore provided a way to access the IP list
     NetworkTableUtilities.setClient("190", 9999);
 
-    assertTrue(NetworkTableUtilities.isClient());
+    assertTrue(NetworkTableUtilities.isClient(NetworkTableUtilities.getNetworkTableInstance()));
   }
 
   @Test

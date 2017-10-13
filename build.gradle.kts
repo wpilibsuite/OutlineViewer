@@ -81,6 +81,7 @@ dependencies {
     testCompile(testFx(name = "testfx-core", version = "4.0.7-alpha"))
     testCompile(testFx(name = "testfx-junit5", version = "4.0.6-alpha"))
     testCompile(group = "com.google.guava", name = "guava-testlib", version = "23.0")
+    testCompile(group = "org.mockito", name = "mockito-core", version = "2.10.0")
 
     testRuntime(testFx(name = "openjfx-monocle", version = "8u76-b04"))
     testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
