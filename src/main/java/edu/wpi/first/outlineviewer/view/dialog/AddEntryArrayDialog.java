@@ -13,7 +13,7 @@ import javafx.util.Callback;
  */
 public abstract class AddEntryArrayDialog<T, A> extends AddEntryDialog<A> {
 
-  ListView<T> list;
+  protected ListView<T> list;
 
   AddEntryArrayDialog(String typeName) {
     super(typeName);
