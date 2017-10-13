@@ -6,6 +6,7 @@ import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddEntryDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddNumberArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
+import java.util.Arrays;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
@@ -56,10 +57,12 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
         }
         commitEdit(checkBox.isSelected());
       });
+      setText(entry.getValue().toString());
     } else if (item instanceof String) {
       TextField field = new TextField((String) item);
       field.setOnAction(e -> commitEdit(field.getText()));
       editor = field;
+      setText(entry.getValue().toString());
     } else if (item instanceof Number) {
       TextField field = new TextField(entry.getValue().toString());
       field.setOnAction(e -> {
@@ -71,36 +74,39 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
         }
       });
       editor = field;
+      setText(entry.getValue().toString());
     } else if (item instanceof String[]) {
       AddStringArrayDialog dialog = new AddStringArrayDialog();
       dialog.setInitial((String[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+      setText(Arrays.toString((String[]) entry.getValue()));
     } else if (item instanceof Number[]) {
       AddNumberArrayDialog dialog = new AddNumberArrayDialog();
       dialog.setInitial((Number[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+      setText(Arrays.toString((Number[]) entry.getValue()));
     } else if (item instanceof boolean[]) {
       AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
       dialog.setInitial((boolean[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+      setText(Arrays.toString((boolean[]) entry.getValue()));
     } else if (item instanceof byte[]) {
       AddBytesDialog dialog = new AddBytesDialog();
       dialog.setInitial((byte[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
+      setText(Arrays.toString((byte[]) entry.getValue()));
     } else {
       // not editable
       canEdit = false;
     }
-
-    setText(entry.getValue().toString());
   }
 
   @Override
