@@ -3,7 +3,6 @@ package edu.wpi.first.outlineviewer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableType;
 
 /**
  * Utility methods for working with network tables.

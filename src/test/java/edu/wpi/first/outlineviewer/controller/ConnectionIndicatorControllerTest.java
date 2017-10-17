@@ -91,6 +91,7 @@ public class ConnectionIndicatorControllerTest extends ApplicationTest {
 
     assertEquals(expectedText, getConnectionLabel().getText());
   }
+
   private Label getConnectionLabel() {
     return lookup(".connection-label").query();
   }
