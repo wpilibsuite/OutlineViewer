@@ -11,7 +11,7 @@ import javafx.scene.input.TransferMode;
 public class DraggableCell<T> extends ListCell<T> {
 
   private static final DataFormat T_FORMAT = new DataFormat("GENERIC");
-  private long time;
+  private final long time;
 
   public DraggableCell() {
     time = System.nanoTime();
@@ -64,8 +64,8 @@ public class DraggableCell<T> extends ListCell<T> {
         int draggedIdx = items.indexOf(content);
         int thisIdx = items.indexOf(getItem());
 
-        System.out.println("drag index: " + draggedIdx + ", this index: " + thisIdx);
-        items.forEach(val -> System.out.println(val.hashCode()));
+        //        System.out.println("drag index: " + draggedIdx + ", this index: " + thisIdx);
+        //        items.forEach(val -> System.out.println(val.hashCode()));
 
         items.set(draggedIdx, getItem());
         items.set(thisIdx, content);
@@ -81,15 +81,15 @@ public class DraggableCell<T> extends ListCell<T> {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object other) {
+    if (this == other) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (other == null || getClass() != other.getClass()) {
       return false;
     }
 
-    DraggableCell<?> that = (DraggableCell<?>) o;
+    DraggableCell<?> that = (DraggableCell<?>) other;
 
     return time == that.time;
   }

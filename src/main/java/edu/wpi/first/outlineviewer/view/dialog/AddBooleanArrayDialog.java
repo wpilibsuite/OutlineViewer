@@ -30,13 +30,12 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Boolean, Boolean[
 
   @Override
   protected Callback<ListView<Boolean>, ListCell<Boolean>> getCellFactory() {
-    return param -> new ToggleSwitchListCell();
-//    return __ -> new ToggleSwitchListCell();
+    return __ -> new ToggleSwitchListCell();
   }
 
   @Override
   protected Boolean[] getData() {
-//    return Booleans.toArray(list.getItems());
+    //return Booleans.toArray(list.getItems());
     return list.getItems().toArray(new Boolean[list.getItems().size()]);
   }
 
