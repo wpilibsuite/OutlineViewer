@@ -1,5 +1,7 @@
 package edu.wpi.first.outlineviewer.view;
 
+import static edu.wpi.first.outlineviewer.NetworkTableUtilities.simpleKey;
+
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
@@ -11,8 +13,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
-
-import static edu.wpi.first.outlineviewer.NetworkTableUtilities.simpleKey;
 
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
@@ -83,9 +83,9 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
-    } else if (item instanceof boolean[]) {
+    } else if (item instanceof Boolean[]) {
       AddBooleanArrayDialog dialog = new AddBooleanArrayDialog();
-      dialog.setInitial((boolean[]) item);
+      dialog.setInitial((Boolean[]) item);
       arrayEditor = dialog;
       arrayEditor.setKey(entry.getKey());
       arrayEditor.setTitle(String.format("Edit '%s'", simpleKey(entry.getKey())));
