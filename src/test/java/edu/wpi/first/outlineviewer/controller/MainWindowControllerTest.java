@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -91,6 +92,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
+  @Tag("NonHeadlessTests")
   void testDeleteItemsKey() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")
@@ -103,6 +105,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
+  @Tag("NonHeadlessTests")
   void testDeleteItemsMenu() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")
