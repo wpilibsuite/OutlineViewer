@@ -28,7 +28,7 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Numb
 
   @Override
   protected Pair<Integer, Number> getDefaultItem() {
-    return new Pair<>(0, 0.0);
+    return new Pair<>(list.getItems().size() + 1, 0.0);
   }
 
   @Override
