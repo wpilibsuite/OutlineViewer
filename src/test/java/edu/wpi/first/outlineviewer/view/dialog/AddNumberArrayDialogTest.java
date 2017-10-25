@@ -47,13 +47,13 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   void testToStringConverter() {
     final double test = 654.321;
-    ListView listView = lookup(ListViewMatchers.isEmpty()).query();
+    ListView<Pair<Integer, Double>> listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");
 
     doubleClickOn((Node) from(listView).lookup(".list-cell").query()).press(KeyCode.DELETE)
         .write(String.valueOf(test)).type(KeyCode.ENTER);
 
-    assertEquals(test, listView.getItems().get(0));
+    assertEquals(Double.valueOf(test), listView.getItems().get(0).getValue());
   }
 
 }
