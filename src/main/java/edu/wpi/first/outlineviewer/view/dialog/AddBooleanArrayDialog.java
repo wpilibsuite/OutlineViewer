@@ -28,7 +28,7 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boo
 
   @Override
   protected Pair<Integer, Boolean> getDefaultItem() {
-    return new Pair<>(0, false);
+    return new Pair<>(list.getItems().size() + 1, false);
   }
 
   @Override
