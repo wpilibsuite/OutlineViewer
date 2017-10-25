@@ -1,13 +1,18 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
+import com.google.common.primitives.Doubles;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
+import javafx.util.Pair;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDialog> {
 
@@ -21,7 +26,13 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
     final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    assertArrayEquals(test, ((ListView) lookup(".list-view").query()).getItems().toArray());
+    Assertions.assertArrayEquals(
+        Doubles.toArray(Arrays.stream(test)
+            .collect(Collectors.toList())),
+        Doubles.toArray(((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+            .getItems().stream()
+            .map(Pair::getValue)
+            .collect(Collectors.toList())));
   }
 
   @Test
