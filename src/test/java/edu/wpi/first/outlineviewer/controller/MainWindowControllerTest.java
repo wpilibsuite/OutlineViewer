@@ -4,6 +4,7 @@ import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
 import edu.wpi.first.outlineviewer.OutlineViewer;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
@@ -11,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -78,4 +80,29 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
     assertTrue(listWindows().isEmpty());
   }
+
+  @Test
+  void testDeleteItemsKey() {
+    clickOn("Root", MouseButton.SECONDARY)
+        .clickOn("Add boolean")
+        .type(KeyCode.Z, KeyCode.Z)
+        .clickOn("Add")
+        .clickOn("zz")
+        .type(KeyCode.DELETE);
+    waitForFxEvents();
+    assertFalse(lookup("zz").tryQuery().isPresent());
+  }
+
+  @Test
+  void testDeleteItemsMenu() {
+    clickOn("Root", MouseButton.SECONDARY)
+        .clickOn("Add boolean")
+        .type(KeyCode.Z, KeyCode.Z)
+        .clickOn("Add")
+        .clickOn("zz", MouseButton.SECONDARY)
+        .clickOn("Delete");
+    waitForFxEvents();
+    assertFalse(lookup("zz").tryQuery().isPresent());
+  }
+
 }
