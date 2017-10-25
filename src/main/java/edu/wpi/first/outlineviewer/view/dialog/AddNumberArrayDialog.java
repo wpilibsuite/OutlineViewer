@@ -18,6 +18,7 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Numb
   }
 
   @Override
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public void setInitial(Number[] initialValues) {
     list.getItems().clear();
     int index = 0;

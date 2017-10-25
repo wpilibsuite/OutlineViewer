@@ -38,7 +38,7 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
   }
 
   @Override
-  @SuppressWarnings("PMD.UseVarargs")
+  @SuppressWarnings({"PMD.UseVarargs", "PMD.AvoidInstantiatingObjectsInLoops"})
   public void setInitial(String[] initialValues) {
     list.getItems().clear();
     int index = 0;
