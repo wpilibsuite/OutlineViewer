@@ -40,9 +40,11 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boo
   @Override
   protected Boolean[] getData() {
     //return Booleans.toArray(list.getItems());
-    return list.getItems().stream()
+    return list.getItems()
+        .stream()
         .map(Pair::getValue)
-        .collect(Collectors.toList()).toArray(new Boolean[list.getItems().size()]);
+        .collect(Collectors.toList())
+        .toArray(new Boolean[list.getItems().size()]);
   }
 
 }

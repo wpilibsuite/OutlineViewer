@@ -1,38 +1,25 @@
-package edu.wpi.first.outlineviewer.model;
+package edu.wpi.first.outlineviewer.view;
 
-import edu.wpi.first.outlineviewer.view.DraggableCell;
+import edu.wpi.first.outlineviewer.model.IndexedStringConverter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Cell;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.KeyCode;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
-import javafx.util.converter.DefaultStringConverter;
+import javafx.util.Pair;
 
-public class EditableTextFieldListCell<T> extends DraggableCell<T> {
+public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>> {
   private TextField textField;
-  private final ObjectProperty<StringConverter<T>> converter
+  private final ObjectProperty<IndexedStringConverter<T>> converter
       = new SimpleObjectProperty<>(this, "converter");
-
-  public static Callback<ListView<String>, ListCell<String>> forListView() {
-    return forListView(new DefaultStringConverter());
-  }
-
-  public static <T> Callback<ListView<T>, ListCell<T>> forListView(final StringConverter<T>
-                                                                       converter) {
-    return list -> new TextFieldListCell<>(converter);
-  }
 
   public EditableTextFieldListCell() {
     this(null);
   }
 
   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
-  public EditableTextFieldListCell(StringConverter<T> converter) {
+  public EditableTextFieldListCell(IndexedStringConverter<T> converter) {
     this.getStyleClass().add("text-field-list-cell");
     setConverter(converter);
 
@@ -41,20 +28,20 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
     textField = createTextField(this, getConverter());
     textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
       if (!newValue) {
-        commitEdit(converter.fromString(textField.getText()));
+        commitEdit(converter.fromString(getIndex(), textField.getText()));
       }
     });
   }
 
-  public final ObjectProperty<StringConverter<T>> converterProperty() {
+  public final ObjectProperty<IndexedStringConverter<T>> converterProperty() {
     return converter;
   }
 
-  public final void setConverter(StringConverter<T> value) {
+  public final void setConverter(IndexedStringConverter<T> value) {
     converterProperty().set(value);
   }
 
-  public final StringConverter<T> getConverter() {
+  public final IndexedStringConverter<T> getConverter() {
     return converterProperty().get();
   }
 
@@ -99,9 +86,9 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
   }
 
   @Override
-  public void commitEdit(T newValue) {
+  public void commitEdit(Pair<Integer, T> newValue) {
     if (!isEditing() && !newValue.equals(getItem())) {
-      ListView<T> list = getListView();
+      ListView<Pair<Integer, T>> list = getListView();
 
       if (list != null) {
         //Pulled from the super method
@@ -117,9 +104,9 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
   }
 
   @Override
-  public void updateItem(T item, boolean empty) {
+  public void updateItem(Pair<Integer, T> item, boolean empty) {
     super.updateItem(item, empty);
-    final StringConverter<T> converter1 = getConverter();
+    final IndexedStringConverter<T> converter1 = getConverter();
     if (isEmpty()) {
       setText(null);
       setGraphic(null);
@@ -150,7 +137,7 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
       return false;
     }
 
-    EditableTextFieldListCell<?> that = (EditableTextFieldListCell<?>) other;
+    EditableTextFieldListCell that = (EditableTextFieldListCell) other;
 
     return (textField == null ? that.textField == null : textField.equals(that.textField)) && (
         converter == null ? that.converter == null : converter.equals(that.converter));
@@ -164,14 +151,24 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
     return result;
   }
 
-  private static <T> String getItemText(Cell<T> cell, StringConverter<T> converter) {
-    return converter == null
-        ? cell.getItem() == null ? "" : cell.getItem().toString() :
-        converter.toString(cell.getItem());
+  private String getItemText(Cell<Pair<Integer, T>> cell, IndexedStringConverter<T> converter) {
+    if (converter == null) {
+      if (cell.getItem() == null) {
+        return "";
+      } else {
+        return cell.getItem().getValue().toString();
+      }
+    } else {
+      if (cell.getItem() == null) {
+        return "";
+      } else {
+        return converter.toString(new Pair<>(getIndex(), cell.getItem().getValue()));
+      }
+    }
   }
 
-  private static <T> TextField createTextField(final Cell<T> cell, final StringConverter<T>
-      converter) {
+  private TextField createTextField(final Cell<Pair<Integer, T>> cell,
+                                    final IndexedStringConverter<T> converter) {
     final TextField textField = new TextField(getItemText(cell, converter));
 
     // Use onAction here rather than onKeyReleased (with check for Enter),
@@ -183,7 +180,7 @@ public class EditableTextFieldListCell<T> extends DraggableCell<T> {
                 + "StringConverter is null. Be sure to set a StringConverter "
                 + "in your cell factory.");
       }
-      cell.commitEdit(converter.fromString(textField.getText()));
+      cell.commitEdit(converter.fromString(cell.getItem().getKey(), textField.getText()));
       event.consume();
     });
     textField.setOnKeyReleased(t -> {
