@@ -17,7 +17,7 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boo
   }
 
   @Override
-  @SuppressWarnings("PMD.UseVarargs")
+  @SuppressWarnings({"PMD.UseVarargs", "PMD.AvoidInstantiatingObjectsInLoops"})
   public void setInitial(Boolean[] initialValues) {
     list.getItems().clear();
     int index = 0;
