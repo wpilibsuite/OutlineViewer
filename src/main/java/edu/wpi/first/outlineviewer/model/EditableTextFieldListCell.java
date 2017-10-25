@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.model;
 
+import edu.wpi.first.outlineviewer.view.DraggableCell;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Cell;
@@ -12,7 +13,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
-public class EditableTextFieldListCell<T> extends ListCell<T> {
+public class EditableTextFieldListCell<T> extends DraggableCell<T> {
   private TextField textField;
   private final ObjectProperty<StringConverter<T>> converter
       = new SimpleObjectProperty<>(this, "converter");
