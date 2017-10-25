@@ -19,11 +19,12 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
 
   @Override
   protected Pair<Integer, String> getDefaultItem() {
-    return new Pair<>(0, "String Array");
+    return new Pair<>(list.getItems().size() + 1, "String Array");
   }
 
   @Override
-  protected Callback<ListView<Pair<Integer, String>>, ListCell<Pair<Integer, String>>> getCellFactory() {
+  protected Callback<ListView<Pair<Integer, String>>, ListCell<Pair<Integer, String>>>
+      getCellFactory() {
     return __ -> new EditableTextFieldListCell<>(StringToStringConverter.INSTANCE);
   }
 
