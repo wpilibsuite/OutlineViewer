@@ -82,10 +82,19 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
+  void exitShortcutTest() {
+    press(KeyCode.CONTROL)
+        .type(KeyCode.Q)
+        .release(KeyCode.CONTROL);
+    waitForFxEvents();
+    assertTrue(listWindows().isEmpty());
+  }
+
+  @Test
   void testDeleteItemsKey() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")
-        .type(KeyCode.Z, KeyCode.Z)
+        .write("zz")
         .clickOn("Add")
         .clickOn("zz")
         .type(KeyCode.DELETE);
@@ -97,7 +106,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   void testDeleteItemsMenu() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")
-        .type(KeyCode.Z, KeyCode.Z)
+        .write("zz")
         .clickOn("Add")
         .clickOn("zz", MouseButton.SECONDARY)
         .clickOn("Delete");

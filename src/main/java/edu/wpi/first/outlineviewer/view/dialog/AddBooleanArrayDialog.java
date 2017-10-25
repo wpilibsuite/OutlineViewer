@@ -1,7 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.view.ToggleSwitchListCell;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
