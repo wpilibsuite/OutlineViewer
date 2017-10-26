@@ -1,5 +1,12 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+
 import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
 import edu.wpi.first.outlineviewer.OutlineViewer;
 import javafx.fxml.FXMLLoader;
@@ -12,13 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
@@ -79,15 +79,6 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
     clickOn("#exitMenuButton", MouseButton.PRIMARY);
     waitForFxEvents();
 
-    assertTrue(listWindows().isEmpty());
-  }
-
-  @Test
-  void exitShortcutTest() {
-    press(KeyCode.CONTROL)
-        .type(KeyCode.Q)
-        .release(KeyCode.CONTROL);
-    waitForFxEvents();
     assertTrue(listWindows().isEmpty());
   }
 
