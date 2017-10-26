@@ -22,6 +22,7 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, byt
   /**
    * Sets the initial values in the raw bytes array.
    */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public void setInitial(byte[] initialValues) {
     list.getItems().clear();
     int index = 0;
@@ -32,7 +33,7 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, byt
 
   @Override
   protected Pair<Integer, Byte> getDefaultItem() {
-    return new Pair<>(list.getItems().size() + 1, new Byte("0"));
+    return new Pair<>(list.getItems().size() + 1, Byte.valueOf("0"));
   }
 
   @Override
