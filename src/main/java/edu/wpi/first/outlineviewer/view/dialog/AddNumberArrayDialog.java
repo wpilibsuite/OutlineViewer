@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import edu.wpi.first.outlineviewer.model.IndexedStringConverter;
+import edu.wpi.first.outlineviewer.view.IndexedStringConverter;
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListCell;

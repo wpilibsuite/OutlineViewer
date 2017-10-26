@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer.view;
 
-import edu.wpi.first.outlineviewer.model.IndexedStringConverter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Cell;

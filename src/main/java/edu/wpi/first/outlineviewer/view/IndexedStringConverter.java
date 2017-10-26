@@ -1,4 +1,4 @@
-package edu.wpi.first.outlineviewer.model;
+package edu.wpi.first.outlineviewer.view;
 
 import javafx.util.Pair;
 import javafx.util.StringConverter;

@@ -64,11 +64,8 @@ public class DraggableCell<T> extends ListCell<T> {
         int draggedIdx = items.indexOf(content);
         int thisIdx = items.indexOf(getItem());
 
-        //        System.out.println("drag index: " + draggedIdx + ", this index: " + thisIdx);
-        //        items.forEach(val -> System.out.println(val.hashCode()));
-
-        items.set(draggedIdx, getItem());
-        items.set(thisIdx, content);
+        items.remove(draggedIdx);
+        items.add(thisIdx, content);
 
         success = true;
       }
