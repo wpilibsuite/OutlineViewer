@@ -18,19 +18,21 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testInitialValue() {
-    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    assertArrayEquals(test, ((ListView) lookup(".list-view").query()).getItems().toArray());
+    assertArrayEquals(test,
+        ((ListView) lookup(".list-view").query())
+            .getItems().stream().mapToDouble(i -> (double) i).toArray(), 0.0);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   void testGetData() {
-    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    assertArrayEquals(test, dialog.getData());
+    assertArrayEquals(test, dialog.getData(), 0.0);
   }
 
   @Test
