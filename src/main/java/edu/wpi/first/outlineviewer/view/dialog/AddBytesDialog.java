@@ -1,9 +1,7 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import com.google.common.primitives.Bytes;
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
 import edu.wpi.first.outlineviewer.view.IndexedStringConverter;
-import java.util.stream.Collectors;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
@@ -13,10 +11,22 @@ import javafx.util.Pair;
  * A dialog for editing arrays of raw bytes. These are represented as integers because Java doesn't
  * support unsigned bytes.
  */
-public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, byte[]> {
+public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byte[]> {
 
   public AddBytesDialog() {
     super("Raw Bytes");
+  }
+
+  /**
+   * Sets the initial values in the raw bytes array.
+   */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+  public void setInitial(Byte[] initialValues) {
+    list.getItems().clear();
+    int index = 0;
+    for (Byte value : initialValues) {
+      list.getItems().add(new Pair<>(index++, value));
+    }
   }
 
   /**
@@ -43,11 +53,11 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, byt
   }
 
   @Override
-  protected byte[] getData() {
-    return Bytes.toArray(list.getItems()
+  protected Byte[] getData() {
+    return list.getItems()
         .stream()
         .map(Pair::getValue)
-        .collect(Collectors.toList()));
+        .toArray(Byte[]::new);
   }
 
   private static final class ByteToStringConverter extends IndexedStringConverter<Byte> {

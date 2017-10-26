@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.primitives.Bytes;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.PersistentException;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -228,7 +230,10 @@ public class MainWindowController {
         networkTableTreeRow.getKey(),
         new AddBytesDialog(),
         (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
-            .getEntry(key).setRaw(value));
+            .getEntry(key)
+            .setRaw(Bytes.toArray(
+                Arrays.stream(value).collect(Collectors.toList())
+            )));
 
     return Arrays.asList(string, number, bool,
                          new SeparatorMenuItem(),
