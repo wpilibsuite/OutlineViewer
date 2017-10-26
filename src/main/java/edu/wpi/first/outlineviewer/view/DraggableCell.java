@@ -11,11 +11,8 @@ import javafx.scene.input.TransferMode;
 public class DraggableCell<T> extends ListCell<T> {
 
   private static final DataFormat T_FORMAT = new DataFormat("GENERIC");
-  private final long time;
 
   public DraggableCell() {
-    time = System.nanoTime();
-
     ListCell<T> thisCell = this;
 
     setOnDragDetected(event -> {
@@ -77,22 +74,4 @@ public class DraggableCell<T> extends ListCell<T> {
     setOnDragDone(DragEvent::consume);
   }
 
-  @Override
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (other == null || getClass() != other.getClass()) {
-      return false;
-    }
-
-    DraggableCell<?> that = (DraggableCell<?>) other;
-
-    return time == that.time;
-  }
-
-  @Override
-  public int hashCode() {
-    return (int) (time ^ (time >>> 32));
-  }
 }

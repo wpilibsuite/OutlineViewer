@@ -9,13 +9,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TreeTableRow;
 import javafx.scene.input.KeyCode;
 import javafx.util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
-import org.testfx.util.WaitForAsyncUtils;
 
 class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDialog> {
 
@@ -85,7 +83,8 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
     waitForFxEvents();
 
     doubleClickOn("A").write("B");
-    clickOn((Node) lookup(".text-field-list-cell").match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
+    clickOn((Node) lookup(".text-field-list-cell")
+        .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
 
     Assertions.assertEquals(
         Arrays.stream(new String[]{"B"})

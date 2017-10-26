@@ -124,32 +124,6 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
     }
   }
 
-  @Override
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (other == null || getClass() != other.getClass()) {
-      return false;
-    }
-    if (!super.equals(other)) {
-      return false;
-    }
-
-    EditableTextFieldListCell that = (EditableTextFieldListCell) other;
-
-    return (textField == null ? that.textField == null : textField.equals(that.textField)) && (
-        converter == null ? that.converter == null : converter.equals(that.converter));
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (textField == null ? 0 : textField.hashCode());
-    result = 31 * result + (converter == null ? 0 : converter.hashCode());
-    return result;
-  }
-
   private String getItemText(Cell<Pair<Integer, T>> cell, IndexedStringConverter<T> converter) {
     if (converter == null) {
       if (cell.getItem() == null) {
