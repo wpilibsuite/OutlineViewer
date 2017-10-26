@@ -5,9 +5,9 @@
 Welcome to the WPILib project. This repository contains OutlineViewer.
 
 - [WPILib Mission](#wpilib-mission)
-- [Building Outline Viewer](#building-outline-viewer)
+- [Building OutlineViewer](#building-outline-viewer)
     - [Requirements](#requirements)
-    - [Running Outline Viewer](#running)
+    - [Running OutlineViewer](#running)
 - [Contributing to WPILib](#contributing-to-wpilib)
 
 ## WPILib Mission
