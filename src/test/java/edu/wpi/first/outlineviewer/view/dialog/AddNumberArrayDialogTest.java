@@ -61,14 +61,14 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testDragDrop() {
-    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    final Double[] test = new Double[]{1.0, 5.5, 4.0, -19.01};
     dialog.setInitial(test);
     waitForFxEvents();
 
     drag("-19.01").dropTo("1");
 
     Assertions.assertEquals(
-        Arrays.stream(new Double[]{-19.01, 1.0, 5.5, 3.14})
+        Arrays.stream(new Double[]{-19.01, 1.0, 5.5, 4.0})
             .collect(Collectors.toList()),
         ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
             .getItems().stream()
