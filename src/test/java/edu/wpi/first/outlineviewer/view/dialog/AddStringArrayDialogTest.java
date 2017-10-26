@@ -85,6 +85,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
     doubleClickOn("A").write("B");
     clickOn((Node) lookup(".text-field-list-cell")
         .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
+    waitForFxEvents();
 
     Assertions.assertEquals(
         Arrays.stream(new String[]{"B"})
