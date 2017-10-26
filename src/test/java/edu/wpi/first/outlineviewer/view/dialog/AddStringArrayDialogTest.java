@@ -62,6 +62,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
   void testDragDrop() {
     final String[] test = new String[]{"A", "B", "C"};
     dialog.setInitial(test);
+    waitForFxEvents();
 
     drag("C").dropTo("A");
 
