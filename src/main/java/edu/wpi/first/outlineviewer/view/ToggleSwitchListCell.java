@@ -47,28 +47,4 @@ public class ToggleSwitchListCell extends DraggableCell<Pair<Integer, Boolean>> 
     }
   }
 
-  @Override
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (other == null || getClass() != other.getClass()) {
-      return false;
-    }
-    if (!super.equals(other)) {
-      return false;
-    }
-
-    ToggleSwitchListCell that = (ToggleSwitchListCell) other;
-
-    return
-        toggleSwitch == null ? that.toggleSwitch == null : toggleSwitch.equals(that.toggleSwitch);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (toggleSwitch == null ? 0 : toggleSwitch.hashCode());
-    return result;
-  }
 }

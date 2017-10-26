@@ -1,6 +1,8 @@
 package edu.wpi.first.outlineviewer.view;
 
-import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.FXCollections;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -57,12 +59,13 @@ public class DraggableCell<T> extends ListCell<T> {
 
       if (db.hasContent(T_FORMAT)) {
         T content = (T) db.getContent(T_FORMAT);
-        ObservableList<T> items = getListView().getItems();
+        List<T> items = new ArrayList<>(getListView().getItems());
         int draggedIdx = items.indexOf(content);
         int thisIdx = items.indexOf(getItem());
 
         items.remove(draggedIdx);
         items.add(thisIdx, content);
+        getListView().setItems(FXCollections.observableList(items));
 
         success = true;
       }

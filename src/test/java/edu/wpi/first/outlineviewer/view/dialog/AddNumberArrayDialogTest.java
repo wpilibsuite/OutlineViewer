@@ -2,8 +2,10 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import com.google.common.primitives.Doubles;
+import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.Node;
@@ -54,6 +56,45 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
         .write(String.valueOf(test)).type(KeyCode.ENTER);
 
     assertEquals(Double.valueOf(test), listView.getItems().get(0).getValue());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testDragDrop() {
+    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    dialog.setInitial(test);
+    waitForFxEvents();
+
+    drag("-19.01").dropTo("1");
+
+    Assertions.assertEquals(
+        Arrays.stream(new Double[]{-19.01, 1.0, 5.5, 3.14})
+            .collect(Collectors.toList()),
+        ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+            .getItems().stream()
+            .map(Pair::getValue)
+            .collect(Collectors.toList()));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testSaveOnCommitEdit() {
+    final Double[] test = new Double[]{1.0};
+    dialog.setInitial(test);
+    waitForFxEvents();
+
+    doubleClickOn("1").write("2.0");
+    clickOn((Node) lookup(".text-field-list-cell")
+        .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
+    waitForFxEvents();
+
+    Assertions.assertEquals(
+        Arrays.stream(new Double[]{2.0})
+            .collect(Collectors.toList()),
+        ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+            .getItems().stream()
+            .map(Pair::getValue)
+            .collect(Collectors.toList()));
   }
 
 }
