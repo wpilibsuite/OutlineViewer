@@ -4,6 +4,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import edu.wpi.first.outlineviewer.FxHelper;
+import java.util.concurrent.TimeUnit;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -65,14 +67,17 @@ class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
   }
 
   @Test
-  void testToStringConverterInvalid() {
+  void testToStringConverterInvalid() throws InterruptedException {
     ListView<Pair<Integer, Byte>> listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");
     ListCell<Pair<Integer, Byte>> cell = from(listView).lookup(".list-cell").query();
 
-    doubleClickOn(cell).press(KeyCode.DELETE).write(String.valueOf("Test")).type(KeyCode.ENTER);
-
-    assertTrue(cell.isEditing());
+    assertTrue(FxHelper.catchInJavaFXThread(() -> doubleClickOn(cell)
+            .press(KeyCode.DELETE)
+            .write(String.valueOf("Test"))
+            .type(KeyCode.ENTER),
+        NumberFormatException.class,
+        3, TimeUnit.SECONDS));
   }
 
 }
