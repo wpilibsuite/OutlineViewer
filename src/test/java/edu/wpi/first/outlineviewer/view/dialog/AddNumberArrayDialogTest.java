@@ -82,7 +82,11 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
 
     doubleClickOn("1").write("2.0");
     clickOn((Node) lookup(".text-field-list-cell")
-        .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
+        .match(match -> ((EditableTextFieldListCell) match).getItem() == null)
+        .match(match -> lookup(".list-view")
+            .query()
+            .contains(match.getLayoutX(), match.getLayoutY()))
+        .query());
     waitForFxEvents();
 
     assertArrayEquals(
