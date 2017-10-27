@@ -2,15 +2,15 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.view.IndexedStringConverter;
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
 /**
  * A dialog for adding or editing arrays of numbers in a network table entry.
  */
-public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Double>, double[]> {
+public class AddNumberArrayDialog extends AddEntryArrayDialog<IndexedValue<Double>, double[]> {
 
   public AddNumberArrayDialog() {
     super("Number Array");
@@ -22,17 +22,17 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Doub
     list.getItems().clear();
     int index = 0;
     for (double value : initialValues) {
-      list.getItems().add(new Pair<>(index++, value));
+      list.getItems().add(new IndexedValue<>(index++, value));
     }
   }
 
   @Override
-  protected Pair<Integer, Double> getDefaultItem() {
-    return new Pair<>(list.getItems().size() + 1, 0.0);
+  protected IndexedValue<Double> getDefaultItem() {
+    return new IndexedValue<>(list.getItems().size() + 1, 0.0);
   }
 
   @Override
-  protected Callback<ListView<Pair<Integer, Double>>, ListCell<Pair<Integer, Double>>>
+  protected Callback<ListView<IndexedValue<Double>>, ListCell<IndexedValue<Double>>>
       getCellFactory() {
     return __ -> new EditableTextFieldListCell<>(DoubleToStringConverter.INSTANCE);
   }
@@ -41,7 +41,7 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Doub
   protected double[] getData() {
     return list.getItems()
         .stream()
-        .map(Pair::getValue)
+        .map(IndexedValue::getValue)
         .mapToDouble(Double::doubleValue)
         .toArray();
   }
@@ -51,7 +51,7 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Doub
     static final IndexedStringConverter<Double> INSTANCE = new DoubleToStringConverter();
 
     @Override
-    public String toString(Pair<Integer, Double> object) {
+    public String toString(IndexedValue<Double> object) {
       if (object == null) {
         return null;
       }
@@ -65,13 +65,13 @@ public class AddNumberArrayDialog extends AddEntryArrayDialog<Pair<Integer, Doub
     }
 
     @Override
-    public Pair<Integer, Double> fromString(String string) {
+    public IndexedValue<Double> fromString(String string) {
       return fromString(0, string);
     }
 
     @Override
-    public Pair<Integer, Double> fromString(Integer index, String string) {
-      return new Pair<>(index, Double.parseDouble(string));
+    public IndexedValue<Double> fromString(Integer index, String string) {
+      return new IndexedValue<>(index, Double.parseDouble(string));
     }
 
   }

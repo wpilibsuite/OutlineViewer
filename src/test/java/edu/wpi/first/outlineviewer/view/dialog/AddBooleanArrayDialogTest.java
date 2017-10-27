@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import com.google.common.primitives.Booleans;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListView;
-import javafx.util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,9 +24,9 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
     dialog.setInitial(test);
 
     assertArrayEquals(test,
-        Booleans.toArray(((ListView<Pair<Integer, Boolean>>) lookup(".list-view").query())
+        Booleans.toArray(((ListView<IndexedValue<Boolean>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
+            .map(IndexedValue::getValue)
             .collect(Collectors.toList())));
   }
 
@@ -51,9 +51,9 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
     Assertions.assertEquals(
         Arrays.stream(new Boolean[]{true, false})
             .collect(Collectors.toList()),
-        ((ListView<Pair<Integer, Boolean>>) lookup(".list-view").query())
+        ((ListView<IndexedValue<Boolean>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
+            .map(IndexedValue::getValue)
             .collect(Collectors.toList()));
   }
 

@@ -2,28 +2,28 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.view.IndexedStringConverter;
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
 /**
  * Dialog for adding string arrays to network tables.
  */
-public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, String>, String[]> {
+public class AddStringArrayDialog extends AddEntryArrayDialog<IndexedValue<String>, String[]> {
 
   public AddStringArrayDialog() {
     super("String Array");
   }
 
   @Override
-  protected Pair<Integer, String> getDefaultItem() {
-    return new Pair<>(list.getItems().size() + 1, "String Array");
+  protected IndexedValue<String> getDefaultItem() {
+    return new IndexedValue<>(list.getItems().size() + 1, "String Array");
   }
 
   @Override
-  protected Callback<ListView<Pair<Integer, String>>, ListCell<Pair<Integer, String>>>
+  protected Callback<ListView<IndexedValue<String>>, ListCell<IndexedValue<String>>>
       getCellFactory() {
     return __ -> new EditableTextFieldListCell<>(StringToStringConverter.INSTANCE);
   }
@@ -32,7 +32,7 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
   protected String[] getData() {
     return list.getItems()
         .stream()
-        .map(Pair::getValue)
+        .map(IndexedValue::getValue)
         .collect(Collectors.toList())
         .toArray(new String[list.getItems().size()]);
   }
@@ -43,7 +43,7 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
     list.getItems().clear();
     int index = 0;
     for (String value : initialValues) {
-      list.getItems().add(new Pair<>(index++, value));
+      list.getItems().add(new IndexedValue<>(index++, value));
     }
   }
 
@@ -52,7 +52,7 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
     static final IndexedStringConverter<String> INSTANCE = new StringToStringConverter();
 
     @Override
-    public String toString(Pair<Integer, String> object) {
+    public String toString(IndexedValue<String> object) {
       if (object == null) {
         return null;
       }
@@ -61,13 +61,13 @@ public class AddStringArrayDialog extends AddEntryArrayDialog<Pair<Integer, Stri
     }
 
     @Override
-    public Pair<Integer, String> fromString(String string) {
+    public IndexedValue<String> fromString(String string) {
       return fromString(0, string);
     }
 
     @Override
-    public Pair<Integer, String> fromString(Integer index, String string) {
-      return new Pair<>(index, string);
+    public IndexedValue<String> fromString(Integer index, String string) {
+      return new IndexedValue<>(index, string);
     }
   }
 

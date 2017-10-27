@@ -6,9 +6,8 @@ import javafx.scene.control.Cell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.util.Pair;
 
-public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>> {
+public class EditableTextFieldListCell<T> extends DraggableCell<IndexedValue<T>> {
   private TextField textField;
   private final ObjectProperty<IndexedStringConverter<T>> converter
       = new SimpleObjectProperty<>(this, "converter");
@@ -85,9 +84,9 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
   }
 
   @Override
-  public void commitEdit(Pair<Integer, T> newValue) {
+  public void commitEdit(IndexedValue<T> newValue) {
     if (!isEditing() && !newValue.equals(getItem())) {
-      ListView<Pair<Integer, T>> list = getListView();
+      ListView<IndexedValue<T>> list = getListView();
 
       if (list != null) {
         //Pulled from the super method
@@ -103,7 +102,7 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
   }
 
   @Override
-  public void updateItem(Pair<Integer, T> item, boolean empty) {
+  public void updateItem(IndexedValue<T> item, boolean empty) {
     super.updateItem(item, empty);
     final IndexedStringConverter<T> converter1 = getConverter();
     if (isEmpty()) {
@@ -124,7 +123,7 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
     }
   }
 
-  private String getItemText(Cell<Pair<Integer, T>> cell, IndexedStringConverter<T> converter) {
+  private String getItemText(Cell<IndexedValue<T>> cell, IndexedStringConverter<T> converter) {
     if (converter == null) {
       if (cell.getItem() == null) {
         return "";
@@ -135,12 +134,12 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
       if (cell.getItem() == null) {
         return "";
       } else {
-        return converter.toString(new Pair<>(getIndex(), cell.getItem().getValue()));
+        return converter.toString(new IndexedValue<>(getIndex(), cell.getItem().getValue()));
       }
     }
   }
 
-  private TextField createTextField(final Cell<Pair<Integer, T>> cell,
+  private TextField createTextField(final Cell<IndexedValue<T>> cell,
                                     final IndexedStringConverter<T> converter) {
     final TextField textField = new TextField(getItemText(cell, converter));
 
@@ -153,7 +152,7 @@ public class EditableTextFieldListCell<T> extends DraggableCell<Pair<Integer, T>
                 + "StringConverter is null. Be sure to set a StringConverter "
                 + "in your cell factory.");
       }
-      cell.commitEdit(converter.fromString(cell.getItem().getKey(), textField.getText()));
+      cell.commitEdit(converter.fromString(cell.getItem().getIndex(), textField.getText()));
       event.consume();
     });
     textField.setOnKeyReleased(t -> {

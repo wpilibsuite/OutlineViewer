@@ -6,12 +6,11 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import com.google.common.primitives.Doubles;
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
-import java.util.Arrays;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
@@ -28,9 +27,9 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
     dialog.setInitial(test);
 
     assertArrayEquals(test,
-        Doubles.toArray(((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+        Doubles.toArray(((ListView<IndexedValue<Double>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
+            .map(IndexedValue::getValue)
             .collect(Collectors.toList())));
   }
 
@@ -46,7 +45,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   void testToStringConverter() {
     final double test = 654.321;
-    ListView<Pair<Integer, Double>> listView = lookup(ListViewMatchers.isEmpty()).query();
+    ListView<IndexedValue<Double>> listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");
 
     doubleClickOn((Node) from(listView).lookup(".list-cell").query()).press(KeyCode.DELETE)
@@ -64,13 +63,12 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
 
     drag("-19.01").dropTo("1");
 
-    assertEquals(
-        Arrays.stream(new Double[]{-19.01, 1.0, 5.5, 4.0})
-            .collect(Collectors.toList()),
-        ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+    assertArrayEquals(
+        new Double[]{-19.01, 1.0, 5.5, 4.0},
+        ((ListView<IndexedValue<Double>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
-            .collect(Collectors.toList()));
+            .map(IndexedValue::getValue)
+            .toArray(Double[]::new));
   }
 
   @Test
@@ -81,19 +79,20 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
     waitForFxEvents();
 
     doubleClickOn("1").write("2.0");
-    clickOn((Node) lookup(".text-field-list-cell")
+    clickOn(lookup(".text-field-list-cell")
         .match(match -> ((EditableTextFieldListCell) match).getItem() == null)
-        .match(match -> lookup(".list-view")
-            .query()
-            .contains(match.getLayoutX(), match.getLayoutY()))
-        .query());
+        .queryAll()
+        .stream()
+        .sorted((node, t1) -> (int)(node.getLayoutY() - t1.getLayoutY()))
+        .collect(Collectors.toList())
+        .get(1));
     waitForFxEvents();
 
     assertArrayEquals(
         new double[]{2.0},
-        ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
+        ((ListView<IndexedValue<Double>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
+            .map(IndexedValue::getValue)
             .mapToDouble(Double::doubleValue)
             .toArray());
   }

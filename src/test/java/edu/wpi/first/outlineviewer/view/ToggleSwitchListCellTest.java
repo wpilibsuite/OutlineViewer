@@ -4,7 +4,6 @@ import edu.wpi.first.outlineviewer.FxHelper;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import org.controlsfx.control.ToggleSwitch;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -18,10 +17,10 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
 
   @Override
   public void start(Stage stage) throws Exception {
-    ListView<Pair<Integer, Boolean>> listView = new ListView<>();
+    ListView<IndexedValue<Boolean>> listView = new ListView<>();
     listView.setCellFactory(__ -> new ToggleSwitchListCell());
     listView.setEditable(true);
-    listView.getItems().add(new Pair<>(0, false));
+    listView.getItems().add(new IndexedValue<>(0, false));
 
     stage.setScene(new Scene(listView));
     stage.show();
@@ -43,21 +42,24 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
 
   @Test
   void testUpdateItemTrue() {
-    FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(new Pair<>(0, true), false));
+    FxHelper.runAndWait(() -> getToggleSwitchListCell()
+        .updateItem(new IndexedValue<>(true), false));
 
     assertTrue(getToggleSwitch().isSelected());
   }
 
   @Test
   void testUpdateItemFalse() {
-    FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(new Pair<>(0, false), false));
+    FxHelper.runAndWait(() -> getToggleSwitchListCell()
+        .updateItem(new IndexedValue<>(false), false));
 
     assertFalse(getToggleSwitch().isSelected());
   }
 
   @Test
   void testUpdateItemEmpty() {
-    FxHelper.runAndWait(() -> getToggleSwitchListCell().updateItem(new Pair<>(0, false), true));
+    FxHelper.runAndWait(() -> getToggleSwitchListCell()
+        .updateItem(new IndexedValue<>(false), true));
 
     assertNull(getToggleSwitch());
   }

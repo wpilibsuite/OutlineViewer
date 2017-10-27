@@ -2,16 +2,16 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
 import edu.wpi.first.outlineviewer.view.IndexedStringConverter;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
 /**
  * A dialog for editing arrays of raw bytes. These are represented as integers because Java doesn't
  * support unsigned bytes.
  */
-public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byte[]> {
+public class AddBytesDialog extends AddEntryArrayDialog<IndexedValue<Byte>, Byte[]> {
 
   public AddBytesDialog() {
     super("Raw Bytes");
@@ -25,7 +25,7 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byt
     list.getItems().clear();
     int index = 0;
     for (Byte value : initialValues) {
-      list.getItems().add(new Pair<>(index++, value));
+      list.getItems().add(new IndexedValue<>(index++, value));
     }
   }
 
@@ -37,17 +37,17 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byt
     list.getItems().clear();
     int index = 0;
     for (byte value : initialValues) {
-      list.getItems().add(new Pair<>(index++, value));
+      list.getItems().add(new IndexedValue<>(index++, value));
     }
   }
 
   @Override
-  protected Pair<Integer, Byte> getDefaultItem() {
-    return new Pair<>(list.getItems().size() + 1, Byte.valueOf("0"));
+  protected IndexedValue<Byte> getDefaultItem() {
+    return new IndexedValue<>(list.getItems().size() + 1, Byte.valueOf("0"));
   }
 
   @Override
-  protected Callback<ListView<Pair<Integer, Byte>>, ListCell<Pair<Integer, Byte>>>
+  protected Callback<ListView<IndexedValue<Byte>>, ListCell<IndexedValue<Byte>>>
       getCellFactory() {
     return __ -> new EditableTextFieldListCell<>(ByteToStringConverter.INSTANCE);
   }
@@ -56,7 +56,7 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byt
   protected Byte[] getData() {
     return list.getItems()
         .stream()
-        .map(Pair::getValue)
+        .map(IndexedValue::getValue)
         .toArray(Byte[]::new);
   }
 
@@ -65,22 +65,22 @@ public class AddBytesDialog extends AddEntryArrayDialog<Pair<Integer, Byte>, Byt
     static final IndexedStringConverter<Byte> INSTANCE = new ByteToStringConverter();
 
     @Override
-    public String toString(Pair<Integer, Byte> object) {
+    public String toString(IndexedValue<Byte> object) {
       return String.format("0x%02X", object.getValue());
     }
 
     @Override
-    public Pair<Integer, Byte> fromString(String string) {
+    public IndexedValue<Byte> fromString(String string) {
       return fromString(0, string);
     }
 
     @Override
-    public Pair<Integer, Byte> fromString(Integer index, String string) {
+    public IndexedValue<Byte> fromString(Integer index, String string) {
       if (string.matches("0x[0-9a-fA-F]{1,2}")) {
         // hex, remove leading 0x
-        return new Pair<>(index, (byte) Integer.parseUnsignedInt(string.substring(2), 16));
+        return new IndexedValue<>(index, (byte) Integer.parseUnsignedInt(string.substring(2), 16));
       } else if (string.matches("[0-9a-fA-F]{1,2}")) {
-        return new Pair<>(index, (byte) Integer.parseUnsignedInt(string, 16));
+        return new IndexedValue<>(index, (byte) Integer.parseUnsignedInt(string, 16));
       } else {
         throw new NumberFormatException("Not a valid 1-byte hex string: " + string);
       }

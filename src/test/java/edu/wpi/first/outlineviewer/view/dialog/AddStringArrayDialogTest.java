@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import edu.wpi.first.outlineviewer.view.EditableTextFieldListCell;
+import edu.wpi.first.outlineviewer.view.IndexedValue;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import javafx.util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
@@ -30,9 +30,9 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
     Assertions.assertEquals(
         Arrays.stream(test)
             .collect(Collectors.toList()),
-        ((ListView<Pair<Integer, String>>) lookup(".list-view").query())
+        ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
+            .map(IndexedValue::getValue)
             .collect(Collectors.toList()));
   }
 
@@ -48,7 +48,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
   @Test
   void testToStringConverter() {
     final String test = "A String!";
-    ListView<Pair<Integer, String>> listView = lookup(ListViewMatchers.isEmpty()).query();
+    ListView<IndexedValue<String>> listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");
 
     doubleClickOn((Node) from(listView).lookup(".list-cell").query()).press(KeyCode.DELETE)
@@ -66,13 +66,12 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
 
     drag("C").dropTo("A");
 
-    Assertions.assertEquals(
-        Arrays.stream(new String[]{"C", "A", "B"})
-            .collect(Collectors.toList()),
-        ((ListView<Pair<Integer, String>>) lookup(".list-view").query())
+    Assertions.assertArrayEquals(
+        new String[]{"C", "A", "B"},
+        ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
-            .collect(Collectors.toList()));
+            .map(IndexedValue::getValue)
+            .toArray(String[]::new));
   }
 
   @Test
@@ -83,17 +82,21 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
     waitForFxEvents();
 
     doubleClickOn("A").write("B");
-    clickOn((Node) lookup(".text-field-list-cell")
-        .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
+    clickOn(lookup(".text-field-list-cell")
+        .match(match -> ((EditableTextFieldListCell) match).getItem() == null)
+        .queryAll()
+        .stream()
+        .sorted((node, t1) -> (int)(node.getLayoutY() - t1.getLayoutY()))
+        .collect(Collectors.toList())
+        .get(1));
     waitForFxEvents();
 
-    Assertions.assertEquals(
-        Arrays.stream(new String[]{"B"})
-            .collect(Collectors.toList()),
-        ((ListView<Pair<Integer, String>>) lookup(".list-view").query())
+    Assertions.assertArrayEquals(
+        new String[]{"B"},
+        ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
-            .map(Pair::getValue)
-            .collect(Collectors.toList()));
+            .map(IndexedValue::getValue)
+            .toArray(String[]::new));
   }
 
 }
