@@ -2,6 +2,11 @@ package edu.wpi.first.outlineviewer.view;
 
 import javafx.util.StringConverter;
 
+/**
+ * A StringConverter that also requires an index to convert from a String to a T. This class works
+ * hand-in-hand with IndexedValue.
+ * @param <T> Data conversion type
+ */
 public abstract class IndexedStringConverter<T> extends StringConverter<IndexedValue<T>> {
 
   /**

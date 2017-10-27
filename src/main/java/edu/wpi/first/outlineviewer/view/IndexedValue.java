@@ -3,6 +3,12 @@ package edu.wpi.first.outlineviewer.view;
 import java.io.Serializable;
 import javafx.util.Pair;
 
+/**
+ * Represents a value with an index. Essentially a wrapper for a Pair of an Integer and a T, so that
+ * data in a ListView can have its index attached to it. This means that the hashcodes for two
+ * otherwise identical ListView elements are different, because their indices are different.
+ * @param <T> Data storage type
+ */
 public class IndexedValue<T> implements Serializable {
   private Pair<Integer, T> data;
 

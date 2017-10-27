@@ -10,6 +10,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
+/**
+ * A drag-and-drop enabled ListCell. Uses drag events and the Dragboard to move elements around.
+ * Elements which are drag-and-dropped onto another element will be inserted into that spot in the
+ * list.
+ * @param <T> Content type
+ */
 public class DraggableCell<T> extends ListCell<T> {
 
   private static final DataFormat T_FORMAT = new DataFormat("GENERIC");
@@ -58,7 +64,11 @@ public class DraggableCell<T> extends ListCell<T> {
       boolean success = false;
 
       if (db.hasContent(T_FORMAT)) {
+        //Unchecked because Dragboard removes type information. In reality, this is fine
         T content = (T) db.getContent(T_FORMAT);
+
+        //We need to make our own List here and not use the given ObservableList because some types
+        //cause the implementation of add to throw an UnsupportedOperationException
         List<T> items = new ArrayList<>(getListView().getItems());
         int draggedIdx = items.indexOf(content);
         int thisIdx = items.indexOf(getItem());
