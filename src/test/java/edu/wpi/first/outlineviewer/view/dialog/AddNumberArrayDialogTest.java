@@ -12,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.util.Pair;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
@@ -65,7 +64,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
 
     drag("-19.01").dropTo("1");
 
-    Assertions.assertEquals(
+    assertEquals(
         Arrays.stream(new Double[]{-19.01, 1.0, 5.5, 4.0})
             .collect(Collectors.toList()),
         ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
@@ -86,7 +85,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
         .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
     waitForFxEvents();
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         new double[]{2.0},
         ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
             .getItems().stream()
