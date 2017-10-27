@@ -230,7 +230,7 @@ public class MainWindowController {
         networkTableTreeRow.getKey(),
         new AddNumberArrayDialog(),
         (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
-            .getEntry(key).setNumberArray((Number[]) Arrays.stream(value).boxed().toArray()));
+            .getEntry(key).setNumberArray(Arrays.stream(value).boxed().toArray(Double[]::new)));
 
     MenuItem boolArray = createContextMenuItem("Add boolean array",
         networkTableTreeRow.getKey(),

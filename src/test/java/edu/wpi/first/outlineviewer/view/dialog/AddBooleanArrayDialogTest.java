@@ -20,12 +20,10 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
   @Test
   @SuppressWarnings("unchecked")
   void testInitialValue() {
-    final Boolean[] test = new Boolean[]{false, true, false, true};
+    final boolean[] test = new boolean[]{false, true, false, true};
     dialog.setInitial(test);
 
-    assertArrayEquals(
-        Booleans.toArray(Arrays.stream(test)
-            .collect(Collectors.toList())),
+    assertArrayEquals(test,
         Booleans.toArray(((ListView<Pair<Integer, Boolean>>) lookup(".list-view").query())
             .getItems().stream()
             .map(Pair::getValue)
@@ -35,7 +33,7 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
   @Test
   @SuppressWarnings("unchecked")
   void testGetData() {
-    final Boolean[] test = new Boolean[]{false, true, false, true};
+    final boolean[] test = new boolean[]{false, true, false, true};
     dialog.setInitial(test);
 
     assertArrayEquals(test, dialog.getData());
@@ -44,7 +42,7 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
   @Test
   @SuppressWarnings("unchecked")
   void testDragDrop() {
-    final Boolean[] test = new Boolean[]{false, true};
+    final boolean[] test = new boolean[]{false, true};
     dialog.setInitial(test);
     waitForFxEvents();
 

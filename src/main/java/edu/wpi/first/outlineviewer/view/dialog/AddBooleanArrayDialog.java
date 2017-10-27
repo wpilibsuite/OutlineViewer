@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
+import com.google.common.primitives.Booleans;
 import edu.wpi.first.outlineviewer.view.ToggleSwitchListCell;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListCell;
@@ -10,7 +11,7 @@ import javafx.util.Pair;
 /**
  * Dialog for adding boolean arrays to network tables.
  */
-public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boolean>, Boolean[]> {
+public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boolean>, boolean[]> {
 
   public AddBooleanArrayDialog() {
     super("Boolean Array");
@@ -18,7 +19,7 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boo
 
   @Override
   @SuppressWarnings({"PMD.UseVarargs", "PMD.AvoidInstantiatingObjectsInLoops"})
-  public void setInitial(Boolean[] initialValues) {
+  public void setInitial(boolean[] initialValues) {
     list.getItems().clear();
     int index = 0;
     for (Boolean value : initialValues) {
@@ -38,13 +39,11 @@ public class AddBooleanArrayDialog extends AddEntryArrayDialog<Pair<Integer, Boo
   }
 
   @Override
-  protected Boolean[] getData() {
-    //return Booleans.toArray(list.getItems());
-    return list.getItems()
+  protected boolean[] getData() {
+    return Booleans.toArray(list.getItems()
         .stream()
         .map(Pair::getValue)
-        .collect(Collectors.toList())
-        .toArray(new Boolean[list.getItems().size()]);
+        .collect(Collectors.toList()));
   }
 
 }
