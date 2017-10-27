@@ -1,7 +1,7 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import com.google.common.primitives.Doubles;
@@ -25,12 +25,10 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testInitialValue() {
-    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    Assertions.assertArrayEquals(
-        Doubles.toArray(Arrays.stream(test)
-            .collect(Collectors.toList())),
+    assertArrayEquals(test,
         Doubles.toArray(((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
             .getItems().stream()
             .map(Pair::getValue)
@@ -40,10 +38,10 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testGetData() {
-    final Double[] test = new Double[]{1.0, 5.5, 3.14, -19.01};
+    final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    assertArrayEquals(test, dialog.getData());
+    assertArrayEquals(test, dialog.getData(), 0.0);
   }
 
   @Test
@@ -61,7 +59,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testDragDrop() {
-    final Double[] test = new Double[]{1.0, 5.5, 4.0, -19.01};
+    final double[] test = new double[]{1.0, 5.5, 4.0, -19.01};
     dialog.setInitial(test);
     waitForFxEvents();
 
@@ -79,7 +77,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
   @Test
   @SuppressWarnings("unchecked")
   void testSaveOnCommitEdit() {
-    final Double[] test = new Double[]{1.0};
+    final double[] test = new double[]{1.0};
     dialog.setInitial(test);
     waitForFxEvents();
 

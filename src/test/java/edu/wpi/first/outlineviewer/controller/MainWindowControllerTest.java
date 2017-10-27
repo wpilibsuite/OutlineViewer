@@ -8,7 +8,9 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
+import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.OutlineViewer;
+import java.util.stream.Stream;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -19,15 +21,49 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
   @Override
   public void start(Stage stage) throws Exception {
+    NetworkTableUtilities.createNewNetworkTableInstance();
     FXMLLoader loader = new FXMLLoader(OutlineViewer.class.getResource("MainWindow.fxml"));
     Pane rootPane = loader.load();
     stage.setScene(new Scene(rootPane));
     stage.show();
+  }
+
+  private static Stream<Arguments> dataDisplayArguments() {
+    return Stream.of(
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setNumber(987.654), "987.654"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setString("myValue"), "myValue"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setBoolean(false), "false"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setNumberArray(new Number[]{0, 1, -1}), "[0.0, 1.0, -1.0]"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setStringArray(new String[]{"A", "B" ,"C"}), "[A, B, C]"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setBooleanArray(new Boolean[]{false, true}), "[false, true]"),
+        Arguments.of((Runnable) () -> NetworkTableUtilities.getNetworkTableInstance()
+            .getEntry("Test").setRaw(new byte[]{0, 1, 5}), "[0, 1, 5]")
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("dataDisplayArguments")
+  void testDataDisplay(Runnable addEntry, String expected) {
+    addEntry.run();
+
+    waitForFxEvents();
+    waitForNtcoreEvents();
+
+    assertTrue("Could not find " + expected, lookup(expected).tryQuery().isPresent());
   }
 
   @Test
@@ -108,4 +144,10 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
     assertFalse(lookup("zz").tryQuery().isPresent());
   }
 
+  /**
+   * Waits for ntcore listeners to be fired. This is a <i>blocking operation</i>.
+   */
+  private void waitForNtcoreEvents() {
+    NetworkTableUtilities.getNetworkTableInstance().waitForEntryListenerQueue(3);
+  }
 }
