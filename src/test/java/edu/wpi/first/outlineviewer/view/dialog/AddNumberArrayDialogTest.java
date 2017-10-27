@@ -41,7 +41,7 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
     final double[] test = new double[]{1.0, 5.5, 3.14, -19.01};
     dialog.setInitial(test);
 
-    assertArrayEquals(test, dialog.getData(), 0.0);
+    assertArrayEquals(test, dialog.getData());
   }
 
   @Test
@@ -86,13 +86,13 @@ class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDia
         .match(match -> ((EditableTextFieldListCell) match).getItem() == null).query());
     waitForFxEvents();
 
-    Assertions.assertEquals(
-        Arrays.stream(new Double[]{2.0})
-            .collect(Collectors.toList()),
+    Assertions.assertArrayEquals(
+        new double[]{2.0},
         ((ListView<Pair<Integer, Double>>) lookup(".list-view").query())
             .getItems().stream()
             .map(Pair::getValue)
-            .collect(Collectors.toList()));
+            .mapToDouble(Double::doubleValue)
+            .toArray());
   }
 
 }
