@@ -103,6 +103,18 @@ public class MainWindowController {
           case kBoolean:
             newValue = NetworkTableValue.makeBoolean((Boolean) event.getNewValue());
             break;
+          case kDoubleArray:
+            newValue = NetworkTableValue.makeDoubleArray((Double[]) event.getNewValue());
+            break;
+          case kStringArray:
+            newValue = NetworkTableValue.makeStringArray((String[]) event.getNewValue());
+            break;
+          case kBooleanArray:
+            newValue = NetworkTableValue.makeBooleanArray((Boolean[]) event.getNewValue());
+            break;
+          case kRaw:
+            newValue = NetworkTableValue.makeRaw((byte[]) event.getNewValue());
+            break;
           default:
             newValue = NetworkTableValue.makeString(event.getNewValue().toString());
             break;
@@ -217,7 +229,7 @@ public class MainWindowController {
         networkTableTreeRow.getKey(),
         new AddNumberArrayDialog(),
         (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
-            .getEntry(key).setNumberArray(value));
+            .getEntry(key).setNumberArray((Number[]) Arrays.stream(value).boxed().toArray()));
 
     MenuItem boolArray = createContextMenuItem("Add boolean array",
         networkTableTreeRow.getKey(),
