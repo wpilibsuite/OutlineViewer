@@ -12,10 +12,6 @@ public class EditableTextFieldListCell<T> extends DraggableCell<IndexedValue<T>>
   private final ObjectProperty<IndexedStringConverter<T>> converter
       = new SimpleObjectProperty<>(this, "converter");
 
-  public EditableTextFieldListCell() {
-    this(null);
-  }
-
   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public EditableTextFieldListCell(IndexedStringConverter<T> converter) {
     this.getStyleClass().add("text-field-list-cell");

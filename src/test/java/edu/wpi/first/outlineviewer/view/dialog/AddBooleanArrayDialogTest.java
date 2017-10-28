@@ -5,10 +5,8 @@ import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 import com.google.common.primitives.Booleans;
 import edu.wpi.first.outlineviewer.view.IndexedValue;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListView;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayDialog> {
@@ -48,13 +46,12 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
 
     drag("False").dropTo("True");
 
-    Assertions.assertEquals(
-        Arrays.stream(new Boolean[]{true, false})
-            .collect(Collectors.toList()),
+    assertArrayEquals(
+        new Boolean[]{true, false},
         ((ListView<IndexedValue<Boolean>>) lookup(".list-view").query())
             .getItems().stream()
             .map(IndexedValue::getValue)
-            .collect(Collectors.toList()));
+            .toArray(Boolean[]::new));
   }
 
 }
