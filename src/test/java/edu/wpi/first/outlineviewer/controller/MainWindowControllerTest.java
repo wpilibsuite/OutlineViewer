@@ -1,26 +1,29 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
+
 import edu.wpi.first.outlineviewer.AutoClosingApplicationTest;
 import edu.wpi.first.outlineviewer.NetworkTableUtilities;
 import edu.wpi.first.outlineviewer.OutlineViewer;
 import java.util.stream.Stream;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 public class MainWindowControllerTest extends AutoClosingApplicationTest {
 
@@ -113,6 +116,32 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
     waitForFxEvents();
 
     assertTrue(listWindows().isEmpty());
+  }
+
+  @Test
+  @Tag("NonHeadlessTests")
+  void testDeleteItemsKey() {
+    clickOn("Root", MouseButton.SECONDARY)
+        .clickOn("Add boolean")
+        .write("zz")
+        .clickOn("Add")
+        .clickOn("zz")
+        .type(KeyCode.DELETE);
+    waitForFxEvents();
+    assertFalse(lookup("zz").tryQuery().isPresent());
+  }
+
+  @Test
+  @Tag("NonHeadlessTests")
+  void testDeleteItemsMenu() {
+    clickOn("Root", MouseButton.SECONDARY)
+        .clickOn("Add boolean")
+        .write("zz")
+        .clickOn("Add")
+        .clickOn("zz", MouseButton.SECONDARY)
+        .clickOn("Delete");
+    waitForFxEvents();
+    assertFalse(lookup("zz").tryQuery().isPresent());
   }
 
   /**

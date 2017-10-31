@@ -1,5 +1,6 @@
 package edu.wpi.first.outlineviewer.controller;
 
+import com.google.common.primitives.Bytes;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.PersistentException;
@@ -18,29 +19,29 @@ import edu.wpi.first.outlineviewer.view.dialog.AddNumberDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddStringDialog;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.fxml.FXML;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TreeTableView;
-import javafx.scene.control.TreeTableRow;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableRow;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
@@ -229,7 +230,7 @@ public class MainWindowController {
         networkTableTreeRow.getKey(),
         new AddNumberArrayDialog(),
         (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
-            .getEntry(key).setNumberArray((Number[]) Arrays.stream(value).boxed().toArray()));
+            .getEntry(key).setNumberArray(Arrays.stream(value).boxed().toArray(Double[]::new)));
 
     MenuItem boolArray = createContextMenuItem("Add boolean array",
         networkTableTreeRow.getKey(),
@@ -241,7 +242,10 @@ public class MainWindowController {
         networkTableTreeRow.getKey(),
         new AddBytesDialog(),
         (key, value) -> NetworkTableUtilities.getNetworkTableInstance()
-            .getEntry(key).setRaw(value));
+            .getEntry(key)
+            .setRaw(Bytes.toArray(
+                Arrays.stream(value).collect(Collectors.toList())
+            )));
 
     return Arrays.asList(string, number, bool,
                          new SeparatorMenuItem(),
