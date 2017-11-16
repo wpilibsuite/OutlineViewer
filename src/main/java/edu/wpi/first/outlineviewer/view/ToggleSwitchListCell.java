@@ -1,13 +1,12 @@
 package edu.wpi.first.outlineviewer.view;
 
 import javafx.beans.binding.Bindings;
-import javafx.scene.control.ListCell;
 import org.controlsfx.control.ToggleSwitch;
 
 /**
  * A list cell for displaying and editing boolean values that uses a toggle switch as a control.
  */
-public class ToggleSwitchListCell extends ListCell<Boolean> {
+public class ToggleSwitchListCell extends DraggableCell<IndexedValue<Boolean>> {
 
   private final ToggleSwitch toggleSwitch = new ToggleSwitch();
 
@@ -22,7 +21,7 @@ public class ToggleSwitchListCell extends ListCell<Boolean> {
     });
     toggleSwitch.selectedProperty().addListener((__, wasSelected, isSelected) -> {
       getListView().edit(getIndex());
-      commitEdit(isSelected);
+      commitEdit(new IndexedValue<>(getIndex(), isSelected));
     });
     toggleSwitch.setMaxWidth(1);
     textProperty().bind(Bindings.createStringBinding(this::createText, itemProperty()));
@@ -36,14 +35,15 @@ public class ToggleSwitchListCell extends ListCell<Boolean> {
   }
 
   @Override
-  protected void updateItem(Boolean item, boolean empty) {
+  protected void updateItem(IndexedValue<Boolean> item, boolean empty) {
     super.updateItem(item, empty);
+
     if (item == null || empty) {
       setGraphic(null);
-      return;
+    } else {
+      toggleSwitch.setSelected(item.getValue());
+      setGraphic(toggleSwitch);
     }
-    toggleSwitch.setSelected(item);
-    setGraphic(toggleSwitch);
   }
 
 }

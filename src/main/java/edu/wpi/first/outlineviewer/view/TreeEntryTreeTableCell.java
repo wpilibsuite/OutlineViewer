@@ -1,5 +1,7 @@
 package edu.wpi.first.outlineviewer.view;
 
+import static edu.wpi.first.outlineviewer.NetworkTableUtilities.simpleKey;
+
 import edu.wpi.first.outlineviewer.model.TreeRow;
 import edu.wpi.first.outlineviewer.view.dialog.AddBooleanArrayDialog;
 import edu.wpi.first.outlineviewer.view.dialog.AddBytesDialog;
@@ -12,8 +14,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
-
-import static edu.wpi.first.outlineviewer.NetworkTableUtilities.simpleKey;
 
 /**
  * TreeTableCell implementation that uses different editors based on the type of data in the cell.
