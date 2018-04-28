@@ -71,7 +71,7 @@ class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
 
   @Test
   void testToStringConverterInvalid() throws InterruptedException {
-    ListView<IndexedValue<Byte>> listView = lookup(ListViewMatchers.isEmpty()).query();
+    ListView listView = lookup(ListViewMatchers.isEmpty()).query();
     clickOn("+");
     ListCell<IndexedValue<Byte>> cell = from(listView).lookup(".list-cell").query();
 

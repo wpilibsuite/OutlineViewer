@@ -19,12 +19,12 @@ public class OutlineViewer extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    if (!"1.8".equals(System.getProperty("java.specification.version"))) {
+    if (!"10".equals(System.getProperty("java.specification.version"))) {
       Alert invalidVersionAlert = new Alert(Alert.AlertType.ERROR);
       invalidVersionAlert.setHeaderText("Invalid JRE Version!");
       invalidVersionAlert.setContentText(
           String.format("You are using an unsupported Java version: %s!  "
-              + "Please download Java 8.",
+              + "Please download Java 10.",
               System.getProperty("java.version")));
       invalidVersionAlert.showAndWait();
 
