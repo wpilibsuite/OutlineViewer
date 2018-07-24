@@ -81,7 +81,7 @@ application {
 
 checkstyle {
     configFile = file("$rootDir/checkstyle.xml")
-    toolVersion = "8.1"
+    toolVersion = "8.11"
 }
 
 pmd {
