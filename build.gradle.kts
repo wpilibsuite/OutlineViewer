@@ -39,7 +39,7 @@ group = "edu.wpi.first.wpilib"
 spotless {
     kotlinGradle {
         // Configure the formatting of the Gradle Kotlin DSL files (*.gradle.kts)
-        ktlint("0.9.1")
+        ktlint("0.24.0")
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -83,7 +83,6 @@ dependencies {
 
     testRuntime(testFx(name = "openjfx-monocle", version = "8u76-b04"))
     testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
-
 }
 
 application {
@@ -135,7 +134,7 @@ tasks.withType<JacocoReport> {
     }
 }
 afterEvaluate {
-    val junitPlatformTest : JavaExec by tasks
+    val junitPlatformTest: JavaExec by tasks
     jacoco {
         applyTo(junitPlatformTest)
     }
@@ -182,7 +181,7 @@ publishing {
             artifactId = "OutlineViewer"
             getWPILibVersion()?.let { version = it }
             val shadowJar: ShadowJar by tasks
-            artifact (shadowJar) {
+            artifact(shadowJar) {
                 classifier = null
             }
         }
