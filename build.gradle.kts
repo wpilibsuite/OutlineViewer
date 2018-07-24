@@ -69,7 +69,7 @@ dependencies {
 
     runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "4.+", classifier = "all")
 
-    fun junitJupiter(name: String, version: String = "5.0.0") =
+    fun junitJupiter(name: String, version: String = "5.2.0") =
             create(group = "org.junit.jupiter", name = name, version = version)
     fun testFx(name: String, version: String = "4.0.+") =
             create(group = "org.testfx", name = name, version = version)
