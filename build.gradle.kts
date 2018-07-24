@@ -62,10 +62,10 @@ repositories {
 }
 
 dependencies {
-    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "4.+")
-    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "3.+")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "8.40.14")
-    compile(group = "com.google.guava", name = "guava", version = "25.1-jre")
+    implementation(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = "4.+")
+    implementation(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = "3.+")
+    implementation(group = "org.controlsfx", name = "controlsfx", version = "8.40.14")
+    implementation(group = "com.google.guava", name = "guava", version = "25.1-jre")
 
     runtime(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = "4.+", classifier = "all")
 
@@ -74,12 +74,12 @@ dependencies {
     fun testFx(name: String, version: String = "4.0.+") =
             create(group = "org.testfx", name = name, version = version)
 
-    testCompile(junitJupiter(name = "junit-jupiter-api"))
-    testCompile(junitJupiter(name = "junit-jupiter-engine"))
-    testCompile(junitJupiter(name = "junit-jupiter-params"))
-    testCompile(testFx(name = "testfx-core", version = "4.0.7-alpha"))
-    testCompile(testFx(name = "testfx-junit5", version = "4.0.6-alpha"))
-    testCompile(group = "com.google.guava", name = "guava-testlib", version = "25.1-jre")
+    testImplementation(junitJupiter(name = "junit-jupiter-api"))
+    testImplementation(junitJupiter(name = "junit-jupiter-engine"))
+    testImplementation(junitJupiter(name = "junit-jupiter-params"))
+    testImplementation(testFx(name = "testfx-core", version = "4.0.7-alpha"))
+    testImplementation(testFx(name = "testfx-junit5", version = "4.0.6-alpha"))
+    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "25.1-jre")
 
     testRuntime(testFx(name = "openjfx-monocle", version = "8u76-b04"))
     testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
