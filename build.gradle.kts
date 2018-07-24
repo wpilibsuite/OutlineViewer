@@ -12,7 +12,7 @@ plugins {
     java
     checkstyle
     pmd
-    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.0"
+    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.1"
     id("com.github.johnrengelman.shadow") version "2.0.4"
     id("com.diffplug.gradle.spotless") version "3.13.0"
     id("com.github.spotbugs") version "1.6.2"
