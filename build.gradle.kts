@@ -1,10 +1,9 @@
 
 import edu.wpi.first.wpilib.versioning.ReleaseType
-import org.gradle.api.Project
-import org.gradle.api.plugins.quality.FindBugs
 import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.spotbugs.SpotBugsTask
 
 plugins {
     application
@@ -16,11 +15,12 @@ plugins {
     id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.0"
     id("com.github.johnrengelman.shadow") version "2.0.4"
     id("com.diffplug.gradle.spotless") version "3.13.0"
+    id("com.github.spotbugs") version "1.6.2"
 }
 
 apply {
     plugin("pmd")
-    plugin("findbugs")
+    plugin("com.github.spotbugs")
     plugin("jacoco")
 }
 
@@ -92,12 +92,13 @@ pmd {
     ruleSets = emptyList()
 }
 
-findbugs {
+spotbugs {
+    toolVersion = "3.1.6"
     sourceSets = setOf(java.sourceSets["main"], java.sourceSets["test"])
     effort = "max"
 }
 
-tasks.withType<FindBugs> {
+tasks.withType<SpotBugsTask> {
     reports {
         xml.isEnabled = false
         emacs.isEnabled = true
@@ -174,15 +175,3 @@ fun getWPILibVersion(): String? = if (WPILibVersion.version != "") WPILibVersion
 task<Wrapper>("wrapper") {
     gradleVersion = "4.9"
 }
-
-/**
- * Retrieves the [findbugs][org.gradle.api.plugins.quality.FindBugsExtension] project extension.
- */
-val Project.`findbugs`: org.gradle.api.plugins.quality.FindBugsExtension get() =
-    extensions.getByName("findbugs") as org.gradle.api.plugins.quality.FindBugsExtension
-
-/**
- * Configures the [findbugs][org.gradle.api.plugins.quality.FindBugsExtension] project extension.
- */
-fun Project.`findbugs`(configure: org.gradle.api.plugins.quality.FindBugsExtension.() -> Unit) =
-        extensions.configure("findbugs", configure)
