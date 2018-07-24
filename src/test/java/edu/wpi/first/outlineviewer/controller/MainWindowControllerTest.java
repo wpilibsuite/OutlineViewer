@@ -19,8 +19,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -119,7 +119,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
-  @Tag("NonHeadlessTests")
+  @DisabledIfSystemProperty(named = "testfx.headless", matches = "true")
   void testDeleteItemsKey() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")
@@ -132,7 +132,7 @@ public class MainWindowControllerTest extends AutoClosingApplicationTest {
   }
 
   @Test
-  @Tag("NonHeadlessTests")
+  @DisabledIfSystemProperty(named = "testfx.headless", matches = "true")
   void testDeleteItemsMenu() {
     clickOn("Root", MouseButton.SECONDARY)
         .clickOn("Add boolean")

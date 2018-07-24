@@ -6,14 +6,6 @@ import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0")
-    }
-}
 plugins {
     application
     `maven-publish`
@@ -30,7 +22,6 @@ apply {
     plugin("pmd")
     plugin("findbugs")
     plugin("jacoco")
-    plugin("org.junit.platform.gradle.plugin")
 }
 
 group = "edu.wpi.first.wpilib"
@@ -82,7 +73,6 @@ dependencies {
     testImplementation(group = "com.google.guava", name = "guava-testlib", version = "25.1-jre")
 
     testRuntime(testFx(name = "openjfx-monocle", version = "8u76-b04"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
 }
 
 application {
@@ -133,45 +123,24 @@ tasks.withType<JacocoReport> {
         html.isEnabled = true
     }
 }
-afterEvaluate {
-    val junitPlatformTest: JavaExec by tasks
-    jacoco {
-        applyTo(junitPlatformTest)
-    }
-    task<JacocoReport>("jacocoJunit5TestReport") {
-        executionData(junitPlatformTest)
-        sourceSets(java.sourceSets["main"])
-        sourceDirectories = files(java.sourceSets["main"].allSource.srcDirs)
-        classDirectories = files(java.sourceSets["main"].output)
-    }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 /*
-     * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless argument
-     */
+ * Allows you to run the UI tests in headless mode by calling gradle with the -Pheadless argument
+ */
 if (project.hasProperty("jenkinsBuild") || project.hasProperty("headless")) {
     println("Running UI Tests Headless")
-    junitPlatform {
-        filters {
-            tags {
-                /*
-                 * A category for UI tests that cannot run in headless mode, ie work properly with real windows
-                 * but not with the virtualized ones in headless mode.
-                 */
-                exclude("NonHeadlessTests")
-            }
-        }
-    }
-    tasks {
-        "junitPlatformTest"(JavaExec::class) {
-            jvmArgs = listOf(
-                    "-Djava.awt.headless=true",
-                    "-Dtestfx.robot=glass",
-                    "-Dtestfx.headless=true",
-                    "-Dprism.order=sw",
-                    "-Dprism.text=t2k"
-            )
-        }
+    tasks.withType<Test> {
+        jvmArgs = listOf(
+                "-Djava.awt.headless=true",
+                "-Dtestfx.robot=glass",
+                "-Dtestfx.headless=true",
+                "-Dprism.order=sw",
+                "-Dprism.text=t2k"
+        )
     }
 }
 
@@ -217,15 +186,3 @@ val Project.`findbugs`: org.gradle.api.plugins.quality.FindBugsExtension get() =
  */
 fun Project.`findbugs`(configure: org.gradle.api.plugins.quality.FindBugsExtension.() -> Unit) =
         extensions.configure("findbugs", configure)
-
-/**
- * Retrieves the [junitPlatform][org.junit.platform.gradle.plugin.JUnitPlatformExtension] project extension.
- */
-val Project.`junitPlatform`: org.junit.platform.gradle.plugin.JUnitPlatformExtension get() =
-    extensions.getByName("junitPlatform") as org.junit.platform.gradle.plugin.JUnitPlatformExtension
-
-/**
- * Configures the [junitPlatform][org.junit.platform.gradle.plugin.JUnitPlatformExtension] project extension.
- */
-fun Project.`junitPlatform`(configure: org.junit.platform.gradle.plugin.JUnitPlatformExtension.() -> Unit) =
-        extensions.configure("junitPlatform", configure)
