@@ -207,36 +207,6 @@ task<Wrapper>("wrapper") {
 }
 
 /**
- * Retrieves the [java][org.gradle.api.plugins.JavaPluginConvention] project convention.
- */
-val Project.`java`: org.gradle.api.plugins.JavaPluginConvention get() =
-    convention.getPluginByName("java")
-
-/**
- * Retrieves the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-val Project.`checkstyle`: org.gradle.api.plugins.quality.CheckstyleExtension get() =
-    extensions.getByName("checkstyle") as org.gradle.api.plugins.quality.CheckstyleExtension
-
-/**
- * Configures the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-fun Project.`checkstyle`(configure: org.gradle.api.plugins.quality.CheckstyleExtension.() -> Unit) =
-        extensions.configure("checkstyle", configure)
-
-/**
- * Retrieves the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-val Project.`pmd`: org.gradle.api.plugins.quality.PmdExtension get() =
-    extensions.getByName("pmd") as org.gradle.api.plugins.quality.PmdExtension
-
-/**
- * Configures the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-fun Project.`pmd`(configure: org.gradle.api.plugins.quality.PmdExtension.() -> Unit) =
-        extensions.configure("pmd", configure)
-
-/**
  * Retrieves the [findbugs][org.gradle.api.plugins.quality.FindBugsExtension] project extension.
  */
 val Project.`findbugs`: org.gradle.api.plugins.quality.FindBugsExtension get() =
