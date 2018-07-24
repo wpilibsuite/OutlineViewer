@@ -85,6 +85,7 @@ checkstyle {
 }
 
 pmd {
+    toolVersion = "6.5.0"
     isConsoleOutput = true
     sourceSets = setOf(java.sourceSets["main"], java.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
