@@ -10,7 +10,7 @@ import javafx.scene.control.ListView;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-
+@Tag("UI")
 class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayDialog> {
 
   AddBooleanArrayDialogTest() {

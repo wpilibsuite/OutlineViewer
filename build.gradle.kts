@@ -1,10 +1,10 @@
 import edu.wpi.first.wpilib.versioning.ReleaseType
-import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.time.Instant
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.spotbugs.SpotBugsTask
 
 buildscript {
     repositories {
@@ -20,7 +20,7 @@ plugins {
     application
     pmd
     id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.2"
-    id("com.github.johnrengelman.shadow") version "2.0.1"
+    id("com.github.johnrengelman.shadow") version "2.0.4"
     id("com.diffplug.gradle.spotless") version "3.13.0"
     id("com.github.spotbugs") version "1.6.4"
 }
@@ -62,7 +62,7 @@ spotless {
         endWithNewline()
     }
     format("extraneous") {
-        target("Dockerfile", "*.sh", "*.yml")
+        target("src/**/*.fxml", "src/**/*.css", "*.xml", "*.yml", "*.md")
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -81,24 +81,24 @@ dependencies {
     val ntcoreVersion = "2018.4.+"
     val wpiUtilVersion = "2018.4.+"
 
-    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
+    implementation(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
-    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
+    implementation(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    compile(group = "com.google.guava", name = "guava", version = "23.0")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
+    implementation(group = "com.google.guava", name = "guava", version = "23.0")
+    implementation(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
 
     fun junitJupiter(name: String, version: String = "5.2.0") =
         create(group = "org.junit.jupiter", name = name, version = version)
     fun testFx(name: String, version: String = "4.0.13-alpha") =
         create(group = "org.testfx", name = name, version = version)
 
-    testCompile(junitJupiter(name = "junit-jupiter-api"))
-    testCompile(junitJupiter(name = "junit-jupiter-engine"))
-    testCompile(junitJupiter(name = "junit-jupiter-params"))
-    testCompile(group = "com.google.guava", name = "guava-testlib", version = "23.0")
-    testCompile(testFx(name = "testfx-core"))
-    testCompile(testFx(name = "testfx-junit5"))
+    testImplementation(junitJupiter(name = "junit-jupiter-api"))
+    testImplementation(junitJupiter(name = "junit-jupiter-engine"))
+    testImplementation(junitJupiter(name = "junit-jupiter-params"))
+    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "23.0")
+    testImplementation(testFx(name = "testfx-core"))
+    testImplementation(testFx(name = "testfx-junit5"))
 
     testRuntime(testFx(name = "openjfx-monocle", version = "jdk-9+181"))
     testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
@@ -111,7 +111,7 @@ checkstyle {
 pmd {
     toolVersion = "6.7.0"
     isConsoleOutput = true
-    sourceSets = setOf(java.sourceSets["main"])
+    sourceSets = setOf(java.sourceSets["main"], java.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
     ruleSetFiles = files(file("$rootDir/pmd-ruleset.xml"))
     ruleSets = emptyList()
@@ -120,6 +120,26 @@ pmd {
 tasks.withType<JavaCompile>().configureEach {
     // UTF-8 characters are used in menus
     options.encoding = "UTF-8"
+}
+
+tasks.withType<SpotBugsTask>() {
+    reports {
+        xml.isEnabled = false
+        emacs.isEnabled = true
+    }
+    finalizedBy(task("${name}Report") {
+        mustRunAfter(this@withType)
+        doLast {
+            this@withType
+                .reports
+                .emacs
+                .destination
+                .takeIf { it.exists() }
+                ?.readText()
+                .takeIf { !it.isNullOrBlank() }
+                ?.also { logger.warn(it) }
+        }
+    })
 }
 
 jacoco {
@@ -217,36 +237,3 @@ fun getWPILibVersion(fallback: String = "v0.0.0"): String {
 tasks.withType<Wrapper>().configureEach {
     gradleVersion = "4.9"
 }
-
-/**
- * Retrieves the [java][org.gradle.api.plugins.JavaPluginConvention] project convention.
- */
-val Project.`java`: org.gradle.api.plugins.JavaPluginConvention
-    get() =
-        convention.getPluginByName("java")
-
-/**
- * Retrieves the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-val Project.`checkstyle`: org.gradle.api.plugins.quality.CheckstyleExtension
-    get() =
-        extensions.getByName("checkstyle") as org.gradle.api.plugins.quality.CheckstyleExtension
-
-/**
- * Configures the [checkstyle][org.gradle.api.plugins.quality.CheckstyleExtension] project extension.
- */
-fun Project.`checkstyle`(configure: org.gradle.api.plugins.quality.CheckstyleExtension.() -> Unit) =
-        extensions.configure("checkstyle", configure)
-
-/**
- * Retrieves the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-val Project.`pmd`: org.gradle.api.plugins.quality.PmdExtension
-    get() =
-        extensions.getByName("pmd") as org.gradle.api.plugins.quality.PmdExtension
-
-/**
- * Configures the [pmd][org.gradle.api.plugins.quality.PmdExtension] project extension.
- */
-fun Project.`pmd`(configure: org.gradle.api.plugins.quality.PmdExtension.() -> Unit) =
-        extensions.configure("pmd", configure)
