@@ -186,8 +186,8 @@ val javadocJar = task<Jar>("javadocJar") {
 publishing {
     publications {
         create<MavenPublication>("app") {
-            groupId = "edu.wpi.first.outlineviewer"
-            artifactId = "outlineviewer"
+            groupId = "edu.wpi.first.wpilib"
+            artifactId = "OutlineViewer"
             version = project.version as String
             nativeShadowTasks.forEach {
                 artifact(it) {
