@@ -10,6 +10,9 @@ public class AddStringDialog extends AddEntryDialog<String> {
 
   private TextField valueField;
 
+  /**
+   * Constructs a new AddStringDialog.
+   */
   public AddStringDialog() {
     super("String");
     getDialogPane().getStyleClass().add("add-string-dialog");
