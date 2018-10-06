@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
@@ -30,7 +29,7 @@ class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
     final Byte[] test = new Byte[]{0, 1, 2, 127, (byte) 255};
     dialog.setInitial(test);
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         test,
         ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
@@ -92,7 +91,7 @@ class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
 
     drag("0xFF").dropTo("0x00");
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         new Byte[]{(byte) 255, 0, 1, 2, 127},
         ((ListView<IndexedValue<Byte>>) lookup(".list-view").query())
             .getItems().stream()
@@ -117,7 +116,7 @@ class AddBytesDialogTest extends AddEntryArrayDialogTest<AddBytesDialog> {
         .get(1));
     waitForFxEvents();
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         new Byte[]{32},
         ((ListView<IndexedValue<Byte>>) lookup(".list-view").query())
             .getItems().stream()

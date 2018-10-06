@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
@@ -27,7 +26,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
     final String[] test = new String[]{"", "A String", "And another!"};
     dialog.setInitial(test);
 
-    Assertions.assertEquals(
+    assertEquals(
         Arrays.stream(test)
             .collect(Collectors.toList()),
         ((ListView<IndexedValue<String>>) lookup(".list-view").query())
@@ -66,7 +65,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
 
     drag("C").dropTo("A");
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         new String[]{"C", "A", "B"},
         ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
@@ -91,7 +90,7 @@ class AddStringArrayDialogTest extends AddEntryArrayDialogTest<AddStringArrayDia
         .get(1));
     waitForFxEvents();
 
-    Assertions.assertArrayEquals(
+    assertArrayEquals(
         new String[]{"B"},
         ((ListView<IndexedValue<String>>) lookup(".list-view").query())
             .getItems().stream()
