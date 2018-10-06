@@ -8,11 +8,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.junit.Assert.assertEquals;
 
+@Tag("UI")
 public class ConnectionIndicatorControllerTest extends ApplicationTest {
 
   private ConnectionIndicatorController controller;

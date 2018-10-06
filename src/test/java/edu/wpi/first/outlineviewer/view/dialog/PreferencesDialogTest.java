@@ -2,6 +2,7 @@ package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
@@ -9,6 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@Tag("UI")
 public class PreferencesDialogTest extends ApplicationTest {
 
   private PreferencesDialog dialog;

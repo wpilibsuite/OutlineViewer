@@ -7,7 +7,9 @@ import com.google.common.primitives.Booleans;
 import edu.wpi.first.outlineviewer.view.IndexedValue;
 import java.util.stream.Collectors;
 import javafx.scene.control.ListView;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
 
 class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayDialog> {
 

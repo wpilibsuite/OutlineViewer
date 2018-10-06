@@ -1,12 +1,14 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.ListView;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
+@Tag("UI")
 abstract class AddEntryArrayDialogTest<T extends AddEntryDialog>
     extends AddEntryDialogTest<T> {
 
