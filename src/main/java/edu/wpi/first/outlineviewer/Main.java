@@ -1,6 +1,6 @@
 package edu.wpi.first.outlineviewer;
 
-import com.sun.javafx.application.LauncherImpl;
+import javafx.application.Application;
 
 /**
  * The true main class.  This bypasses module boot layer introspection by the Java launcher that attempts to
@@ -15,6 +15,6 @@ public final class Main {
     // JavaFX 11+ uses GTK3 by default, and has problems on some display servers
     // This flag forces JavaFX to use GTK2
     System.setProperty("jdk.gtk.version", "2");
-    LauncherImpl.launchApplication(OutlineViewer.class, args);
+    Application.launch(OutlineViewer.class, args);
   }
 }

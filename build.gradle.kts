@@ -33,14 +33,10 @@ if (!hasProperty("releaseType")) {
     }
 }
 
-// Only load the project version once, then share it
-val projectVerion = getWPILibVersion()
-
-version = projectVerion
+version = getWPILibVersion()
 
 val theMainClassName = "edu.wpi.first.outlineviewer.Main"
 
-// Note: plugins should override this
 tasks.withType<Jar>().configureEach {
     manifest {
         attributes["Implementation-Version"] = project.version as String
@@ -51,10 +47,6 @@ tasks.withType<Jar>().configureEach {
 
 application {
     mainClassName = theMainClassName
-    applicationDefaultJvmArgs = listOf(
-            "-Xverify:none",
-            "-Dprism.order=d3d,es2,sw"
-    )
 }
 
 repositories {
@@ -125,7 +117,7 @@ pmd {
     ruleSets = emptyList()
 }
 
-tasks.withType<JavaCompile> {
+tasks.withType<JavaCompile>().configureEach {
     // UTF-8 characters are used in menus
     options.encoding = "UTF-8"
 }
@@ -134,14 +126,14 @@ jacoco {
     toolVersion = "0.8.2"
 }
 
-tasks.withType<JacocoReport> {
+tasks.withType<JacocoReport>().configureEach {
     reports {
         xml.isEnabled = true
         html.isEnabled = true
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     // TODO: re-enable when TestFX (or the underlying JavaFX problem) is fixed
     println("UI tests will not be run due to TestFX being broken when headless on Java 10.")
     println("See: https://github.com/javafxports/openjdk-jfx/issues/66")
@@ -151,11 +143,8 @@ tasks.withType<Test> {
     }
 }
 
-tasks.withType<Javadoc> {
+tasks.withType<Javadoc>().configureEach {
     isFailOnError = false
-}
-
-dependencies {
 }
 
 val nativeShadowTasks = NativePlatforms.values().map { platform ->
@@ -205,13 +194,8 @@ publishing {
                     classifier = it.classifier
                 }
             }
-            artifact(sourceJar)
-            artifact(javadocJar)
         }
     }
-}
-
-dependencies {
 }
 
 /**
