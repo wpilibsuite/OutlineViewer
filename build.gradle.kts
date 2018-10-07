@@ -81,12 +81,12 @@ dependencies {
     val ntcoreVersion = "2018.4.+"
     val wpiUtilVersion = "2018.4.+"
 
-    implementation(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
+    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
-    implementation(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
+    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    implementation(group = "com.google.guava", name = "guava", version = "23.0")
-    implementation(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
+    compile(group = "com.google.guava", name = "guava", version = "23.0")
+    compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
 
     fun junitJupiter(name: String, version: String = "5.2.0") =
         create(group = "org.junit.jupiter", name = name, version = version)
