@@ -1,11 +1,13 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import javafx.scene.control.TextField;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+@Tag("UI")
 class AddNumberDialogTest extends AddEntryDialogTest<AddNumberDialog> {
 
   AddNumberDialogTest() {

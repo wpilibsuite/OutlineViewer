@@ -20,6 +20,9 @@ public class DraggableCell<T> extends ListCell<T> {
 
   private static final DataFormat T_FORMAT = new DataFormat("GENERIC");
 
+  /**
+   * Constructs a new DraggableCell.
+   */
   public DraggableCell() {
     ListCell<T> thisCell = this;
 

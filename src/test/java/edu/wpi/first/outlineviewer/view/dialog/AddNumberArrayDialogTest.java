@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testfx.matcher.control.ListViewMatchers;
 
+@Tag("UI")
 class AddNumberArrayDialogTest extends AddEntryArrayDialogTest<AddNumberArrayDialog> {
 
   AddNumberArrayDialogTest() {
