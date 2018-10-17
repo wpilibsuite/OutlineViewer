@@ -78,8 +78,8 @@ dependencies {
     javafx("fxml")
     javafx("graphics")
 
-    val ntcoreVersion = "2018.4.+"
-    val wpiUtilVersion = "2018.4.+"
+    val ntcoreVersion = "2019.+"
+    val wpiUtilVersion = "2019.+"
 
     compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
