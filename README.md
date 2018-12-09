@@ -19,7 +19,7 @@ The WPILib Mission is to enable FIRST teams to focus on writing game-specific so
 Building OutlineViewer is very straightforward. OutlineViewer uses Gradle to compile.
 
 ## Requirements
-- [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [Java 11](http://jdk.java.net/11/)
 
 ## Running
 
