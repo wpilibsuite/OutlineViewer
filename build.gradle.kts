@@ -19,8 +19,8 @@ plugins {
     checkstyle
     application
     pmd
-    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.2"
-    id("com.github.johnrengelman.shadow") version "2.0.4"
+    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.3"
+    id("com.github.johnrengelman.shadow") version "4.0.3"
     id("com.diffplug.gradle.spotless") version "3.13.0"
     id("com.github.spotbugs") version "1.6.4"
 }
@@ -111,7 +111,7 @@ checkstyle {
 pmd {
     toolVersion = "6.7.0"
     isConsoleOutput = true
-    sourceSets = setOf(java.sourceSets["main"], java.sourceSets["test"])
+    sourceSets = setOf(project.sourceSets["main"], project.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
     ruleSetFiles = files(file("$rootDir/pmd-ruleset.xml"))
     ruleSets = emptyList()
@@ -171,11 +171,11 @@ val nativeShadowTasks = NativePlatforms.values().map { platform ->
     tasks.create<ShadowJar>("shadowJar-${platform.platformName}") {
         classifier = platform.platformName
         configurations = listOf(
-                project.configurations.compile,
+                project.configurations.getByName("compile"),
                 project.configurations.getByName(platform.platformName)
         )
         from(
-                java.sourceSets["main"].output
+                project.sourceSets["main"].output
         )
     }
 }
@@ -188,19 +188,6 @@ tasks.create("shadowJarAllPlatforms") {
 
 tasks.withType<ShadowJar>().configureEach {
     exclude("module-info.class")
-}
-
-val sourceJar = task<Jar>("sourceJar") {
-    description = "Creates a JAR that contains the source code."
-    from(java.sourceSets["main"].allSource)
-    classifier = "sources"
-}
-
-val javadocJar = task<Jar>("javadocJar") {
-    dependsOn("javadoc")
-    description = "Creates a JAR that contains the javadocs."
-    from(java.docsDir)
-    classifier = "javadoc"
 }
 
 publishing {
@@ -235,5 +222,5 @@ fun getWPILibVersion(fallback: String = "0.0.0"): String {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "4.9"
+    gradleVersion = "5.0"
 }
