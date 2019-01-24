@@ -105,13 +105,13 @@ public class MainWindowController {
             newValue = NetworkTableValue.makeBoolean((Boolean) event.getNewValue());
             break;
           case kDoubleArray:
-            newValue = NetworkTableValue.makeDoubleArray((Double[]) event.getNewValue());
+            newValue = NetworkTableValue.makeDoubleArray((double[]) event.getNewValue());
             break;
           case kStringArray:
             newValue = NetworkTableValue.makeStringArray((String[]) event.getNewValue());
             break;
           case kBooleanArray:
-            newValue = NetworkTableValue.makeBooleanArray((Boolean[]) event.getNewValue());
+            newValue = NetworkTableValue.makeBooleanArray((boolean[]) event.getNewValue());
             break;
           case kRaw:
             newValue = NetworkTableValue.makeRaw((byte[]) event.getNewValue());
