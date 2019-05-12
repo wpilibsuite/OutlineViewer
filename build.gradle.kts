@@ -88,7 +88,7 @@ dependencies {
     compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
     compile(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
-    fun junitJupiter(name: String, version: String = "5.2.0") =
+    fun junitJupiter(name: String, version: String = "5.4.2") =
         create(group = "org.junit.jupiter", name = name, version = version)
     fun testFx(name: String, version: String = "4.0.13-alpha") =
         create(group = "org.testfx", name = name, version = version)
