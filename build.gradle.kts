@@ -20,7 +20,7 @@ plugins {
     application
     pmd
     id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.3"
-    id("com.github.johnrengelman.shadow") version "4.0.3"
+    id("com.github.johnrengelman.shadow") version "5.0.0"
     id("com.diffplug.gradle.spotless") version "3.13.0"
     id("com.github.spotbugs") version "1.6.4"
 }
