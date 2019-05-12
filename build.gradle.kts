@@ -105,7 +105,7 @@ dependencies {
 }
 
 checkstyle {
-    toolVersion = "8.12"
+    toolVersion = "8.20"
 }
 
 pmd {
