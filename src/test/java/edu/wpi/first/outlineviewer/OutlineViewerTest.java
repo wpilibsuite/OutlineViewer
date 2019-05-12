@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 class OutlineViewerTest extends FxRobot {
 
   @BeforeEach
+  @SuppressWarnings("PMD.SignatureDeclareThrowsException")
   void before() throws Exception {
     FxToolkit.registerPrimaryStage();
     Thread fxThread = new Thread(() -> {

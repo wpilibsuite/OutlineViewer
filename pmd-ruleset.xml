@@ -1,27 +1,81 @@
 <?xml version="1.0"?>
-<ruleset name="Ruleset"
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="OutlineViewer Ruleset"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-    <rule ref="rulesets/java/basic.xml"/>
-    <rule ref="rulesets/java/braces.xml"/>
-    <rule ref="rulesets/java/design.xml"/>
-    <rule ref="rulesets/java/empty.xml"/>
-    <rule ref="rulesets/java/imports.xml">
-        <exclude name="TooManyStaticImports"/>
-    </rule>
-    <rule ref="rulesets/java/junit.xml">
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd
+http://pmd.sourceforge.net/ruleset/2.0.0 ">
+
+    <description>PMD Ruleset for OutlineViewer</description>
+
+    <rule ref="category/java/bestpractices.xml">
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
     </rule>
-    <rule ref="rulesets/java/logging-java.xml"/>
-    <rule ref="rulesets/java/migrating.xml"/>
-    <rule ref="rulesets/java/optimizations.xml">
-        <exclude name="LocalVariableCouldBeFinal"/>
-        <exclude name="MethodArgumentCouldBeFinal"/>
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
+        <properties>
+            <property name="violationSuppressRegex" value=".*'.*Arguments\(\)'.*"/>
+        </properties>
     </rule>
-    <rule ref="rulesets/java/strings.xml">
-        <exclude name="AvoidDuplicateLiterals" pattern=".*/test/.*"/>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="LawOfDemeter"/>
+        <exclude name="NcssConstructorCount"/>
+        <exclude name="NcssCount"/>
+        <exclude name="NcssMethodCount"/>
+        <exclude name="NPathComplexity"/>
     </rule>
-    <rule ref="rulesets/java/unnecessary.xml"/>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="DataflowAnomalyAnalysis"/>
+    </rule>
+    <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
+        <properties>
+            <property name="ignoreMagicNumbers" value="-1,0,1,2" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="DoNotUseThreads"/>
+    </rule>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule name="UnnecessaryCastRule"
+          language="java"
+          message="Avoid unnecessary casts"
+          class="net.sourceforge.pmd.lang.java.rule.migrating.UnnecessaryCastRule"
+          externalInfoUrl="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/UnnecessaryCastRule.java"/>
+
+    <!-- Custom Rules -->
+    <rule name="UseRequireNonNull"
+          message="Use Objects.requireNonNull() instead of throwing a NullPointerException yourself."
+          language="java"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Use Objects.requireNonNull() instead of throwing a
+            NullPointerException yourself.
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+            //IfStatement[child::Expression//NullLiteral]/Statement//ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
+          ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+                public class Example {
+                    public Example(Object example) {
+                        if (example == null) {
+                            throw new NullPointerException();
+                        }
+                    }
+                }
+            ]]>
+        </example>
+    </rule>
 </ruleset>

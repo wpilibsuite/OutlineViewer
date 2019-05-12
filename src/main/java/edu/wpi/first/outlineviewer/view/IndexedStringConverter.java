@@ -14,6 +14,7 @@ public abstract class IndexedStringConverter<T> extends StringConverter<IndexedV
    * Format of the returned string is defined by the specific converter.
    * @return a string representation of the object passed in.
    */
+  @Override
   public abstract String toString(IndexedValue<T> object);
 
   /**

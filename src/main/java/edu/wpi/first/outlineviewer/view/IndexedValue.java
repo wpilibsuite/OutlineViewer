@@ -10,6 +10,9 @@ import javafx.util.Pair;
  * @param <T> Data storage type
  */
 public class IndexedValue<T> implements Serializable {
+
+  public static final long serialVersionUID = 1;
+
   private Pair<Integer, T> data;
 
   public IndexedValue(T val) {
