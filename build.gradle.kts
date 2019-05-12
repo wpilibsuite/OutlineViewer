@@ -122,7 +122,7 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<SpotBugsTask>() {
+tasks.withType<SpotBugsTask> {
     reports {
         xml.isEnabled = false
         emacs.isEnabled = true
@@ -211,13 +211,13 @@ publishing {
  * if that value is the empty string.
  */
 fun getWPILibVersion(fallback: String = "0.0.0"): String {
-    if (project.hasProperty("publishVersion")) {
-        val publishVersion: String by project
-        return publishVersion
-    } else if (WPILibVersion.version != "") {
-        return WPILibVersion.version
-    } else {
-        return fallback
+    return when {
+        project.hasProperty("publishVersion") -> {
+            val publishVersion: String by project
+            publishVersion
+        }
+        WPILibVersion.version != "" -> WPILibVersion.version
+        else -> fallback
     }
 }
 
