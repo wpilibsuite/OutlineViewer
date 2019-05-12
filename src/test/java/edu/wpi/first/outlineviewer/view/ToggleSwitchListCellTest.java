@@ -11,14 +11,13 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @Tag("UI")
 public class ToggleSwitchListCellTest extends ApplicationTest {
 
   @Override
-  public void start(Stage stage) throws Exception {
+  public void start(Stage stage) {
     ListView<IndexedValue<Boolean>> listView = new ListView<>();
     listView.setCellFactory(__ -> new ToggleSwitchListCell());
     listView.setEditable(true);
@@ -63,7 +62,7 @@ public class ToggleSwitchListCellTest extends ApplicationTest {
     FxHelper.runAndWait(() -> getToggleSwitchListCell()
         .updateItem(new IndexedValue<>(false), true));
 
-    assertNull(getToggleSwitch());
+    assertFalse(lookup(".toggle-switch").tryQuery().isPresent());
   }
 
   private ToggleSwitchListCell getToggleSwitchListCell() {
