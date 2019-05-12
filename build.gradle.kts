@@ -109,7 +109,7 @@ checkstyle {
 }
 
 pmd {
-    toolVersion = "6.7.0"
+    toolVersion = "6.14.0"
     isConsoleOutput = true
     sourceSets = setOf(project.sourceSets["main"], project.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
