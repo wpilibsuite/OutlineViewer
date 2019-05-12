@@ -101,7 +101,7 @@ dependencies {
     testImplementation(testFx(name = "testfx-junit5"))
 
     testRuntime(testFx(name = "openjfx-monocle", version = "jdk-9+181"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
+    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
 }
 
 checkstyle {
