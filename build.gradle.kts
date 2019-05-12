@@ -222,5 +222,5 @@ fun getWPILibVersion(fallback: String = "0.0.0"): String {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "5.0"
+    gradleVersion = "5.4.1"
 }
