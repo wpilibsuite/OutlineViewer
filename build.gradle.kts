@@ -100,7 +100,7 @@ dependencies {
     testImplementation(testFx(name = "testfx-core"))
     testImplementation(testFx(name = "testfx-junit5"))
 
-    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-9+181"))
+    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
     testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
 }
 
