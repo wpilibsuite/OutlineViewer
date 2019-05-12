@@ -85,7 +85,7 @@ dependencies {
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
     compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    compile(group = "com.google.guava", name = "guava", version = "23.0")
+    compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
     compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
 
     fun junitJupiter(name: String, version: String = "5.2.0") =
@@ -96,7 +96,7 @@ dependencies {
     testImplementation(junitJupiter(name = "junit-jupiter-api"))
     testImplementation(junitJupiter(name = "junit-jupiter-engine"))
     testImplementation(junitJupiter(name = "junit-jupiter-params"))
-    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "23.0")
+    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "27.1-jre")
     testImplementation(testFx(name = "testfx-core"))
     testImplementation(testFx(name = "testfx-junit5"))
 
