@@ -168,6 +168,7 @@ tasks.withType<Test>().configureEach {
             )
             excludeTags("NonHeadlessTests")
         }
+        systemProperty("junit.jupiter.extensions.autodetection.enabled", true)
     }
     finalizedBy("jacocoTestReport")
 }
