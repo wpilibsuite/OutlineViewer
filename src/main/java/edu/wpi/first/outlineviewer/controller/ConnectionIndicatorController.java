@@ -26,7 +26,7 @@ public class ConnectionIndicatorController {
   private Label connectionLabel;
 
   @FXML
-  private void initialize() {
+  void initialize() {
     NetworkTableUtilities.getNetworkTableInstance().addConnectionListener(listener
         -> updateConnectionLabel(), true);
     Preferences.serverProperty().addListener(__ -> updateConnectionLabel());

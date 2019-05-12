@@ -31,6 +31,7 @@ public class TreeEntryTreeTableCell<T extends TreeRow> extends TreeTableCell<T, 
   }
 
   @Override
+  @SuppressWarnings("PMD.NullAssignment")
   protected void updateItem(Object item, boolean empty) {
     super.updateItem(item, empty);
     if (item == null || empty || getTreeTableRow().getTreeItem() == null) {

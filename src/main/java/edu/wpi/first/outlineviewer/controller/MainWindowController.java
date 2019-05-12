@@ -48,6 +48,7 @@ import javafx.stage.StageStyle;
 /**
  * Controller for the main window.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public class MainWindowController {
 
   @FXML
@@ -66,8 +67,8 @@ public class MainWindowController {
   private TreeTableColumn<TreeRow, String> typeColumn;
 
   @FXML
-  @SuppressWarnings("PMD.AccessorMethodGeneration")
-  private void initialize() {
+  @SuppressWarnings("PMD.ExcessiveMethodLength")
+  void initialize() {
     ntRoot.setValue(new NetworkTableTreeRow(NetworkTableUtilities
         .getNetworkTableInstance().getTable("")));
 
@@ -267,7 +268,7 @@ public class MainWindowController {
   }
 
   @FXML
-  private void showPreferences() throws IOException {
+  void showPreferences() throws IOException {
     PreferencesDialog dialog = new PreferencesDialog(ButtonType.CANCEL, ButtonType.OK);
     dialog.initOwner(root.getScene().getWindow());
     dialog.initModality(Modality.APPLICATION_MODAL);
@@ -279,7 +280,7 @@ public class MainWindowController {
   }
 
   @FXML
-  private void loadState() {
+  void loadState() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Load NetworkTables State");
     fileChooser.getExtensionFilters().addAll(
@@ -302,7 +303,7 @@ public class MainWindowController {
   }
 
   @FXML
-  private void saveState()  {
+  void saveState()  {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save NetworkTables State");
     fileChooser.setInitialFileName("networktables.ini");
@@ -320,7 +321,7 @@ public class MainWindowController {
   }
 
   @FXML
-  private void exitProgram() {
+  void exitProgram() {
     root.getScene().getWindow().hide();
   }
 

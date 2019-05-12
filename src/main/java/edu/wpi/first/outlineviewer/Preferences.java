@@ -17,6 +17,7 @@ public final class Preferences {
   private static final String IP = "ip";
   private static final String PORT = "port";
 
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
   private static final java.util.prefs.Preferences preferences
       = java.util.prefs.Preferences.userNodeForPackage(OutlineViewer.class);
 

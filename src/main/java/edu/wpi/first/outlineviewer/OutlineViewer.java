@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class OutlineViewer extends Application {
 
+  @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
   private static final ButtonType START = new ButtonType("Start", ButtonData.OK_DONE);
   private static final ButtonType QUIT = new ButtonType("Quit", ButtonData.CANCEL_CLOSE);
 
@@ -33,5 +34,4 @@ public class OutlineViewer extends Application {
       primaryStage.show();
     }
   }
-
 }

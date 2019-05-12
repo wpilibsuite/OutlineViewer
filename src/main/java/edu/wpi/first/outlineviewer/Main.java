@@ -8,7 +8,7 @@ import javafx.application.Application;
  * everything is in the same, unnamed module.  This is also how we are able to call {@link LauncherImpl} directly,
  * which is not in a package exported by the {@code javafx.graphics} module.
  */
-@SuppressWarnings("PMD.UseUtilityClass") // Nope.
+@SuppressWarnings("PMD.UseUtilityClass")
 public final class Main {
   @SuppressWarnings("JavadocMethod")
   public static void main(String[] args) {

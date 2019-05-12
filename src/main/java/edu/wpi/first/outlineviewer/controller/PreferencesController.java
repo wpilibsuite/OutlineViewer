@@ -28,14 +28,14 @@ public class PreferencesController {
   @FXML
   private TextField portField;
 
-  private final BooleanProperty invalidPortProperty;
+  private final BooleanProperty invalidPort;
 
   public PreferencesController() {
-    invalidPortProperty = new SimpleBooleanProperty(false);
+    invalidPort = new SimpleBooleanProperty(false);
   }
 
   @FXML
-  private void initialize() {
+  void initialize() {
     idField.disableProperty().bind(serverModeSwitch.selectedProperty());
     portField.disableProperty().bind(defaultPortSwitch.selectedProperty());
 
@@ -74,7 +74,7 @@ public class PreferencesController {
     });
 
     //Link the outward-facing valid port property to the validation code
-    invalidPortProperty.bind(validator.invalidProperty());
+    invalidPort.bind(validator.invalidProperty());
 
     defaultPortSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
       if (defaultPortSwitch.selectedProperty().get()) {
@@ -124,10 +124,10 @@ public class PreferencesController {
   }
 
   public boolean isInvalidPort() {
-    return invalidPortProperty.get();
+    return invalidPort.get();
   }
 
   public BooleanProperty invalidPortProperty() {
-    return invalidPortProperty;
+    return invalidPort;
   }
 }
