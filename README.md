@@ -27,4 +27,4 @@ To run OutlineViewer use the command `./gradlew run`.
 
 # Contributing to WPILib
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/wpilibsuite/allwpilib/blob/master/CONTRIBUTING.md).
