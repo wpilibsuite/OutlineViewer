@@ -86,7 +86,7 @@ dependencies {
     compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
     compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
+    compile(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
     fun junitJupiter(name: String, version: String = "5.2.0") =
         create(group = "org.junit.jupiter", name = name, version = version)
