@@ -1,6 +1,5 @@
 package edu.wpi.first.outlineviewer.controller;
 
-import com.google.common.primitives.Ints;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.outlineviewer.Preferences;
 import java.util.Optional;
@@ -14,6 +13,8 @@ import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.decoration.StyleClassValidationDecoration;
+
+import static edu.wpi.first.outlineviewer.Preferences.validatePortNumber;
 
 /**
  * Controller for the app preferences pane.
@@ -110,17 +111,6 @@ public class PreferencesController {
     Preferences.setIp(url);
 
     Preferences.setServer(serverModeSwitch.isSelected());
-  }
-
-  private Optional<Integer> validatePortNumber(String rawPortNumber) {
-    Optional<Integer> portNum = Optional.empty();
-
-    Integer val = Ints.tryParse(rawPortNumber);
-    if (val != null && val > 0 && val <= 65535) {
-      portNum = Optional.of(val);
-    }
-
-    return portNum;
   }
 
   public boolean isInvalidPort() {

@@ -1,5 +1,9 @@
 package edu.wpi.first.outlineviewer;
 
+import java.util.Optional;
+
+import com.google.common.primitives.Ints;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -61,6 +65,19 @@ public final class Preferences {
     setServer(false);
     setIp("localhost");
     setPort(NetworkTableInstance.kDefaultPort);
+  }
+
+  public static Optional<Integer> validatePortNumber(String rawPortNumber) {
+    Integer portNum = Ints.tryParse(rawPortNumber);
+
+    if (portNum != null && validatePortNumber(portNum)) {
+      return Optional.of(portNum);
+    }
+    return Optional.empty();
+  }
+
+  public static boolean validatePortNumber(int val) {
+    return val > 0 && val <= 65535;
   }
 
   public static boolean isServer() {
