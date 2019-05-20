@@ -1,6 +1,7 @@
 package edu.wpi.first.outlineviewer;
 
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import com.google.common.io.ByteStreams;
 
@@ -104,8 +105,10 @@ class OutlineViewerCliTest {
 
   private CommandLine getCommandLine(OutlineViewerCli cli) {
     CommandLine commandLine = new CommandLine(cli);
-    commandLine.setOut(new PrintWriter(ByteStreams.nullOutputStream()));
-    commandLine.setErr(new PrintWriter(ByteStreams.nullOutputStream()));
+    commandLine.setOut(new PrintWriter(ByteStreams.nullOutputStream(), false,
+        StandardCharsets.UTF_8));
+    commandLine.setErr(new PrintWriter(ByteStreams.nullOutputStream(), false,
+        StandardCharsets.UTF_8));
     return commandLine;
   }
 }

@@ -11,6 +11,7 @@ import picocli.CommandLine.Option;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+@SuppressWarnings("PMD.ImmutableField")
 @Command(sortOptions = false, versionProvider = OutlineViewerCli.VersionProvider.class)
 class OutlineViewerCli implements Callable<Integer> {
 
@@ -23,15 +24,15 @@ class OutlineViewerCli implements Callable<Integer> {
   private int port = NetworkTableInstance.kDefaultPort;
 
   @Option(names = {"-V", "--version"}, versionHelp = true, description = "Display version info")
-  private boolean versionInfoRequested = false;
+  private boolean versionInfoRequested;
 
   @Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message")
-  private boolean usageHelpRequested = false;
+  private boolean usageHelpRequested;
 
   static class Mode {
     @Option(names = {"-s", "--server"}, arity = "0",
         description = "Start in server mode")
-    private boolean serverMode = false;
+    private boolean serverMode;
 
     @Option(names = {"-c", "--client"}, arity = "0..1",
         defaultValue = "localhost",
