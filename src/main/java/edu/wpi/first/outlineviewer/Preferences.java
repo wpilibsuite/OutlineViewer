@@ -67,6 +67,12 @@ public final class Preferences {
     setPort(NetworkTableInstance.kDefaultPort);
   }
 
+  /**
+   * Validate the provided port number.
+   *
+   * @param rawPortNumber The port number to check
+   * @return The port as an int if it is valid
+   */
   public static Optional<Integer> validatePortNumber(String rawPortNumber) {
     Integer portNum = Ints.tryParse(rawPortNumber);
 
