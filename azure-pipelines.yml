@@ -86,9 +86,10 @@ jobs:
         jdkArchitectureOption: x86
     - task: Gradle@2
       inputs:
+        options: '-x pmd'
         workingDirectory: ''
         gradleWrapperFile: 'gradlew'
-        gradleOptions: '-Xmx1024m -x pmd'
+        gradleOptions: '-Xmx1024m'
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'check'
