@@ -20,9 +20,9 @@ plugins {
     application
     pmd
     id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "2.3"
-    id("com.github.johnrengelman.shadow") version "4.0.3"
-    id("com.diffplug.gradle.spotless") version "3.13.0"
-    id("com.github.spotbugs") version "1.6.4"
+    id("com.github.johnrengelman.shadow") version "5.0.0"
+    id("com.diffplug.gradle.spotless") version "3.23.0"
+    id("com.github.spotbugs") version "1.7.1"
 }
 
 // Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
@@ -56,7 +56,7 @@ repositories {
 // Spotless is used to lint and reformat source files.
 spotless {
     kotlinGradle {
-        ktlint("0.24.0")
+        ktlint("0.32.0")
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -85,31 +85,31 @@ dependencies {
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
     compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    compile(group = "com.google.guava", name = "guava", version = "23.0")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "9.0.0")
+    compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
+    compile(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
-    fun junitJupiter(name: String, version: String = "5.2.0") =
+    fun junitJupiter(name: String, version: String = "5.4.2") =
         create(group = "org.junit.jupiter", name = name, version = version)
-    fun testFx(name: String, version: String = "4.0.13-alpha") =
+    fun testFx(name: String, version: String = "4.0.15-alpha") =
         create(group = "org.testfx", name = name, version = version)
 
     testImplementation(junitJupiter(name = "junit-jupiter-api"))
     testImplementation(junitJupiter(name = "junit-jupiter-engine"))
     testImplementation(junitJupiter(name = "junit-jupiter-params"))
-    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "23.0")
+    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "27.1-jre")
     testImplementation(testFx(name = "testfx-core"))
     testImplementation(testFx(name = "testfx-junit5"))
 
-    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-9+181"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.0.0")
+    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
+    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
 }
 
 checkstyle {
-    toolVersion = "8.12"
+    toolVersion = "8.20"
 }
 
 pmd {
-    toolVersion = "6.7.0"
+    toolVersion = "6.14.0"
     isConsoleOutput = true
     sourceSets = setOf(project.sourceSets["main"], project.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
@@ -122,7 +122,7 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<SpotBugsTask>() {
+tasks.withType<SpotBugsTask> {
     reports {
         xml.isEnabled = false
         emacs.isEnabled = true
@@ -143,7 +143,7 @@ tasks.withType<SpotBugsTask>() {
 }
 
 jacoco {
-    toolVersion = "0.8.2"
+    toolVersion = "0.8.4"
 }
 
 tasks.withType<JacocoReport>().configureEach {
@@ -222,5 +222,5 @@ fun getWPILibVersion(fallback: String = "0.0.0"): String {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "5.0"
+    gradleVersion = "5.4.1"
 }
