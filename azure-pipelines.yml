@@ -123,6 +123,7 @@ stages:
 
     container: wpilib2020
 
+    steps:
 # PR Builds
     - task: Gradle@2
       inputs:
