@@ -65,14 +65,13 @@ stages:
           jdkArchitectureOption: x86
       - task: Gradle@2
         inputs:
-          options: '-x pmdMain -x pmdTest'
+          options: '-x pmdMain -x pmdTest -PbuildServer'
           workingDirectory: ''
           gradleWrapperFile: 'gradlew'
           gradleOptions: '-Xmx1024m'
           publishJUnitResults: false
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'check'
-          options: '-PbuildServer'
 
   - job: Mac
     pool:
