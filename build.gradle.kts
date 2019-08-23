@@ -53,7 +53,7 @@ if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
         setContextUrl("https://frcmaven.wpi.edu/artifactory") // base artifactory url
         publish(delegateClosureOf<PublisherConfig> {
             repository(delegateClosureOf<GroovyObject> {
-                if (project.hasProperty("releaseRepoPublish")) {
+                if (project.hasProperty("releaseMode")) {
                     setProperty("repoKey", "release")
                 } else {
                     setProperty("repoKey", "development")
