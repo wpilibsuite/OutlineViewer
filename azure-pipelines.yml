@@ -116,6 +116,7 @@ stages:
           targetPath: 'build/lib'
 
 - stage: Publish
+  jobs:
   - job: PublishJob
     pool:
       vmImage: 'Ubuntu 16.04'
