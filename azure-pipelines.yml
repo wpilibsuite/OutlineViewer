@@ -143,7 +143,7 @@ stages:
         ARTIFACTORY_PUBLISH_PASSWORD: $(PublishPassword)
 
     - script: |
-        echo "##vso[task.setvariable variable=UserHome]$HOME"
+        echo "##vso[task.setvariable variable=UserHome]~/"
         ls ~/
         ls ~/releases
       displayName: 'Set Home Variable'
