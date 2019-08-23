@@ -30,11 +30,6 @@ stages:
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'check'
 
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: 'Linux'
-          targetPath: 'build/lib'
-
   - job: Windows_64_Bit
     pool:
       vmImage: 'vs2017-win2016'
@@ -49,12 +44,6 @@ stages:
           publishJUnitResults: false
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'check'
-
-
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: 'Windows64'
-          targetPath: 'build/lib'
 
   - job: Windows_32_Bit
     pool:
@@ -82,12 +71,6 @@ stages:
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'check'
 
-
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: 'Windows32'
-          targetPath: 'build/lib'
-
   - job: Mac
     pool:
       vmImage: 'macOS-10.14'
@@ -108,12 +91,6 @@ stages:
           publishJUnitResults: false
           testResultsFiles: '**/TEST-*.xml'
           tasks: 'check'
-
-
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: 'Mac'
-          targetPath: 'build/lib'
 
 - stage: Publish
   jobs:
