@@ -66,6 +66,7 @@ if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
                 invokeMethod("publications", "app")
             })
         })
+        clientConfig.info.setBuildName("OutlineViewer")
     }
 
     tasks.named("publish") {
