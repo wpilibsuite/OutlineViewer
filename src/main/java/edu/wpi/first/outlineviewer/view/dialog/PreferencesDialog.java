@@ -1,6 +1,7 @@
 package edu.wpi.first.outlineviewer.view.dialog;
 
 import edu.wpi.first.outlineviewer.controller.PreferencesController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -37,6 +38,13 @@ public class PreferencesDialog extends Dialog<Boolean> {
         .filter(btn -> btn.getButtonData().isDefaultButton())
         .map(btn -> getDialogPane().lookupButton(btn))
         .forEach(btn -> btn.disableProperty().bind(controller.invalidPortProperty()));
+
+    // Work around JavaFX alert dialog bug
+    // See https://stackoverflow.com/questions/55190380/javafx-creates-alert-dialog-which-is-too-small
+    setResizable(true);
+    onShownProperty().addListener(e -> {
+      Platform.runLater(() -> setResizable(false));
+    });
   }
 
   public PreferencesController getController() {
