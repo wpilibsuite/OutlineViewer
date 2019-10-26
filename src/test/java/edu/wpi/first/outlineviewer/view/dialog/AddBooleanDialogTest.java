@@ -14,7 +14,7 @@ class AddBooleanDialogTest extends AddEntryDialogTest<AddBooleanDialog> {
 
   @Test
   void testGetData() {
-    clickOn(".toggle-switch");
+    clickOn(".thumb"); // Thumb is the moving part of a toggle switch
 
     assertTrue(dialog.getData());
   }

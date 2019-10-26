@@ -189,13 +189,23 @@ tasks.withType<JacocoReport>().configureEach {
 }
 
 tasks.withType<Test>().configureEach {
-    // TODO: re-enable when TestFX (or the underlying JavaFX problem) is fixed
-    println("UI tests will not be run due to TestFX being broken when headless on Java 10.")
-    println("See: https://github.com/javafxports/openjdk-jfx/issues/66")
-    // Link: https://github.com/javafxports/openjdk-jfx/issues/66
     useJUnitPlatform {
-        excludeTags("UI")
+        if (project.hasProperty("skipUI")) {
+            excludeTags("UI")
+        }
+        if (!project.hasProperty("visibleUiTests")) {
+            jvmArgs = listOf(
+                    "-Djava.awt.headless=true",
+                    "-Dtestfx.robot=glass",
+                    "-Dtestfx.headless=true",
+                    "-Dprism.order=sw",
+                    "-Dprism.text=t2k"
+            )
+            excludeTags("NonHeadlessTests")
+        }
+        systemProperty("junit.jupiter.extensions.autodetection.enabled", true)
     }
+    finalizedBy("jacocoTestReport")
 }
 
 tasks.withType<Javadoc>().configureEach {
