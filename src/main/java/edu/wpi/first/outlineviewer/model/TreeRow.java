@@ -4,7 +4,9 @@ import com.google.common.base.MoreObjects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.property.LongProperty;
 
 import java.util.Objects;
 
@@ -16,6 +18,7 @@ public class TreeRow {
   protected final StringProperty key = new SimpleStringProperty(this, "key", "");
   protected final ObjectProperty<Object> value = new SimpleObjectProperty<>(this, "value", null);
   protected final StringProperty type = new SimpleStringProperty(this, "type", "");
+  protected final LongProperty lastUpdated = new SimpleLongProperty(this, "lastUpdated", 0);
 
   protected TreeRow() {
     // Users must provide a key!
@@ -64,12 +67,21 @@ public class TreeRow {
     return type;
   }
 
+  public long getLastUpdated() {
+    return lastUpdated.get();
+  }
+
+  public LongProperty lastUpdatedProperty() {
+    return lastUpdated;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("Key", key.getValue())
         .add("Value", value.get())
         .add("Type", typeProperty().getValue())
+        .add("Last Updated", lastUpdated.getValue())
         .toString();
   }
 }

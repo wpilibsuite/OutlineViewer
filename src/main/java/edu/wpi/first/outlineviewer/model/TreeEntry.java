@@ -29,6 +29,8 @@ public class TreeEntry extends TreeRow {
         () -> networkTableEntry.get().getValue().getValue(), networkTableEntry));
     this.type.bind(Bindings.createObjectBinding(
         () -> networkTableEntry.get().getValue().getType().toString(), networkTableEntry));
+    this.lastUpdated.bind(Bindings.createLongBinding(
+        () -> networkTableEntry.get().getValue().getTime(), networkTableEntry));
   }
 
   public final NetworkTableEntry getNetworkTableEntry() {
