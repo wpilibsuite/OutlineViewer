@@ -256,5 +256,5 @@ publishing {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "6.2.2"
+    gradleVersion = "6.0.1"
 }
