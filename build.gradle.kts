@@ -24,7 +24,7 @@ plugins {
     id("edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin") version "2020.2"
     id("com.jfrog.artifactory") version "4.15.1"
     id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.diffplug.gradle.spotless") version "3.23.0"
+    id("com.diffplug.gradle.spotless") version "3.28.0"
     id("com.github.spotbugs") version "1.7.1"
 }
 
