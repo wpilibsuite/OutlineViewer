@@ -124,7 +124,7 @@ dependencies {
 
     fun junitJupiter(name: String, version: String = "5.6.1") =
         create(group = "org.junit.jupiter", name = name, version = version)
-    fun testFx(name: String, version: String = "4.0.15-alpha") =
+    fun testFx(name: String, version: String = "4.0.16-alpha") =
         create(group = "org.testfx", name = name, version = version)
 
     testImplementation(junitJupiter(name = "junit-jupiter-api"))
