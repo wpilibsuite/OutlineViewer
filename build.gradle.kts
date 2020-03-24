@@ -1,10 +1,10 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.lang.GroovyObject
+import java.time.Instant
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import java.time.Instant
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
-import groovy.lang.GroovyObject
 
 buildscript {
     repositories {
@@ -28,11 +28,11 @@ plugins {
 }
 
 if (hasProperty("buildServer")) {
-    wpilibVersioning.setBuildServerMode(true)
+    wpilibVersioning.isBuildServerMode = true
 }
 
 if (hasProperty("releaseMode")) {
-    wpilibVersioning.setReleaseMode(true)
+    wpilibVersioning.isReleaseMode = true
 }
 
 repositories {
@@ -44,8 +44,8 @@ if (hasProperty("releaseMode")) {
     wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
-wpilibVersioning.getVersion().finalizeValue()
-version = wpilibVersioning.getVersion().get()
+wpilibVersioning.version.finalizeValue()
+version = wpilibVersioning.version.get()
 
 if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
     artifactory {
@@ -65,7 +65,7 @@ if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
                 invokeMethod("publications", "app")
             })
         })
-        clientConfig.info.setBuildName("OutlineViewer")
+        clientConfig.info.buildName = "OutlineViewer"
     }
 
     tasks.named("publish") {
@@ -219,7 +219,7 @@ tasks.withType<Javadoc>().configureEach {
 
 val nativeShadowTasks = NativePlatforms.values().map { platform ->
     tasks.create<ShadowJar>("shadowJar-${platform.platformName}") {
-        classifier = platform.platformName
+        archiveClassifier.set(platform.platformName)
         configurations = listOf(
                 project.configurations.getByName("compile"),
                 project.configurations.getByName(platform.platformName)
@@ -248,7 +248,7 @@ publishing {
             version = project.version as String
             nativeShadowTasks.forEach {
                 artifact(it) {
-                    classifier = it.classifier
+                    classifier = it.archiveClassifier.get()
                 }
             }
         }
