@@ -122,7 +122,7 @@ dependencies {
     implementation(group = "com.google.guava", name = "guava", version = "28.2-jre")
     implementation(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
-    fun junitJupiter(name: String, version: String = "5.4.2") =
+    fun junitJupiter(name: String, version: String = "5.6.1") =
         create(group = "org.junit.jupiter", name = name, version = version)
     fun testFx(name: String, version: String = "4.0.15-alpha") =
         create(group = "org.testfx", name = name, version = version)
