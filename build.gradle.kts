@@ -3,7 +3,6 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.time.Instant
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.spotbugs.SpotBugsTask
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
 import groovy.lang.GroovyObject
 
@@ -25,7 +24,7 @@ plugins {
     id("com.jfrog.artifactory") version "4.15.1"
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.diffplug.gradle.spotless") version "3.28.0"
-    id("com.github.spotbugs") version "1.7.1"
+    id("com.github.spotbugs") version "4.0.4"
 }
 
 if (hasProperty("buildServer")) {
@@ -116,12 +115,12 @@ dependencies {
     val ntcoreVersion = "2020.+"
     val wpiUtilVersion = "2020.+"
 
-    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
+    implementation(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
-    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
+    implementation(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
+    implementation(group = "com.google.guava", name = "guava", version = "27.1-jre")
+    implementation(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
     fun junitJupiter(name: String, version: String = "5.4.2") =
         create(group = "org.junit.jupiter", name = name, version = version)
@@ -135,8 +134,8 @@ dependencies {
     testImplementation(testFx(name = "testfx-core"))
     testImplementation(testFx(name = "testfx-junit5"))
 
-    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
+    testRuntimeOnly(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
+    testRuntimeOnly(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
 }
 
 checkstyle {
@@ -157,24 +156,30 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<SpotBugsTask> {
-    reports {
-        xml.isEnabled = false
-        emacs.isEnabled = true
-    }
-    finalizedBy(task("${name}Report") {
-        mustRunAfter(this@withType)
-        doLast {
-            this@withType
-                .reports
-                .emacs
-                .destination
-                .takeIf { it.exists() }
-                ?.readText()
-                .takeIf { !it.isNullOrBlank() }
-                ?.also { logger.warn(it) }
+spotbugs {
+    ignoreFailures.set(false)
+    showProgress.set(true)
+    effort.set(com.github.spotbugs.snom.Effort.MAX)
+
+    tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+        reports {
+            create("text") {
+                isEnabled = true
+            }
         }
-    })
+        finalizedBy(task("${name}Report") {
+            mustRunAfter(this@withType)
+            doLast {
+                this@withType
+                        .reports.first()
+                        .destination
+                        .takeIf { it.exists() }
+                        ?.readText()
+                        .takeIf { !it.isNullOrBlank() }
+                        ?.also { logger.warn(it) }
+            }
+        })
+    }
 }
 
 jacoco {
@@ -251,5 +256,5 @@ publishing {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "5.4.1"
+    gradleVersion = "6.2.2"
 }
