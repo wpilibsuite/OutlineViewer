@@ -90,7 +90,7 @@ application {
 // Spotless is used to lint and reformat source files.
 spotless {
     kotlinGradle {
-        ktlint("0.32.0")
+        ktlint("0.36.0")
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
