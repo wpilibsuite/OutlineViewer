@@ -1,11 +1,10 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.lang.GroovyObject
+import java.time.Instant
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
 import org.gradle.testing.jacoco.tasks.JacocoReport
-import java.time.Instant
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.spotbugs.SpotBugsTask
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
-import groovy.lang.GroovyObject
 
 buildscript {
     repositories {
@@ -20,20 +19,20 @@ plugins {
     checkstyle
     application
     pmd
-    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "4.0.1"
-    id("edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin") version "2020.1"
-    id("com.jfrog.artifactory") version "4.9.8"
-    id("com.github.johnrengelman.shadow") version "5.0.0"
-    id("com.diffplug.gradle.spotless") version "3.23.0"
-    id("com.github.spotbugs") version "1.7.1"
+    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "4.0.2"
+    id("edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin") version "2020.2"
+    id("com.jfrog.artifactory") version "4.15.1"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.diffplug.gradle.spotless") version "3.28.0"
+    id("com.github.spotbugs") version "4.0.4"
 }
 
 if (hasProperty("buildServer")) {
-    wpilibVersioning.setBuildServerMode(true)
+    wpilibVersioning.isBuildServerMode = true
 }
 
 if (hasProperty("releaseMode")) {
-    wpilibVersioning.setReleaseMode(true)
+    wpilibVersioning.isReleaseMode = true
 }
 
 repositories {
@@ -45,8 +44,8 @@ if (hasProperty("releaseMode")) {
     wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
-wpilibVersioning.getVersion().finalizeValue()
-version = wpilibVersioning.getVersion().get()
+wpilibVersioning.version.finalizeValue()
+version = wpilibVersioning.version.get()
 
 if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
     artifactory {
@@ -66,7 +65,7 @@ if (System.getenv()["RUN_AZURE_ARTIFACTORY_RELEASE"] != null) {
                 invokeMethod("publications", "app")
             })
         })
-        clientConfig.info.setBuildName("OutlineViewer")
+        clientConfig.info.buildName = "OutlineViewer"
     }
 
     tasks.named("publish") {
@@ -91,7 +90,7 @@ application {
 // Spotless is used to lint and reformat source files.
 spotless {
     kotlinGradle {
-        ktlint("0.32.0")
+        ktlint("0.36.0")
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -116,35 +115,35 @@ dependencies {
     val ntcoreVersion = "2020.+"
     val wpiUtilVersion = "2020.+"
 
-    compile(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
+    implementation(group = "edu.wpi.first.ntcore", name = "ntcore-java", version = ntcoreVersion)
     native(group = "edu.wpi.first.ntcore", name = "ntcore-jni", version = ntcoreVersion, classifierFunction = ::wpilibClassifier)
-    compile(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
+    implementation(group = "edu.wpi.first.wpiutil", name = "wpiutil-java", version = wpiUtilVersion)
 
-    compile(group = "com.google.guava", name = "guava", version = "27.1-jre")
-    compile(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
+    implementation(group = "com.google.guava", name = "guava", version = "28.2-jre")
+    implementation(group = "org.controlsfx", name = "controlsfx", version = "11.0.0")
 
-    fun junitJupiter(name: String, version: String = "5.4.2") =
+    fun junitJupiter(name: String, version: String = "5.6.1") =
         create(group = "org.junit.jupiter", name = name, version = version)
-    fun testFx(name: String, version: String = "4.0.15-alpha") =
+    fun testFx(name: String, version: String = "4.0.16-alpha") =
         create(group = "org.testfx", name = name, version = version)
 
     testImplementation(junitJupiter(name = "junit-jupiter-api"))
     testImplementation(junitJupiter(name = "junit-jupiter-engine"))
     testImplementation(junitJupiter(name = "junit-jupiter-params"))
-    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "27.1-jre")
+    testImplementation(group = "com.google.guava", name = "guava-testlib", version = "28.2-jre")
     testImplementation(testFx(name = "testfx-core"))
     testImplementation(testFx(name = "testfx-junit5"))
 
-    testRuntime(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
-    testRuntime(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.4.2")
+    testRuntimeOnly(testFx(name = "openjfx-monocle", version = "jdk-11+26"))
+    testRuntimeOnly(group = "org.junit.platform", name = "junit-platform-launcher", version = "1.6.1")
 }
 
 checkstyle {
-    toolVersion = "8.20"
+    toolVersion = "8.30"
 }
 
 pmd {
-    toolVersion = "6.14.0"
+    toolVersion = "6.22.0"
     isConsoleOutput = true
     sourceSets = setOf(project.sourceSets["main"], project.sourceSets["test"])
     reportsDir = file("${project.buildDir}/reports/pmd")
@@ -157,28 +156,34 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<SpotBugsTask> {
-    reports {
-        xml.isEnabled = false
-        emacs.isEnabled = true
-    }
-    finalizedBy(task("${name}Report") {
-        mustRunAfter(this@withType)
-        doLast {
-            this@withType
-                .reports
-                .emacs
-                .destination
-                .takeIf { it.exists() }
-                ?.readText()
-                .takeIf { !it.isNullOrBlank() }
-                ?.also { logger.warn(it) }
+spotbugs {
+    ignoreFailures.set(false)
+    showProgress.set(true)
+    effort.set(com.github.spotbugs.snom.Effort.MAX)
+
+    tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+        reports {
+            create("text") {
+                isEnabled = true
+            }
         }
-    })
+        finalizedBy(task("${name}Report") {
+            mustRunAfter(this@withType)
+            doLast {
+                this@withType
+                        .reports.first()
+                        .destination
+                        .takeIf { it.exists() }
+                        ?.readText()
+                        .takeIf { !it.isNullOrBlank() }
+                        ?.also { logger.warn(it) }
+            }
+        })
+    }
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.5"
 }
 
 tasks.withType<JacocoReport>().configureEach {
@@ -214,7 +219,7 @@ tasks.withType<Javadoc>().configureEach {
 
 val nativeShadowTasks = NativePlatforms.values().map { platform ->
     tasks.create<ShadowJar>("shadowJar-${platform.platformName}") {
-        classifier = platform.platformName
+        archiveClassifier.set(platform.platformName)
         configurations = listOf(
                 project.configurations.getByName("compile"),
                 project.configurations.getByName(platform.platformName)
@@ -243,7 +248,7 @@ publishing {
             version = project.version as String
             nativeShadowTasks.forEach {
                 artifact(it) {
-                    classifier = it.classifier
+                    classifier = it.archiveClassifier.get()
                 }
             }
         }
@@ -251,5 +256,5 @@ publishing {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "5.4.1"
+    gradleVersion = "6.0.1"
 }
