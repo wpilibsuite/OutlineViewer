@@ -20,7 +20,7 @@ plugins {
     checkstyle
     application
     pmd
-    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "4.0.1"
+    id("edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin") version "4.0.2"
     id("edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin") version "2020.1"
     id("com.jfrog.artifactory") version "4.9.8"
     id("com.github.johnrengelman.shadow") version "5.0.0"
