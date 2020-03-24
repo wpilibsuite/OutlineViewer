@@ -48,7 +48,7 @@ class TreeRowTest {
 
   @Test
   void toStringTest() {
-    assertEquals("TreeRow{Key=key, Value=value, Type=}", new TreeRow("key", "value").toString());
+    assertEquals("TreeRow{Key=key, Value=value, Type=, Last Updated=0}", new TreeRow("key", "value").toString());
   }
 
   private static class FakeTreeRow extends TreeRow {
