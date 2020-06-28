@@ -129,7 +129,7 @@ spotless {
     }
     format("extraneous") {
         target("src/**/*.fxml", "src/**/*.css", "*.xml", "*.yml", "*.md")
-                    trimTrailingWhitespace()
+        trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
     }
