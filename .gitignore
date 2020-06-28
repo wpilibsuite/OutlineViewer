@@ -24,3 +24,5 @@ networktables.ini.bak
 bin/
 .project
 .classpath
+.settings/
+.vscode/
