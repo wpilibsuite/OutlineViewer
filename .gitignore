@@ -20,3 +20,6 @@ out/
 ### NetworkTable Persistence ###
 networktables.ini
 networktables.ini.bak
+
+
+bin/

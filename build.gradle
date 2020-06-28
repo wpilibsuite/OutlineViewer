@@ -1,0 +1,163 @@
+import org.gradle.api.internal.artifacts.transform.UnzipTransform
+import org.gradle.api.internal.artifacts.ArtifactAttributes
+import java.security.MessageDigest
+import groovy.json.JsonOutput
+
+import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.DIRECTORY_TYPE
+import static org.gradle.api.artifacts.type.ArtifactTypeDefinition.ZIP_TYPE
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id "com.jfrog.artifactory" version "4.9.8"
+    id 'maven-publish'
+    id 'idea'
+    id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '4.0.1'
+    id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2020.2'
+    id 'checkstyle'
+    id 'edu.wpi.first.WpilibTools' version '0.2.3'
+}
+
+if (project.hasProperty('buildServer')) {
+    wpilibVersioning.buildServerMode = true
+}
+
+if (project.hasProperty('releaseMode')) {
+    wpilibVersioning.releaseMode = true
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+    if (project.hasProperty('releaseMode')) {
+        wpilibRepositories.addAllReleaseRepositories(it)
+    } else {
+        wpilibRepositories.addAllDevelopmentRepositories(it)
+    }
+}
+
+wpilibVersioning.version.finalizeValue()
+version = wpilibVersioning.version.get()
+
+def outputsFolder = file("$buildDir/allOutputs")
+
+def publishingFromAllOutputs = false
+if (project.hasProperty('prCombinePublish')) {
+    publishingFromAllOutputs = true
+}
+
+if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+    publishingFromAllOutputs = true
+
+    artifactory {
+        contextUrl = 'https://frcmaven.wpi.edu/artifactory' // base artifactory url
+        publish {
+            repository {
+                if (project.hasProperty('releaseMode')) {
+                repoKey = 'release'
+                } else {
+                repoKey = 'development'
+                }
+                username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
+                password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
+                maven = true
+            }
+            defaults {
+                publications ('maven')
+            }
+        }
+        clientConfig.info.setBuildName('OutlineViewer')
+    }
+    publish.dependsOn artifactoryPublish
+}
+
+wpilibTools.createNativeConfigurations()
+
+wpilibTools.deps.wpilibVersion = "2020.+"
+
+wpilibTools.deps.javafx(dependencies, "base")
+wpilibTools.deps.javafx(dependencies, "controls")
+wpilibTools.deps.javafx(dependencies, "fxml")
+wpilibTools.deps.javafx(dependencies, "graphics")
+
+wpilibTools.deps.wpilib(dependencies, "ntcore")
+wpilibTools.deps.wpilib(dependencies, "wpiutil")
+
+dependencies {
+    implementation wpilibTools.deps.wpilibJava("ntcore")
+    implementation wpilibTools.deps.wpilibJava("wpiutil")
+
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.10.0"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.10.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
+
+    implementation group: "com.google.guava", name: "guava", version: "28.2-jre"
+    implementation group: "org.controlsfx", name: "controlsfx", version: "11.0.0"
+}
+
+wpilibTools.addNativeResourcesToSourceSet(sourceSets.main)
+
+jar {
+    archiveBaseName = 'OutlineViewer'
+}
+
+shadowJar {
+    archiveBaseName = 'OutlineViewer'
+    archiveClassifier.set(wpilibTools.platformMapper.currentPlatform.platformName)
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+        if (publishingFromAllOutputs) {
+            outputsFolder.eachFile {
+                def clfr = it.name.split('-')[1].split('\\.')[0]
+                artifact(it) {
+                classifier = clfr
+                }
+            }
+        } else {
+            artifact(shadowJar)
+        }
+        groupId 'edu.wpi.first.wpilib'
+        artifactId 'OutlineViewer'
+        version project.version
+        }
+    }
+}
+
+checkstyle {
+    configFile = new File(rootDir, "checkstyle.xml")
+    toolVersion = '6.19'
+    if (project.hasProperty("ignoreCheckstyle")) {
+        ignoreFailures = true
+    }
+}
+
+mainClassName = "edu.wpi.first.outlineviewer.Main"
+
+task copyAllOutputs(type: Copy) {
+    destinationDir outputsFolder
+
+    dependsOn shadowJar
+    from shadowJar
+}
+
+build.dependsOn copyAllOutputs
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes["Implementation-Version"] = project.version as String
+        attributes["Built-Date"] = Instant.now().toString()
+    }
+}
+
+wrapper {
+    gradleVersion = '6.0.1'
+}
