@@ -17,8 +17,6 @@ jobs:
           java-version: 11
       - name: Build
         run: ./gradlew build -PbuildServer
-      - name: Publish
-        run: ./gradlew publish -PbuildServer
 
   publish:
     name: Publish
