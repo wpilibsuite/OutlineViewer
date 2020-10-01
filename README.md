@@ -1,4 +1,4 @@
-# OutlineViewer
+# OutlineViewer - an amazing project
 
 [![Build Status](https://dev.azure.com/wpilib/DesktopTools/_apis/build/status/wpilibsuite.OutlineViewer)](https://dev.azure.com/wpilib/DesktopTools/_build/latest?definitionId=8) [![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/JavaFX/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
 
