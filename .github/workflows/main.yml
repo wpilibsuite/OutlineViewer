@@ -1,0 +1,86 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact-name: Win32
+            architecture: x86
+            flags: ""
+          - os: windows-latest
+            artifact-name: Win64
+            architecture: x64
+            flags: ""
+          - os: ubuntu-latest
+            artifact-name: Linux
+            architecture: x64
+            flags: ""
+          - os: macos-latest
+            artifact-name: macOS
+            architecture: x64
+            flags: "-PskipUI"
+
+    name: "Check - ${{ matrix.artifact-name }}"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          architecture: ${{ matrix.architecture }}
+      - name: Check with Gradle
+        run: ./gradlew check -PbuildServer ${{ matrix.flags }}
+
+  publish:
+    runs-on: macos-latest
+    needs: build
+    name: "Publish"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - uses: wpilibsuite/import-signing-certificate@v1
+        with:
+          certificate-data: ${{ secrets.APPLE_CERTIFICATE_DATA }}
+          certificate-passphrase: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          keychain-password: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        if: |
+          (github.repository_owner == 'wpilibsuite') &&
+          (startsWith(github.refs, 'refs/heads/') || startsWith(github.refs, 'refs/tags/v'))
+
+      - name: Combine (PR)
+        run: ./gradlew publish -PbuildServer
+        if: |
+          (github.repository_owner != 'wpilibsuite') ||
+          (github.refs != 'refs/heads/master' && !startsWith(github.refs, 'refs/tags/v'))
+
+      - name: Combine (Master)
+        run: ./gradlew publish -PbuildServer -PdeveloperID=${{ secrets.APPLE_DEVELOPER_ID }}
+        if: ${{ github.repository_owner == 'wpilibsuite' && github.refs == 'refs/heads/master' }}
+        env:
+          RUN_AZURE_ARTIFACTORY_RELEASE: 'TRUE'
+          ARTIFACTORY_PUBLISH_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PUBLISH_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      - name: Combine (Release)
+        run: ./gradlew publish -PbuildServer -PreleaseMode -PdeveloperID=${{ secrets.APPLE_DEVELOPER_ID }}
+        if: ${{ github.repository_owner == 'wpilibsuite' && startsWith(github.refs, 'refs/tags/v') }}
+        env:
+          RUN_AZURE_ARTIFACTORY_RELEASE: 'TRUE'
+          ARTIFACTORY_PUBLISH_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PUBLISH_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "Maven"
+          path: ~/releases
