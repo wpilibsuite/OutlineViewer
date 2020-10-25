@@ -48,6 +48,7 @@ class AddBooleanArrayDialogTest extends AddEntryArrayDialogTest<AddBooleanArrayD
 
     drag("False").dropTo("True");
 
+    waitForFxEvents();
     assertArrayEquals(
         new Boolean[]{true, false},
         ((ListView<IndexedValue<Boolean>>) lookup(".list-view").query())
