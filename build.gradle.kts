@@ -221,7 +221,7 @@ val nativeShadowTasks = NativePlatforms.values().map { platform ->
     tasks.create<ShadowJar>("shadowJar-${platform.platformName}") {
         archiveClassifier.set(platform.platformName)
         configurations = listOf(
-                project.configurations.getByName("compile"),
+                project.configurations.getByName("runtimeClasspath"),
                 project.configurations.getByName(platform.platformName)
         )
         from(
