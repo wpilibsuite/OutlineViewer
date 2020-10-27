@@ -19,7 +19,7 @@ jobs:
           - os: macos-latest
             artifact-name: macOS
             architecture: x64
-            args: "-PskipUI"
+            args: ""
           - os: ubuntu-latest
             artifact-name: Linux
             architecture: x64
