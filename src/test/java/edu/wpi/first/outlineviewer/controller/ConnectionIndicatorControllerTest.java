@@ -33,7 +33,7 @@ public class ConnectionIndicatorControllerTest extends ApplicationTest {
   @Test
   void testLabelInServerMode() {
     NetworkTableUtilities.setServer(12345);
-    sleep(200); // wait for server to start
+    sleep(1000); // wait for server to start
     FxHelper.runAndWait(() -> controller.updateConnectionLabel());
     assertEquals("Running server (No clients)", getConnectionLabel().getText());
   }

@@ -1,6 +1,9 @@
 package edu.wpi.first.outlineviewer;
 
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.outlineviewer.view.dialog.PreferencesDialog;
+import edu.wpi.first.wpiutil.CombinedRuntimeLoader;
+import edu.wpi.first.wpiutil.WPIUtilJNI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +21,10 @@ public class OutlineViewer extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
+    WPIUtilJNI.Helper.setExtractOnStaticLoad(false);
+    NetworkTablesJNI.Helper.setExtractOnStaticLoad(false);
+    CombinedRuntimeLoader.loadLibraries(OutlineViewer.class, "wpiutiljni", "ntcorejni");
+
     AutoUpdater updater = new AutoUpdater();
 
     PreferencesDialog preferencesDialog = new PreferencesDialog(QUIT, START);

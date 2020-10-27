@@ -1,0 +1,80 @@
+def nativeConfigName = 'wpilibNatives'
+def nativeConfig = configurations.create(nativeConfigName)
+
+def nativeTasks = wpilibTools.createExtractionTasks {
+    configurationName = nativeConfigName
+}
+
+nativeTasks.addToSourceSetResources(sourceSets.main)
+
+wpilibTools.deps.wpilibVersion = "2020.+"
+
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("ntcore")
+nativeConfig.dependencies.add wpilibTools.deps.wpilib("wpiutil")
+
+dependencies {
+    implementation wpilibTools.deps.wpilibJava("ntcore")
+    implementation wpilibTools.deps.wpilibJava("wpiutil")
+
+    implementation wpilibTools.deps.javafx("base")
+    implementation wpilibTools.deps.javafx("controls")
+    implementation wpilibTools.deps.javafx("fxml")
+    implementation wpilibTools.deps.javafx("graphics")
+
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.10.0"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.10.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.10.0"
+
+    implementation group: "com.google.guava", name: "guava", version: "28.2-jre"
+    implementation group: "org.controlsfx", name: "controlsfx", version: "11.0.0"
+
+    def junitJupiter = { name ->
+        create group: 'org.junit.jupiter', name: name, version: '5.6.1'
+    }
+
+    def testFxVersion = { name, version ->
+        create group: 'org.testfx', name: name, version: version
+    }
+
+    def testFx = { name ->
+        create group: 'org.testfx', name: name, version: '4.0.16-alpha'
+    }
+
+    testImplementation(junitJupiter("junit-jupiter-api"))
+    testImplementation(junitJupiter("junit-jupiter-engine"))
+    testImplementation(junitJupiter("junit-jupiter-params"))
+    testImplementation group:  "com.google.guava", name: "guava-testlib", version: "28.2-jre"
+    testImplementation(testFx("testfx-core"))
+    testImplementation(testFx("testfx-junit5"))
+
+    testRuntimeOnly(testFxVersion("openjfx-monocle", "jdk-11+26"))
+    testRuntimeOnly group: "org.junit.platform", name: "junit-platform-launcher", version: "1.6.1"
+
+
+}
+
+ext.projectMainClass = "edu.wpi.first.outlineviewer.Main"
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform {
+        if (project.hasProperty("skipUI")) {
+            excludeTags("UI")
+        }
+        if (!project.hasProperty("visibleUiTests")) {
+            jvmArgs = [
+                    "-Djava.awt.headless=true",
+                    "-Dtestfx.robot=glass",
+                    "-Dtestfx.headless=true",
+                    "-Dprism.order=sw",
+                    "-Dprism.text=t2k"
+            ]
+            excludeTags("NonHeadlessTests")
+        }
+        systemProperty("junit.jupiter.extensions.autodetection.enabled", true)
+    }
+    finalizedBy("jacocoTestReport")
+}
+
+tasks.withType(Javadoc).configureEach {
+    failOnError = false
+}
