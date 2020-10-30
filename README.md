@@ -1,6 +1,6 @@
 # OutlineViewer
 
-[![Build Status](https://dev.azure.com/wpilib/DesktopTools/_apis/build/status/wpilibsuite.OutlineViewer)](https://dev.azure.com/wpilib/DesktopTools/_build/latest?definitionId=8) [![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/JavaFX/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
+![CI](https://github.com/wpilibsuite/OutlineViewer/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/wpilibsuite/OutlineViewer/branch/JavaFX/graph/badge.svg)](https://codecov.io/gh/wpilibsuite/OutlineViewer)
 
 Welcome to the WPILib project. This repository contains OutlineViewer.
 
