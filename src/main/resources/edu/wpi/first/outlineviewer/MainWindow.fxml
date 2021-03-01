@@ -34,6 +34,7 @@
                 <TreeTableColumn fx:id="keyColumn" minWidth="200" prefWidth="200" sortable="false" text="Key" id="keyColumn"/>
                 <TreeTableColumn fx:id="valueColumn" minWidth="200" prefWidth="200" sortable="false" text="Value" id="valueColumn"/>
                 <TreeTableColumn fx:id="typeColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Type" id="typeColumn"/>
+                <TreeTableColumn fx:id="lastUpdateColumn" editable="false" prefWidth="100" minWidth="100" sortable="false" text="Last Updated" id="lastUpdateColumn"/>
             </columns>
         </NetworkTableTree>
     </center>

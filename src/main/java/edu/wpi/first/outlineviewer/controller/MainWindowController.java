@@ -64,6 +64,8 @@ public class MainWindowController {
   private TreeTableColumn<TreeRow, Object> valueColumn;
   @FXML
   private TreeTableColumn<TreeRow, String> typeColumn;
+  @FXML
+  private TreeTableColumn<TreeRow, Long> lastUpdateColumn;
 
   @FXML
   @SuppressWarnings("PMD.AccessorMethodGeneration")
@@ -85,6 +87,7 @@ public class MainWindowController {
         NetworkTableUtilities.simpleKey(param.getValue().getValue().getKey())));
     valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("value"));
     typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
+    lastUpdateColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("lastUpdated"));
     valueColumn.setCellFactory(param -> new TreeEntryTreeTableCell<>());
 
     valueColumn.setOnEditCommit(event -> {
